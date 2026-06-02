@@ -48,6 +48,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 .header-title { font-size: 26px; font-weight: 800; color: var(--sa-white); line-height: 1; }
 .header-subtitle { font-size: 12px; color: var(--sb-blue); margin-top: 4px; font-weight: 600; }
 .header-meta { margin-left: auto; text-align: right; }
+.header-meta-row { line-height: 1.25; }
 .header-meta-label { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
 .header-meta-val { font-size: 13px; color: var(--sb-teal); font-weight: 700; margin-top: 2px; }
 
@@ -181,8 +182,14 @@ svg { overflow: visible; }
       </div>
     </div>
     <div class="header-meta">
-      <div class="header-meta-label">Currently Tracking</div>
-      <div class="header-meta-val" id="headerStatus">Loading...</div>
+      <div class="header-meta-row">
+        <div class="header-meta-label">Currently Tracking</div>
+        <div class="header-meta-val" id="headerStatus">Loading...</div>
+      </div>
+      <div class="header-meta-row" style="margin-top:8px">
+        <div class="header-meta-label">Last Updated</div>
+        <div class="header-meta-val" id="headerLastUpdated" style="color:var(--text)">—</div>
+      </div>
     </div>
   </div>
   <div class="camp-selector" style="margin-top:18px;max-width:340px">
@@ -405,6 +412,15 @@ function campColor(camp) { return CAMP_COLOR[camp]; }
 function campLabel(camp) { return camp === "cub" ? "CUB H₂O" : camp === "bsa" ? "BSA H₂O" : "COMBINED"; }
 function tabClass(camp) { return `${camp}-tab`; }
 
+function latestDataDate() {
+  // Return the most recent registration date across CUB & BSA 2026 data
+  const rows = [...(DAILY.cub["2026"]||[]), ...(DAILY.bsa["2026"]||[])];
+  if (!rows.length) return null;
+  const lastDay = Math.max(...rows.map(r => r.day));
+  const r = rows.find(x => x.day === lastDay);
+  return r ? r.date : null;
+}
+
 function updateCampStyling() {
   const col = campColor(activeCamp);
   // update toggle buttons active color
@@ -412,6 +428,10 @@ function updateCampStyling() {
   // header status
   document.getElementById('headerStatus').textContent = `${campLabel(activeCamp)} · 2026 YTD: ${getMeta(activeCamp,"2026").totalYouth} youth`;
   document.getElementById('headerStatus').style.color = col;
+  // last updated
+  const last = latestDataDate();
+  const lu = document.getElementById('headerLastUpdated');
+  if (lu) lu.textContent = last ? `${last}, 2026` : '—';
 }
 
 // ═══════════════════════════════════════════════════════════════════
