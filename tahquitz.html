@@ -206,141 +206,82 @@ td.cur, th.cur { background: var(--cur-cell, rgba(127,127,127,.10)); font-weight
 }
 
 
-/* ── LOGO + PNG BUTTON ───────────────────────────────────────────────────── */
 .logo-img { height: 66px; width: auto; display:block; filter: drop-shadow(0 2px 5px rgba(0,0,0,.45)); }
 .header-logo { gap: 16px; }
 @media (max-width:640px){ .logo-img{ height:50px; } }
-.png-btn {
-  font: 700 11px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+.png-btn { font: 700 11px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: rgba(255,255,255,0.06); color: var(--dim, #9a9abe);
   border: 1px solid var(--border, rgba(255,255,255,.10));
-  padding: 5px 9px; border-radius: 6px; cursor: pointer; transition: all .15s ease;
-  letter-spacing: 0.02em;
-}
+  padding: 5px 9px; border-radius: 6px; cursor: pointer; transition: all .15s ease; letter-spacing: 0.02em; }
 .png-btn:hover { border-color: var(--accent, #f7ae14); color: var(--accent, #f7ae14); background: rgba(247,174,20,0.10); }
 .png-btn:active { transform: translateY(1px); }
 .png-btn.inline { margin-left: 10px; }
 .card { position: relative; }
 .card > .png-btn:not(.inline) { position: absolute; top: 12px; right: 12px; z-index: 5; }
-
-/* ── BASE INTERACTION (every viewport): better tap behavior ──────────────── */
 button, .year-pill, .tab-btn, .toggle-btn, .png-btn, .segment-btn {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-
-/* ════════════════════════════════════════════════════════════════════════════
-   MOBILE PORTRAIT LAYER  ≤ 640px
-   Goals: no horizontal overflow, real tap targets, every toggle reachable.
-   No functionality removed — only layout, sizing, and density adjustments.
-   ════════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
-
-  /* Header */
   .header { padding: 16px 16px 14px; }
   .header-inner { gap: 10px; row-gap: 12px; align-items: flex-start; }
   .header-logo { gap: 12px; }
   .header-title { font-size: 19px; line-height: 1.1; }
   .header-subtitle { font-size: 11px; margin-top: 3px; line-height: 1.4; }
   .header-eyebrow { letter-spacing: .12em; }
-  /* When the meta block wraps below, give it its own row aligned left so
-     "Currently Tracking / Last Updated" don't crowd the right edge alone. */
-  .header-meta {
-    margin-left: 0; text-align: left; width: 100%;
-    padding-top: 10px; margin-top: 2px;
+  .header-meta { margin-left: 0; text-align: left; width: 100%; padding-top: 10px; margin-top: 2px;
     border-top: 1px solid rgba(255,255,255,.10);
-    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px;
-  }
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
   .header-meta-label { font-size: 10px; }
   .header-meta-val { font-size: 12.5px; }
-
-  /* Outer paddings — reclaim horizontal room */
   .main { padding: 16px 14px 0; }
   .footer { padding: 0 14px; font-size: 11px; margin-top: 18px; }
   .segment-bar { padding: 0 14px; }
-
-  /* Tab nav: switch from 3-row wrap to a single scroll-snap row (no tab lost) */
-  .tab-nav {
-    flex-wrap: nowrap;
-    overflow-x: auto; overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    margin-bottom: 14px;
-    padding-bottom: 2px;
-  }
+  .tab-nav { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; margin-bottom: 14px; padding-bottom: 2px; }
   .tab-nav::-webkit-scrollbar { display: none; }
-  .tab-btn {
-    flex: 0 0 auto; scroll-snap-align: start;
-    padding: 11px 14px; font-size: 12.5px; min-height: 40px;
-  }
-
-  /* Year pills: bigger tap targets, label drops to its own line */
+  .tab-btn { flex: 0 0 auto; scroll-snap-align: start; padding: 11px 14px; font-size: 12.5px; min-height: 40px; }
   .year-pills { row-gap: 6px; }
   .year-pills .pills-label { width: 100%; margin-bottom: 2px; margin-right: 0; }
   .year-pill { padding: 7px 13px; font-size: 12px; min-height: 32px; }
-
-  /* Cards */
   .card { padding: 16px 14px; margin-bottom: 14px; border-radius: 11px; }
   .card-head { row-gap: 10px; column-gap: 10px; }
   .card h2 { font-size: 14.5px; }
   .card .hint, .chart-desc { font-size: 12px; line-height: 1.5; }
-
-  /* When card-controls wrap below the title, give them the full row and
-     push the PNG button to the right edge so toggles stay flush left. */
   .card-controls { width: 100%; justify-content: flex-start; row-gap: 8px; flex-wrap: wrap; }
   .card-controls .png-btn.inline { margin-left: auto; }
-
-  /* Toggles + PNG button: proper 32–36px tap targets */
   .toggle-group { padding: 4px; }
   .toggle-group.mini .toggle-btn { padding: 7px 11px; font-size: 10.5px; min-height: 30px; }
   .toggle-btn { padding: 7px 12px; font-size: 11px; min-height: 30px; }
   .png-btn { padding: 8px 11px; font-size: 11.5px; min-height: 32px; }
-
-  /* Chart heights — proportionate to a portrait viewport */
   .chart-wrap { height: 260px; }
   .chart-wrap.tall { height: 320px; }
   .chart-wrap.short { height: 200px; }
-
-  /* KPIs (already 2-col at <900) — tighter sizing */
   .kpis { gap: 10px; margin-bottom: 14px; }
   .kpi { padding: 13px 14px; border-radius: 10px; }
   .kpi .value { font-size: 22px; }
   .kpi .sub { font-size: 10.5px; }
   .kpi .delta { font-size: 12px; }
-
-  /* Projection stat strip: 2 columns on phones (was 3 at <900) */
   .proj-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .proj-stat { padding: 11px 12px; }
   .proj-stat .value { font-size: 20px; }
   .proj-stat .sub { font-size: 10px; }
-
-  /* Tables: keep all columns, scroll horizontally with momentum */
   .table-wrap { -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
   table { font-size: 11.5px; min-width: max-content; }
-  th, td { padding: 7px 8px; }
-  th { font-size: 10px; }
-
-  /* Insight callouts */
+  th, td { padding: 7px 8px; } th { font-size: 10px; }
   .insight { padding: 11px 13px; }
   .insight li { font-size: 12px; line-height: 1.55; }
 }
-
-/* ════════════════════════════════════════════════════════════════════════════
-   VERY SMALL PHONES ≤ 380px (e.g. iPhone SE portrait) — extra-compact
-   ════════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 380px) {
   .header { padding: 14px 12px 12px; }
-  .header-title { font-size: 17px; }
-  .header-eyebrow { font-size: 9px; }
+  .header-title { font-size: 17px; } .header-eyebrow { font-size: 9px; }
   .logo-img { height: 44px; }
-  .header-meta { grid-template-columns: 1fr; }   /* stack meta items */
+  .header-meta { grid-template-columns: 1fr; }
   .main { padding: 14px 10px 0; }
   .card { padding: 14px 12px; }
   .kpi .value { font-size: 20px; }
   .tab-btn { padding: 10px 12px; font-size: 12px; }
-  .chart-wrap { height: 240px; }
-  .chart-wrap.tall { height: 300px; }
+  .chart-wrap { height: 240px; } .chart-wrap.tall { height: 300px; }
 }
 
 </style></head><body>
@@ -463,9 +404,9 @@ button, .year-pill, .tab-btn, .toggle-btn, .png-btn, .segment-btn {
   </div>
 </div>
 
-<div class="footer" id="footer">Generated June 02, 2026 · figures are cumulative and net of cancellations · excludes Part-Time · projection: additive μ ± 1σ of prior seasons' growth past the current week.</div>
+<div class="footer" id="footer">Generated June 03, 2026 · figures are cumulative and net of cancellations · excludes Part-Time · projection: additive μ ± 1σ of prior seasons' growth past the current week.</div>
 
-<script>const DATA = {"program":{"name":"Camp Tahquitz · Participation Pacing","eyebrow":"Long Beach Area Council · Scouting America","subtitle":"Summers 2021–2026 · Aug→Aug fiscal year · Youth + Adult, excludes Part-Time","eventLabel":"first session"},"unit":"participants","emoji":"⛰️","seasons":["2021","2022","2023","2024","2025","2026"],"currentSeason":"2026","lastUpdated":"Jun 01, 2026","lastUpdatedIso":"2026-06-01","currentSegment":"all","segments":[],"splitLabels":null,"weekLabels":{"0":"Aug","5":"Sep","9":"Oct","14":"Nov","18":"Dec","22":"Jan","27":"Feb","31":"Mar","35":"Apr","39":"May","44":"Jun","48":"Jul"},"data":{"all":{"summary":{"2021":{"total":403,"windowWeeks":52,"opens":"Aug 01, 2020","closes":"Aug 01, 2021","youth":316,"adult":87,"units":32,"zeros":2,"gross":773,"cancelled":370,"retention":52.1,"avgYU":9.9},"2022":{"total":541,"windowWeeks":52,"opens":"Aug 01, 2021","closes":"Aug 01, 2022","youth":428,"adult":113,"units":41,"zeros":2,"gross":781,"cancelled":240,"retention":69.3,"avgYU":10.4},"2023":{"total":509,"windowWeeks":52,"opens":"Aug 01, 2022","closes":"Aug 01, 2023","youth":409,"adult":100,"units":45,"zeros":2,"gross":564,"cancelled":55,"retention":90.2,"avgYU":9.1},"2024":{"total":470,"windowWeeks":52,"opens":"Aug 01, 2023","closes":"Aug 01, 2024","youth":367,"adult":103,"units":37,"zeros":0,"gross":531,"cancelled":61,"retention":88.5,"avgYU":9.9},"2025":{"total":647,"windowWeeks":52,"opens":"Aug 01, 2024","closes":"Aug 01, 2025","youth":510,"adult":137,"units":54,"zeros":1,"gross":725,"cancelled":78,"retention":89.2,"avgYU":9.4},"2026":{"total":617,"windowWeeks":43,"opens":"Aug 01, 2025","closes":"Aug 01, 2026","youth":484,"adult":133,"units":46,"zeros":1,"gross":657,"cancelled":40,"retention":93.9,"avgYU":10.5,"currentWeek":43,"asOf":"Jun 04, 2026"}},"weeklyCum":{"2021":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,71,116,133,221,230,321,372,359,394,410,420,411,425,410,412,391,392,400,400,395,398,407,404,403],"2022":[35,35,35,35,35,35,35,35,90,90,90,102,140,140,185,195,201,254,254,254,269,269,269,269,304,327,331,335,335,352,352,377,391,424,450,464,479,487,482,498,502,518,519,514,536,557,557,551,557,551,544,544,541],"2023":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,132,146,149,149,157,194,206,219,220,228,239,278,253,280,282,283,304,317,371,389,411,419,458,467,463,474,487,501,510,511,513,509],"2024":[0,10,10,10,10,10,23,38,38,38,58,58,58,58,58,58,74,74,81,81,91,94,94,94,95,118,179,194,194,195,213,241,247,266,296,296,296,309,318,341,363,373,371,392,397,429,456,457,469,469,471,471,470],"2025":[0,0,0,0,0,12,12,12,12,12,14,14,26,26,26,70,75,75,75,106,126,148,167,182,182,240,282,349,384,404,406,420,442,453,479,490,500,517,521,554,557,568,585,604,628,637,634,649,649,651,652,651,647],"2026":[0,0,0,0,0,32,61,61,61,67,67,73,81,83,86,86,97,139,139,196,199,222,235,350,393,408,427,446,446,467,468,480,518,537,551,553,551,567,581,583,592,594,607,617]},"weeklyAdd":{"2021":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,40,45,17,88,9,91,51,-13,35,16,10,-9,14,-15,2,-21,1,8,0,-5,3,9,-3,-1],"2022":[35,0,0,0,0,0,0,0,55,0,0,12,38,0,45,10,6,53,0,0,15,0,0,0,35,23,4,4,0,17,0,25,14,33,26,14,15,8,-5,16,4,16,1,-5,22,21,0,-6,6,-6,-7,0,-3],"2023":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,132,14,3,0,8,37,12,13,1,8,11,39,-25,27,2,1,21,13,54,18,22,8,39,9,-4,11,13,14,9,1,2,-4],"2024":[0,10,0,0,0,0,13,15,0,0,20,0,0,0,0,0,16,0,7,0,10,3,0,0,1,23,61,15,0,1,18,28,6,19,30,0,0,13,9,23,22,10,-2,21,5,32,27,1,12,0,2,0,-1],"2025":[0,0,0,0,0,12,0,0,0,0,2,0,12,0,0,44,5,0,0,31,20,22,19,15,0,58,42,67,35,20,2,14,22,11,26,11,10,17,4,33,3,11,17,19,24,9,-3,15,0,2,1,-1,-4],"2026":[0,0,0,0,0,32,29,0,0,6,0,6,8,2,3,0,11,42,0,57,3,23,13,115,43,15,19,19,0,21,1,12,38,19,14,2,-2,16,14,2,9,2,13,10]},"dow":{}}},"theme":{"bg":"#0e0e28","surface":"#13133a","card":"#181840","border":"rgba(255,255,255,.10)","borderSoft":"rgba(255,255,255,.06)","text":"#ffffff","dim":"#9a9abe","accent":"#f7ae14","accent2":"#80b9e4","onAccent":"#121234","good":"#bfda8f","bad":"#e85d5d","grid":"rgba(255,255,255,.10)","headerBg":"linear-gradient(135deg,#121234,#185329 180%)"},"yearColors":{"2021":"#6a6a9a","2022":"#6b9a9f","2023":"#bfda8f","2024":"#e85d5d","2025":"#80b9e4","2026":"#f7ae14"},"extras":{"councils":[{"council":"Long Beach","2021":{"participants":184,"units":11},"2022":{"participants":163,"units":10},"2023":{"participants":131,"units":9},"2024":{"participants":120,"units":9},"2025":{"participants":182,"units":16},"2026":{"participants":90,"units":8}},{"council":"Orange County","2021":{"participants":95,"units":7},"2022":{"participants":149,"units":8},"2023":{"participants":125,"units":11},"2024":{"participants":85,"units":7},"2025":{"participants":86,"units":7},"2026":{"participants":126,"units":8}},{"council":"CA Inland","2021":{"participants":66,"units":6},"2022":{"participants":69,"units":6},"2023":{"participants":114,"units":11},"2024":{"participants":76,"units":7},"2025":{"participants":76,"units":8},"2026":{"participants":131,"units":9}},{"council":"Greater LA","2021":{"participants":24,"units":2},"2022":{"participants":35,"units":4},"2023":{"participants":28,"units":3},"2024":{"participants":45,"units":5},"2025":{"participants":94,"units":7},"2026":{"participants":141,"units":9}},{"council":"San Diego","2021":{"participants":11,"units":1},"2022":{"participants":55,"units":4},"2023":{"participants":43,"units":3},"2024":{"participants":12,"units":1},"2025":{"participants":164,"units":11},"2026":{"participants":80,"units":6}},{"council":"Western LA","2021":{"participants":6,"units":1},"2022":{"participants":0,"units":0},"2023":{"participants":20,"units":1},"2024":{"participants":48,"units":1},"2025":{"participants":33,"units":2},"2026":{"participants":33,"units":2}}],"unitTypes":[{"type":"Boy","2021":{"participants":366,"units":25},"2022":{"participants":429,"units":29},"2023":{"participants":429,"units":35},"2024":{"participants":422,"units":30},"2025":{"participants":543,"units":42},"2026":{"participants":404,"units":33}},{"type":"Girl","2021":{"participants":37,"units":5},"2022":{"participants":112,"units":10},"2023":{"participants":80,"units":8},"2024":{"participants":48,"units":7},"2025":{"participants":102,"units":10},"2026":{"participants":64,"units":3}},{"type":"Family","2021":{"participants":0,"units":0},"2022":{"participants":0,"units":0},"2023":{"participants":0,"units":0},"2024":{"participants":0,"units":0},"2025":{"participants":0,"units":0},"2026":{"participants":149,"units":9}}],"phases":[{"phase":"Fall (Sep–Nov)","2021":0,"2022":219,"2023":0,"2024":64,"2025":75,"2026":107},{"phase":"Winter (Dec–Feb)","2021":76,"2022":98,"2023":228,"2024":135,"2025":330,"2026":360},{"phase":"Spring (Mar–Apr)","2021":334,"2022":130,"2023":89,"2024":118,"2025":116,"2026":114},{"phase":"Pre-Camp (May–Jun)","2021":-10,"2022":61,"2023":161,"2024":130,"2025":121,"2026":36},{"phase":"Camp/Close (Jul–Aug)","2021":3,"2022":33,"2023":31,"2024":23,"2025":5,"2026":0}],"phaseOrder":["Fall (Sep–Nov)","Winter (Dec–Feb)","Spring (Mar–Apr)","Pre-Camp (May–Jun)","Camp/Close (Jul–Aug)"]}};</script>
+<script>const DATA = {"program":{"name":"Camp Tahquitz · Participation Pacing","eyebrow":"Long Beach Area Council · Scouting America","subtitle":"Summers 2021–2026 · Aug→Aug fiscal year · Youth + Adult, excludes Part-Time","eventLabel":"first session"},"unit":"participants","emoji":"⛰️","seasons":["2021","2022","2023","2024","2025","2026"],"currentSeason":"2026","lastUpdated":"Jun 03, 2026","lastUpdatedIso":"2026-06-03","currentSegment":"all","segments":[],"splitLabels":null,"weekLabels":{"0":"Aug","5":"Sep","9":"Oct","14":"Nov","18":"Dec","22":"Jan","27":"Feb","31":"Mar","35":"Apr","39":"May","44":"Jun","48":"Jul"},"data":{"all":{"summary":{"2021":{"total":403,"windowWeeks":52,"opens":"Aug 01, 2020","closes":"Aug 01, 2021","youth":316,"adult":87,"units":32,"zeros":2,"gross":773,"cancelled":370,"retention":52.1,"avgYU":9.9},"2022":{"total":541,"windowWeeks":52,"opens":"Aug 01, 2021","closes":"Aug 01, 2022","youth":428,"adult":113,"units":41,"zeros":2,"gross":781,"cancelled":240,"retention":69.3,"avgYU":10.4},"2023":{"total":509,"windowWeeks":52,"opens":"Aug 01, 2022","closes":"Aug 01, 2023","youth":409,"adult":100,"units":45,"zeros":2,"gross":564,"cancelled":55,"retention":90.2,"avgYU":9.1},"2024":{"total":470,"windowWeeks":52,"opens":"Aug 01, 2023","closes":"Aug 01, 2024","youth":367,"adult":103,"units":37,"zeros":0,"gross":531,"cancelled":61,"retention":88.5,"avgYU":9.9},"2025":{"total":647,"windowWeeks":52,"opens":"Aug 01, 2024","closes":"Aug 01, 2025","youth":510,"adult":137,"units":54,"zeros":1,"gross":725,"cancelled":78,"retention":89.2,"avgYU":9.4},"2026":{"total":608,"windowWeeks":43,"opens":"Aug 01, 2025","closes":"Aug 01, 2026","youth":479,"adult":129,"units":46,"zeros":1,"gross":662,"cancelled":54,"retention":91.8,"avgYU":10.4,"currentWeek":43,"asOf":"Jun 04, 2026"}},"weeklyCum":{"2021":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,71,116,133,221,230,321,372,359,394,410,420,411,425,410,412,391,392,400,400,395,398,407,404,403],"2022":[35,35,35,35,35,35,35,35,90,90,90,102,140,140,185,195,201,254,254,254,269,269,269,269,304,327,331,335,335,352,352,377,391,424,450,464,479,487,482,498,502,518,519,514,536,557,557,551,557,551,544,544,541],"2023":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,132,146,149,149,157,194,206,219,220,228,239,278,253,280,282,283,304,317,371,389,411,419,458,467,463,474,487,501,510,511,513,509],"2024":[0,10,10,10,10,10,23,38,38,38,58,58,58,58,58,58,74,74,81,81,91,94,94,94,95,118,179,194,194,195,213,241,247,266,296,296,296,309,318,341,363,373,371,392,397,429,456,457,469,469,471,471,470],"2025":[0,0,0,0,0,12,12,12,12,12,14,14,26,26,26,70,75,75,75,106,126,148,167,182,182,240,282,349,384,404,406,420,442,453,479,490,500,517,521,554,557,568,585,604,628,637,634,649,649,651,652,651,647],"2026":[0,0,0,0,0,32,61,61,61,67,67,73,81,83,86,86,97,139,139,196,199,222,235,350,393,408,427,446,446,467,468,480,518,537,551,553,551,567,581,583,592,594,607,608]},"weeklyAdd":{"2021":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,40,45,17,88,9,91,51,-13,35,16,10,-9,14,-15,2,-21,1,8,0,-5,3,9,-3,-1],"2022":[35,0,0,0,0,0,0,0,55,0,0,12,38,0,45,10,6,53,0,0,15,0,0,0,35,23,4,4,0,17,0,25,14,33,26,14,15,8,-5,16,4,16,1,-5,22,21,0,-6,6,-6,-7,0,-3],"2023":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,132,14,3,0,8,37,12,13,1,8,11,39,-25,27,2,1,21,13,54,18,22,8,39,9,-4,11,13,14,9,1,2,-4],"2024":[0,10,0,0,0,0,13,15,0,0,20,0,0,0,0,0,16,0,7,0,10,3,0,0,1,23,61,15,0,1,18,28,6,19,30,0,0,13,9,23,22,10,-2,21,5,32,27,1,12,0,2,0,-1],"2025":[0,0,0,0,0,12,0,0,0,0,2,0,12,0,0,44,5,0,0,31,20,22,19,15,0,58,42,67,35,20,2,14,22,11,26,11,10,17,4,33,3,11,17,19,24,9,-3,15,0,2,1,-1,-4],"2026":[0,0,0,0,0,32,29,0,0,6,0,6,8,2,3,0,11,42,0,57,3,23,13,115,43,15,19,19,0,21,1,12,38,19,14,2,-2,16,14,2,9,2,13,1]},"dow":{}}},"theme":{"bg":"#0e0e28","surface":"#13133a","card":"#181840","border":"rgba(255,255,255,.10)","borderSoft":"rgba(255,255,255,.06)","text":"#ffffff","dim":"#9a9abe","accent":"#f7ae14","accent2":"#80b9e4","onAccent":"#121234","good":"#bfda8f","bad":"#e85d5d","grid":"rgba(255,255,255,.10)","headerBg":"linear-gradient(135deg,#121234,#185329 180%)"},"yearColors":{"2021":"#6a6a9a","2022":"#6b9a9f","2023":"#bfda8f","2024":"#e85d5d","2025":"#80b9e4","2026":"#f7ae14"},"extras":{"councils":[{"council":"Long Beach","2021":{"participants":184,"units":11},"2022":{"participants":163,"units":10},"2023":{"participants":131,"units":9},"2024":{"participants":120,"units":9},"2025":{"participants":182,"units":16},"2026":{"participants":76,"units":8}},{"council":"Orange County","2021":{"participants":95,"units":7},"2022":{"participants":149,"units":8},"2023":{"participants":125,"units":11},"2024":{"participants":85,"units":7},"2025":{"participants":86,"units":7},"2026":{"participants":128,"units":8}},{"council":"CA Inland","2021":{"participants":66,"units":6},"2022":{"participants":69,"units":6},"2023":{"participants":114,"units":11},"2024":{"participants":76,"units":7},"2025":{"participants":76,"units":8},"2026":{"participants":131,"units":9}},{"council":"Greater LA","2021":{"participants":24,"units":2},"2022":{"participants":35,"units":4},"2023":{"participants":28,"units":3},"2024":{"participants":45,"units":5},"2025":{"participants":94,"units":7},"2026":{"participants":141,"units":9}},{"council":"San Diego","2021":{"participants":11,"units":1},"2022":{"participants":55,"units":4},"2023":{"participants":43,"units":3},"2024":{"participants":12,"units":1},"2025":{"participants":164,"units":11},"2026":{"participants":83,"units":6}},{"council":"Western LA","2021":{"participants":6,"units":1},"2022":{"participants":0,"units":0},"2023":{"participants":20,"units":1},"2024":{"participants":48,"units":1},"2025":{"participants":33,"units":2},"2026":{"participants":33,"units":2}}],"unitTypes":[{"type":"Boy","2021":{"participants":366,"units":25},"2022":{"participants":429,"units":29},"2023":{"participants":429,"units":35},"2024":{"participants":422,"units":30},"2025":{"participants":543,"units":42},"2026":{"participants":393,"units":33}},{"type":"Girl","2021":{"participants":37,"units":5},"2022":{"participants":112,"units":10},"2023":{"participants":80,"units":8},"2024":{"participants":48,"units":7},"2025":{"participants":102,"units":10},"2026":{"participants":64,"units":3}},{"type":"Family","2021":{"participants":0,"units":0},"2022":{"participants":0,"units":0},"2023":{"participants":0,"units":0},"2024":{"participants":0,"units":0},"2025":{"participants":0,"units":0},"2026":{"participants":151,"units":9}}],"phases":[{"phase":"Fall (Sep–Nov)","2021":0,"2022":219,"2023":0,"2024":64,"2025":75,"2026":107},{"phase":"Winter (Dec–Feb)","2021":76,"2022":98,"2023":228,"2024":135,"2025":330,"2026":360},{"phase":"Spring (Mar–Apr)","2021":334,"2022":130,"2023":89,"2024":118,"2025":116,"2026":114},{"phase":"Pre-Camp (May–Jun)","2021":-10,"2022":61,"2023":161,"2024":130,"2025":121,"2026":27},{"phase":"Camp/Close (Jul–Aug)","2021":3,"2022":33,"2023":31,"2024":23,"2025":5,"2026":0}],"phaseOrder":["Fall (Sep–Nov)","Winter (Dec–Feb)","Spring (Mar–Apr)","Pre-Camp (May–Jun)","Camp/Close (Jul–Aug)"]}};</script>
 <script>/* ============================================================================
    PROGRAM REGISTRATION DASHBOARD — engine (chart_helpers.js)
    Reusable across every program. Operates on a global `DATA` object that
@@ -1206,4 +1147,4 @@ function injectExportButtons() {
 }
 injectExportButtons();
 </script>
-<!--LBAC_LAST_UPDATED_CHIP--><style>.lbac-last-updated{position:fixed;top:10px;right:14px;background:rgba(15,23,42,.78);color:#e2e8f0;font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.3px;padding:6px 10px;border-radius:999px;z-index:99999;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18);}</style><div class="lbac-last-updated">Last updated &middot; June 1, 2026</div><!--LBAC_LAST_UPDATED_CHIP--></body></html>
+<!--LBAC_LAST_UPDATED_CHIP--><style>.lbac-last-updated{position:fixed;top:10px;right:14px;background:rgba(15,23,42,.78);color:#e2e8f0;font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.3px;padding:6px 10px;border-radius:999px;z-index:99999;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18);}</style><div class="lbac-last-updated">Last updated &middot; June 3, 2026</div><!--LBAC_LAST_UPDATED_CHIP--></body></html>
