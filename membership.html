@@ -118,6 +118,7 @@ body { padding-bottom: 76px; }
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" data-tab="totals">Membership Totals</button>
     <button class="top-tab" data-tab="newmembers">New Members</button>
+    <button class="top-tab" data-tab="drops">Drops</button>
   </div>
 
   <!-- PANE 1: MEMBERSHIP TOTALS -->
@@ -393,6 +394,129 @@ body { padding-bottom: 76px; }
     </div>
   </div>
   <!-- /pane-newmembers -->
+
+  <div id="pane-drops" style="display:none;">
+
+    <!-- Years -->
+    <div class="filter-bar" style="margin-bottom:12px;">
+      <div class="filter-group" style="flex-wrap:wrap;">
+        <span class="filter-label">Years</span>
+        <div id="dYearBar" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+      </div>
+    </div>
+
+    <!-- Sub-tabs -->
+    <div class="pill-group" id="dSubtabs" style="margin-bottom:14px;">
+      <button class="pill-btn active" data-sub="overview">Overview</button>
+      <button class="pill-btn" data-sub="monthly">Monthly Trends</button>
+      <button class="pill-btn" data-sub="districts">Districts</button>
+      <button class="pill-btn" data-sub="units">Unit Analysis</button>
+    </div>
+
+    <!-- Unit Type filter (conditional) -->
+    <div class="filter-bar" id="dFilterBar" style="margin-bottom:14px;">
+      <div class="filter-group" style="flex-wrap:wrap;">
+        <span class="filter-label">Unit Type</span>
+        <div class="pill-group" id="dFiltBar" style="flex-wrap:wrap;"></div>
+      </div>
+    </div>
+
+    <!-- Sub-pane: Overview -->
+    <div id="d-overview">
+      <div class="kpis" id="dKpis"></div>
+      <div class="grid grid-2-eq" style="margin-bottom:16px;">
+        <div class="card">
+          <div class="card-head">
+  <div>
+    <h2>Annual Totals</h2>
+          <div class="hint">Drops per year (full years only)</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dAnnualChart" data-title="Annual Totals — Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap"><canvas id="dAnnualChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+  <div>
+    <h2>Jan–May Comparison</h2>
+          <div class="hint">Apples-to-apples year-to-date through May</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dJanMayChart" data-title="Jan – May Comparison — Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap"><canvas id="dJanMayChart"></canvas></div>
+        </div>
+      </div>
+      <div class="card" id="dUTCard">
+        <div class="card-head">
+  <div>
+    <h2 id="dUTTitle">Unit Type by Year</h2>
+        <div class="hint">Breakdown of drops by unit type, stacked per year</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dUTChart" data-title="Unit Type by Year — Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap"><canvas id="dUTChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Sub-pane: Monthly Trends -->
+    <div id="d-monthly" style="display:none;">
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-head">
+  <div>
+    <h2 id="dMonthlyTitle">Monthly Drops</h2>
+        <div class="hint">One line per selected year, January through December (2026 dashed = partial). Dotted projection for the current year auto-updates from active toggled data.</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dMonthlyChart" data-title="Monthly Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap-tall"><canvas id="dMonthlyChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+  <div>
+    <h2 id="dCumTitle">Cumulative Drops</h2>
+        <div class="hint">Running total per year</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dCumChart" data-title="Cumulative Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap-tall"><canvas id="dCumChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Sub-pane: Districts -->
+    <div id="d-districts" style="display:none;">
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-head">
+  <div>
+    <h2>Drops by District &amp; Year</h2>
+        <div class="hint">Grouped bars: each cluster is one district, each bar one selected year</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dDistChart" data-title="Drops by District & Year">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap-tall"><canvas id="dDistChart"></canvas></div>
+      </div>
+      <div class="grid grid-4-eq" id="dDistCards"></div>
+    </div>
+
+    <!-- Sub-pane: Unit Analysis -->
+    <div id="d-units" style="display:none;">
+      <div class="card">
+        <div class="card-head">
+  <div>
+    <h2 id="dTopUnitsTitle">Top Units</h2>
+        <div class="hint">Top 10 units by total drops in the selected years and filter</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dTopUnitsChart" data-title="Top Units — Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap-tall" id="dTopUnitsWrap"><canvas id="dTopUnitsChart"></canvas></div>
+        <p id="dTopUnitsEmpty" class="empty-state" style="display:none;">No data for selected filters</p>
+      </div>
+    </div>
+
+    <div class="footer" style="margin-top:24px;">
+      Full years 2023–2025 · 2026 partial · Traditional Scouting = Packs, Troops, Crews, Ships from Iron Star &amp; Neptune · Pack (Trad) = Iron Star Packs · Pack (SR) = New Frontier Packs
+    </div>
+  </div>
+  <!-- /pane-drops -->
 
   <div class="footer">Source: monthly membership CSV exports · Council 032 Long Beach, CA</div>
 </div>
@@ -989,6 +1113,73 @@ document.addEventListener('click', function(e){
     }).filter(r => r.count > 0).sort((a, b) => b.count - a.count).slice(0, 10);
   }
 
+
+  // ── Current-year projection ──
+  // Uses a pace-based method: project the partial year's remaining months by
+  // averaging the same months from each ACTIVE prior year, scaled by the
+  // YTD pace factor (currentYTD / avg(priorYTD over same Jan..lastIdx)).
+  // Returns a 12-element array: null before lastIdx, the actual value at
+  // lastIdx (so the projection line visually joins the actuals), and
+  // projected ints from lastIdx+1 onward. Returns null if not enough data.
+  function projectCurrentYear(filt){
+    const lastIdx = NM_DATA.partialLastMonthIdx;
+    const curYr = NM_DATA.partialYear;
+    if (lastIdx < 0 || lastIdx >= 11) return null;
+    const cur = gM(filt, curYr);
+    if (!cur) return null;
+    let ytdCur = 0;
+    for (let i = 0; i <= lastIdx; i++) ytdCur += (cur[i] || 0);
+    const priors = activeYrs().filter(function(y){ return y < curYr; });
+    if (priors.length === 0) return null;
+    let ytdPriorSum = 0, ytdPriorCount = 0;
+    const future = new Array(12).fill(0);
+    const futureCount = new Array(12).fill(0);
+    priors.forEach(function(y){
+      const pd = gM(filt, y);
+      if (!pd) return;
+      let ytdY = 0;
+      for (let i = 0; i <= lastIdx; i++) ytdY += (pd[i] || 0);
+      ytdPriorSum += ytdY;
+      ytdPriorCount += 1;
+      for (let i = lastIdx + 1; i < 12; i++) {
+        const v = pd[i];
+        if (v !== null && v !== undefined) { future[i] += v; futureCount[i] += 1; }
+      }
+    });
+    if (ytdPriorCount === 0) return null;
+    const avgYtdPrior = ytdPriorSum / ytdPriorCount;
+    const pace = avgYtdPrior > 0 ? (ytdCur / avgYtdPrior) : 1;
+    const projection = new Array(12).fill(null);
+    projection[lastIdx] = cur[lastIdx]; // join point
+    let hasFuture = false;
+    for (let i = lastIdx + 1; i < 12; i++) {
+      if (futureCount[i] === 0) continue;
+      const avg = future[i] / futureCount[i];
+      projection[i] = Math.max(0, Math.round(avg * pace));
+      hasFuture = true;
+    }
+    return hasFuture ? projection : null;
+  }
+  function projDatasetBase(){
+    const curYr = NM_DATA.partialYear;
+    return {
+      label: curYr + ' (projected)',
+      // Lowest `order` -> drawn last by Chart.js v4 -> sits on top of every year line
+      order: -1,
+      borderColor: YC[curYr] + 'CC',          // ~80% opacity
+      backgroundColor: 'transparent',
+      pointBackgroundColor: '#ffffff',         // hollow fill
+      pointBorderColor: YC[curYr] + 'CC',
+      pointBorderWidth: 2,
+      borderWidth: 2,
+      borderDash: [2, 4],                      // dotted
+      pointStyle: 'circle',
+      tension: 0.25,
+      spanGaps: false,
+      fill: false,
+    };
+  }
+
   // ── Chart helpers ──
   function gridScales(showXGrid, showYGrid){
     return {
@@ -1165,30 +1356,47 @@ document.addEventListener('click', function(e){
     killChart('monthly');
     const yrs = activeYrs();
     document.getElementById('nmMonthlyTitle').textContent = 'Monthly New Members — ' + state.filt;
+    const monthlyDatasets = yrs.map(y => {
+      const md = gM(state.filt, y);
+      // Chart.js v4 draws sorted metasets in reverse iteration, so a LOWER
+      // `order` value renders on TOP. Use (YR.length-1) - index so 2026 has
+      // the lowest order among years and ends up in front. Projection is
+      // assigned order=-1 below, so it sits on top of everything.
+      return {
+        label: String(y),
+        data: md.slice(),
+        order: (YR.length - 1) - YR.indexOf(y),
+        borderColor: YC[y],
+        backgroundColor: YC[y] + '20',
+        pointBackgroundColor: YC[y],
+        borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+        tension: 0.25,
+        borderDash: y === 2026 ? [6, 3] : [],
+        spanGaps: false,
+      };
+    });
+    {
+      const proj = projectCurrentYear(state.filt);
+      const lastIdx = NM_DATA.partialLastMonthIdx;
+      if (proj && state.activeYears.has(NM_DATA.partialYear)) {
+        const base = projDatasetBase();
+        base.data = proj;
+        base.pointRadius      = proj.map((v, i) => (i > lastIdx && v !== null) ? 4 : 0);
+        base.pointHoverRadius = proj.map((v, i) => (i > lastIdx && v !== null) ? 6 : 0);
+        monthlyDatasets.push(base);
+      }
+    }
     nmCharts.monthly = new Chart(document.getElementById('nmMonthlyChart'), {
       type: 'line',
       data: {
         labels: MO,
-        datasets: yrs.map(y => {
-          const md = gM(state.filt, y);
-          return {
-            label: String(y),
-            data: md.slice(),
-            borderColor: YC[y],
-            backgroundColor: YC[y] + '20',
-            pointBackgroundColor: YC[y],
-            borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
-            tension: 0.25,
-            borderDash: y === 2026 ? [6, 3] : [],
-            spanGaps: false,
-          };
-        }),
+        datasets: monthlyDatasets,
       },
       options: {
         responsive: true, maintainAspectRatio: false,
         interaction: sharedLineInteraction,
         plugins: {
-          legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+          legend: { position: 'bottom', reverse: true, labels: { boxWidth: 12, boxHeight: 12 } },
           tooltip: sharedLineTooltip('new members'),
         },
         scales: gridScales(false, true),
@@ -1199,32 +1407,60 @@ document.addEventListener('click', function(e){
     killChart('cum');
     const yrs = activeYrs();
     document.getElementById('nmCumTitle').textContent = 'Cumulative Registrations — ' + state.filt;
+    const cumDatasets = yrs.map(y => {
+      const md = gM(state.filt, y);
+      let r = 0;
+      const cum = md.map(v => { if (v === null) return null; r += v; return r; });
+      return {
+        label: String(y),
+        data: cum,
+        order: (YR.length - 1) - YR.indexOf(y),
+        borderColor: YC[y],
+        backgroundColor: YC[y] + '20',
+        pointBackgroundColor: YC[y],
+        borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+        tension: 0.2,
+        borderDash: y === 2026 ? [6, 3] : [],
+        spanGaps: false, fill: false,
+      };
+    });
+    {
+      const proj = projectCurrentYear(state.filt);
+      const curYr = NM_DATA.partialYear;
+      const lastIdx = NM_DATA.partialLastMonthIdx;
+      if (proj && state.activeYears.has(curYr)) {
+        // Cumulative projection: start from actual cumulative at lastIdx,
+        // then add each projected month.
+        const cur = gM(state.filt, curYr);
+        let cumAtLast = 0;
+        for (let i = 0; i <= lastIdx; i++) cumAtLast += (cur[i] || 0);
+        const cumProj = new Array(12).fill(null);
+        cumProj[lastIdx] = cumAtLast;
+        let running = cumAtLast;
+        for (let i = lastIdx + 1; i < 12; i++) {
+          if (proj[i] === null) continue;
+          running += proj[i];
+          cumProj[i] = running;
+        }
+        const base = projDatasetBase();
+        base.data = cumProj;
+        base.tension = 0.2;
+        base.pointRadius      = cumProj.map((v, i) => (i > lastIdx && v !== null) ? 4 : 0);
+        base.pointHoverRadius = cumProj.map((v, i) => (i > lastIdx && v !== null) ? 6 : 0);
+        cumDatasets.push(base);
+      }
+    }
     nmCharts.cum = new Chart(document.getElementById('nmCumChart'), {
       type: 'line',
       data: {
         labels: MO,
-        datasets: yrs.map(y => {
-          const md = gM(state.filt, y);
-          let r = 0;
-          const cum = md.map(v => { if (v === null) return null; r += v; return r; });
-          return {
-            label: String(y),
-            data: cum,
-            borderColor: YC[y],
-            backgroundColor: YC[y] + '20',
-            pointBackgroundColor: YC[y],
-            borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
-            tension: 0.2,
-            borderDash: y === 2026 ? [6, 3] : [],
-            spanGaps: false, fill: false,
-          };
-        }),
+        datasets: cumDatasets,
       },
       options: {
         responsive: true, maintainAspectRatio: false,
         interaction: sharedLineInteraction,
         plugins: {
-          legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+          legend: { position: 'bottom', reverse: true, labels: { boxWidth: 12, boxHeight: 12 } },
           tooltip: sharedLineTooltip('cumulative'),
         },
         scales: gridScales(false, true),
@@ -1341,6 +1577,8 @@ document.addEventListener('click', function(e){
       document.querySelectorAll('#topTabs .top-tab').forEach(x => x.classList.toggle('active', x === b));
       document.getElementById('pane-totals').style.display     = (tab === 'totals')     ? '' : 'none';
       document.getElementById('pane-newmembers').style.display = (tab === 'newmembers') ? '' : 'none';
+      var __dp = document.getElementById('pane-drops');
+      if (__dp) __dp.style.display = (tab === 'drops') ? '' : 'none';
       // Update header subtitle
       const sub = document.getElementById('hdrSubtitle') || document.getElementById('headerSubtitle');
       if (sub) {
@@ -1356,6 +1594,617 @@ document.addEventListener('click', function(e){
       // Re-render the now-visible tab so canvases get correct sizes
       if (tab === 'totals' && window.__totals_render) window.__totals_render();
       if (tab === 'newmembers') renderNewMembers();
+    });
+  });
+})();
+
+</script>
+<script>
+// ============================================================
+// DROPS DASHBOARD MODULE
+// Wraps the membership-drops analytics in the BSA red/navy theme.
+// Mirrors the New Members module structure but renders Drops; consumes drops_data.json.
+// ============================================================
+(function(){
+  const YR = [2023, 2024, 2025, 2026];
+  const FYR = [2023, 2024, 2025]; // full years (2026 partial)
+  const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // Same per-year palette as new-members so a given year has the same color
+  // across tabs (only 2023–2026 are used here).
+  const YC = {
+    2023: '#f1b434', // gold
+    2024: '#16a34a', // green
+    2025: '#c8102e', // accent red
+    2026: '#7c3aed', // purple
+  };
+  // Unit-type/filter palette
+  const FC = {
+    'All':                  '#1f3a5f',
+    'Traditional Scouting': '#c8102e',
+    'Pack (Trad)':          '#1f3a5f',
+    'Pack (SR)':            '#7c3aed',
+    'Troop':                '#0ea5b7',
+    'Crew':                 '#f1b434',
+    'Ship':                 '#16a34a',
+    'Post':                 '#94a3b8',
+  };
+  const FILT = ['All','Traditional Scouting','Pack (Trad)','Pack (SR)','Troop','Crew','Ship','Post'];
+
+
+  // Data injected by build_dashboard.py from aggregate_drops.py output.
+  const D_DATA = {"YEARS": [2023, 2024, 2025, 2026], "partialYear": 2026, "partialLastMonthIdx": 5, "M": {"All": [[207, 86, 33, 16, 4, 28, 2, 0, 0, 2, 6, 3], [233, 50, 0, 3, 3, 6, 33, 9, 4, 12, 0, 17], [19, 11, 17, 223, 9, 12, 9, 11, 4, 11, 13, 40], [8, 53, 166, 21, 11, 4, null, null, null, null, null, null]], "Traditional Scouting": [[188, 54, 33, 15, 4, 22, 2, 0, 0, 2, 0, 2], [222, 7, 0, 3, 1, 5, 26, 9, 2, 7, 0, 17], [16, 10, 10, 196, 6, 10, 7, 8, 2, 9, 11, 33], [7, 17, 123, 14, 9, 4, null, null, null, null, null, null]], "Pack (Trad)": [[72, 20, 5, 14, 4, 21, 2, 0, 0, 2, 0, 2], [78, 0, 0, 3, 0, 2, 0, 3, 0, 1, 0, 8], [12, 5, 2, 86, 4, 6, 2, 3, 0, 3, 8, 24], [5, 10, 32, 11, 3, 3, null, null, null, null, null, null]], "Pack (SR)": [[0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 13, 2, 0, 1, 1, 0, 0, 1, 5], [1, 10, 25, 4, 0, 0, null, null, null, null, null, null]], "Troop": [[99, 31, 24, 0, 0, 1, 0, 0, 0, 0, 0, 0], [105, 7, 0, 0, 1, 1, 22, 6, 1, 5, 0, 8], [4, 3, 8, 90, 1, 4, 5, 5, 2, 3, 3, 8], [1, 4, 81, 1, 4, 0, null, null, null, null, null, null]], "Crew": [[0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0], [18, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1], [0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1], [0, 2, 3, 0, 0, 1, null, null, null, null, null, null]], "Ship": [[17, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [21, 0, 0, 0, 0, 1, 3, 0, 1, 1, 0, 0], [0, 2, 0, 15, 1, 0, 0, 0, 0, 3, 0, 0], [1, 1, 7, 2, 2, 0, null, null, null, null, null, null]], "Post": [[19, 0, 0, 1, 0, 6, 0, 0, 0, 0, 6, 1], [11, 34, 0, 0, 2, 1, 7, 0, 2, 5, 0, 0], [3, 1, 7, 14, 1, 2, 1, 2, 2, 2, 1, 2], [0, 26, 18, 3, 2, 0, null, null, null, null, null, null]]}, "TU": {"All": [{"u": "Post 0279 EX", "d": [29, 49, 33, 42]}, {"u": "Troop 0120 BT", "d": [29, 20, 11, 13]}, {"u": "Troop 0134 FT", "d": [18, 16, 20, 11]}, {"u": "Pack 0007 FP", "d": [6, 8, 24, 13]}, {"u": "Troop 0065 BT", "d": [19, 11, 12, 6]}, {"u": "Pack 0075 FP", "d": [20, 6, 17, 4]}, {"u": "Pack 0088 FP", "d": [12, 10, 15, 8]}, {"u": "Pack 0078 FP", "d": [23, 12, 7, 2]}, {"u": "Pack 0371 FP", "d": [7, 12, 11, 8]}, {"u": "Pack 0134 FP", "d": [12, 9, 14, 2]}, {"u": "Ship 0550 NA", "d": [9, 10, 11, 7]}, {"u": "Pack 0205 BP", "d": [8, 9, 14, 5]}, {"u": "Troop 0212 BT", "d": [7, 10, 10, 6]}, {"u": "Post 2704 UNK", "d": [4, 13, 5, 7]}, {"u": "Pack 0021 FP", "d": [4, 1, 17, 6]}], "Traditional Scouting": [{"u": "Troop 0120 BT", "d": [29, 20, 11, 13]}, {"u": "Troop 0134 FT", "d": [18, 16, 20, 11]}, {"u": "Pack 0007 FP", "d": [6, 8, 24, 13]}, {"u": "Troop 0065 BT", "d": [19, 11, 12, 6]}, {"u": "Pack 0075 FP", "d": [20, 6, 17, 4]}, {"u": "Pack 0088 FP", "d": [12, 10, 15, 8]}, {"u": "Pack 0078 FP", "d": [23, 12, 7, 2]}, {"u": "Pack 0371 FP", "d": [7, 12, 11, 8]}, {"u": "Ship 0550 NA", "d": [9, 10, 11, 7]}, {"u": "Pack 0134 FP", "d": [12, 9, 14, 2]}, {"u": "Pack 0205 BP", "d": [8, 9, 14, 5]}, {"u": "Troop 0212 BT", "d": [7, 10, 10, 6]}, {"u": "Pack 0021 FP", "d": [4, 1, 17, 6]}, {"u": "Pack 0206 FP", "d": [2, 11, 8, 6]}, {"u": "Crew 0228 NA", "d": [4, 18, 3, 2]}], "Pack (Trad)": [{"u": "Pack 0007 FP", "d": [6, 8, 24, 13]}, {"u": "Pack 0075 FP", "d": [20, 6, 17, 4]}, {"u": "Pack 0088 FP", "d": [12, 10, 15, 8]}, {"u": "Pack 0078 FP", "d": [23, 12, 7, 2]}, {"u": "Pack 0371 FP", "d": [7, 12, 11, 8]}, {"u": "Pack 0134 FP", "d": [12, 9, 14, 2]}, {"u": "Pack 0205 BP", "d": [8, 9, 14, 5]}, {"u": "Pack 0021 FP", "d": [4, 1, 17, 6]}, {"u": "Pack 0032 FP", "d": [9, 4, 11, 3]}, {"u": "Pack 0206 FP", "d": [2, 11, 8, 6]}, {"u": "Pack 0222 FP", "d": [8, 6, 8, 1]}, {"u": "Pack 0208 FP", "d": [7, 2, 4, 4]}, {"u": "Pack 0014 FP", "d": [14, 0, 0, 0]}, {"u": "Pack 0062 FP", "d": [4, 4, 4, 0]}, {"u": "Pack 0117 BP", "d": [6, 0, 0, 0]}], "Pack (SR)": [{"u": "Pack 0714 FP", "d": [1, 4, 10, 8]}, {"u": "Pack 0730 FP", "d": [3, 2, 5, 11]}, {"u": "Pack 0734 FP", "d": [2, 3, 4, 8]}, {"u": "Pack 0736 FP", "d": [11, 0, 0, 0]}, {"u": "Pack 0703 FP", "d": [6, 0, 0, 0]}, {"u": "Pack 0710 FP", "d": [0, 0, 1, 4]}, {"u": "Pack 0751 FP", "d": [0, 0, 0, 4]}, {"u": "Pack 0750 FP", "d": [0, 0, 0, 4]}, {"u": "Pack 0702 FP", "d": [0, 0, 3, 0]}, {"u": "Pack 0713 FP", "d": [0, 0, 0, 1]}], "Troop": [{"u": "Troop 0120 BT", "d": [29, 20, 11, 13]}, {"u": "Troop 0134 FT", "d": [18, 16, 20, 11]}, {"u": "Troop 0065 BT", "d": [19, 11, 12, 6]}, {"u": "Troop 0212 BT", "d": [7, 10, 10, 6]}, {"u": "Troop 0074 BT", "d": [6, 9, 5, 6]}, {"u": "Troop 0222 BT", "d": [2, 5, 7, 11]}, {"u": "Troop 0371 BT", "d": [5, 6, 10, 4]}, {"u": "Troop 0067 BT", "d": [9, 6, 6, 3]}, {"u": "Troop 0075 BT", "d": [7, 8, 4, 3]}, {"u": "Troop 0105 BT", "d": [9, 8, 3, 1]}, {"u": "Troop 0413 GT", "d": [5, 8, 7, 0]}, {"u": "Troop 0014 BT", "d": [7, 8, 3, 2]}, {"u": "Troop 0247 BT", "d": [3, 8, 6, 2]}, {"u": "Troop 0224 BT", "d": [6, 5, 4, 2]}, {"u": "Troop 0134 GT", "d": [2, 9, 3, 1]}], "Crew": [{"u": "Crew 0228 NA", "d": [4, 18, 3, 2]}, {"u": "Crew 0134 UNK", "d": [0, 3, 3, 4]}], "Ship": [{"u": "Ship 0550 NA", "d": [9, 10, 11, 7]}, {"u": "Ship 0564 NA", "d": [8, 7, 2, 3]}, {"u": "Ship 0549 NA", "d": [3, 3, 8, 2]}, {"u": "Ship 0566 NA", "d": [1, 6, 0, 1]}, {"u": "Ship 0522 UNK", "d": [0, 1, 0, 0]}], "Post": [{"u": "Post 0279 EX", "d": [29, 49, 33, 42]}, {"u": "Post 2704 UNK", "d": [4, 13, 5, 7]}]}, "DIST": [{"name": "Iron Star", "v": [301, 272, 297, 161], "color": "#c8102e", "note": "Steady \u2248 290/yr"}, {"name": "New Frontier", "v": [23, 9, 23, 40], "color": "#1f3a5f", "note": "Steady \u2248 18/yr"}, {"name": "LFL", "v": [42, 62, 38, 49], "color": "#0ea5b7", "note": "Steady \u2248 47/yr"}, {"name": "Neptune", "v": [21, 27, 21, 13], "color": "#f1b434", "note": "Steady \u2248 23/yr"}], "UTD": {"Pack": [165, 104, 178, 104], "Troop": [155, 156, 136, 91], "Crew": [4, 21, 6, 6], "Ship": [21, 27, 21, 13], "Post": [33, 62, 38, 49]}, "yearStartTotals": {"All": {"2025": 1336, "2026": 1394}, "Traditional Scouting": {"2025": 1036, "2026": 962}, "Pack (Trad)": {"2025": 479, "2026": 439}, "Pack (SR)": {"2025": 183, "2026": 283}, "Troop": {"2025": 500, "2026": 481}, "Crew": {"2025": 17, "2026": 10}, "Ship": {"2025": 40, "2026": 32}, "Post": {"2025": 117, "2026": 149}}};
+  const M = D_DATA.M;
+  const TU = D_DATA.TU;
+  const DIST = D_DATA.DIST;
+  const UTD = D_DATA.UTD;
+
+
+  // ── STATE ──
+  const state = { activeYears: new Set(YR), sub: 'overview', filt: 'All' };
+  const dCharts = {};
+
+  function fmtInt(n){ return Number(n).toLocaleString(); }
+  function xi(y){ return YR.indexOf(y); }
+  function activeYrs(){ return YR.filter(y => state.activeYears.has(y)); }
+  function fullActiveYrs(){ return FYR.filter(y => state.activeYears.has(y)); }
+  function gM(f, y){ return (M[f] || M.All)[xi(y)]; }
+  function killChart(id){ if (dCharts[id]) { dCharts[id].destroy(); delete dCharts[id]; } }
+
+  // ── Aggregations ──
+  function annualData(){
+    return fullActiveYrs().map(y => {
+      const d = gM(state.filt, y);
+      return { year: y, count: d.reduce((s, v) => s + (v || 0), 0) };
+    });
+  }
+  function janMayData(){
+    return activeYrs().map(y => {
+      const d = gM(state.filt, y);
+      return { year: y, count: d.slice(0, 5).reduce((s, v) => s + (v || 0), 0) };
+    });
+  }
+  function kpiData(){
+    const an = annualData();
+    const total = an.reduce((s, r) => s + r.count, 0);
+    // For drops, the 'best' year is the one with the FEWEST drops -> min reducer.
+    const lowest = an.length ? an.reduce((b, r) => r.count < b.count ? r : b, an[0]) : {year:'-', count:0};
+    const avg = an.length ? Math.round(total / an.length) : 0;
+    const partialEnd = (D_DATA.partialLastMonthIdx != null && D_DATA.partialLastMonthIdx >= 0)
+      ? D_DATA.partialLastMonthIdx + 1 : 0;
+    const ytd = state.activeYears.has(D_DATA.partialYear)
+      ? gM(state.filt, D_DATA.partialYear).slice(0, partialEnd).reduce((s,v) => s+(v||0), 0)
+      : null;
+    return { total, lowestYr: lowest.year, lowestVal: lowest.count, avg, ytd };
+  }
+
+  // Retention helper: for a given year and the current filter, look up the
+  // membership at year start (from yearStartTotals embedded in drops_data.json)
+  // and compute (start - drops) / start. Returns null if no year-start data.
+  function retentionForYear(year){
+    if (!D_DATA.yearStartTotals) return null;
+    const byFilt = D_DATA.yearStartTotals[state.filt] || D_DATA.yearStartTotals['All'];
+    if (!byFilt) return null;
+    const yst = byFilt[String(year)];
+    if (yst == null || yst <= 0) return null;
+    const yi = YR.indexOf(year);
+    if (yi < 0) return null;
+    const md = (M[state.filt] || M.All)[yi];
+    const drops = md.reduce((s, v) => s + (v || 0), 0);
+    return { start: yst, drops: drops, rate: (yst - drops) / yst, partial: (year === D_DATA.partialYear) };
+  }
+  function topUnitsData(){
+    const raw = TU[state.filt] || [];
+    return raw.map(u => {
+      let s = 0;
+      activeYrs().forEach(y => { s += (u.d[xi(y)] || 0); });
+      return { unit: u.u, count: s };
+    }).filter(r => r.count > 0).sort((a, b) => b.count - a.count).slice(0, 10);
+  }
+
+
+  // ── Current-year projection ──
+  // Uses a pace-based method: project the partial year's remaining months by
+  // averaging the same months from each ACTIVE prior year, scaled by the
+  // YTD pace factor (currentYTD / avg(priorYTD over same Jan..lastIdx)).
+  // Returns a 12-element array: null before lastIdx, the actual value at
+  // lastIdx (so the projection line visually joins the actuals), and
+  // projected ints from lastIdx+1 onward. Returns null if not enough data.
+  function projectCurrentYear(filt){
+    const lastIdx = D_DATA.partialLastMonthIdx;
+    const curYr = D_DATA.partialYear;
+    if (lastIdx < 0 || lastIdx >= 11) return null;
+    const cur = gM(filt, curYr);
+    if (!cur) return null;
+    let ytdCur = 0;
+    for (let i = 0; i <= lastIdx; i++) ytdCur += (cur[i] || 0);
+    const priors = activeYrs().filter(function(y){ return y < curYr; });
+    if (priors.length === 0) return null;
+    let ytdPriorSum = 0, ytdPriorCount = 0;
+    const future = new Array(12).fill(0);
+    const futureCount = new Array(12).fill(0);
+    priors.forEach(function(y){
+      const pd = gM(filt, y);
+      if (!pd) return;
+      let ytdY = 0;
+      for (let i = 0; i <= lastIdx; i++) ytdY += (pd[i] || 0);
+      ytdPriorSum += ytdY;
+      ytdPriorCount += 1;
+      for (let i = lastIdx + 1; i < 12; i++) {
+        const v = pd[i];
+        if (v !== null && v !== undefined) { future[i] += v; futureCount[i] += 1; }
+      }
+    });
+    if (ytdPriorCount === 0) return null;
+    const avgYtdPrior = ytdPriorSum / ytdPriorCount;
+    const pace = avgYtdPrior > 0 ? (ytdCur / avgYtdPrior) : 1;
+    const projection = new Array(12).fill(null);
+    projection[lastIdx] = cur[lastIdx]; // join point
+    let hasFuture = false;
+    for (let i = lastIdx + 1; i < 12; i++) {
+      if (futureCount[i] === 0) continue;
+      const avg = future[i] / futureCount[i];
+      projection[i] = Math.max(0, Math.round(avg * pace));
+      hasFuture = true;
+    }
+    return hasFuture ? projection : null;
+  }
+  function projDatasetBase(){
+    const curYr = D_DATA.partialYear;
+    return {
+      label: curYr + ' (projected)',
+      // Lowest `order` -> drawn last by Chart.js v4 -> sits on top of every year line
+      order: -1,
+      borderColor: YC[curYr] + 'CC',          // ~80% opacity
+      backgroundColor: 'transparent',
+      pointBackgroundColor: '#ffffff',         // hollow fill
+      pointBorderColor: YC[curYr] + 'CC',
+      pointBorderWidth: 2,
+      borderWidth: 2,
+      borderDash: [2, 4],                      // dotted
+      pointStyle: 'circle',
+      tension: 0.25,
+      spanGaps: false,
+      fill: false,
+    };
+  }
+
+  // ── Chart helpers ──
+  function gridScales(showXGrid, showYGrid){
+    return {
+      x: { grid: { display: showXGrid, color: '#f1f5f9' }, ticks: { padding: 4 } },
+      y: { grid: { display: showYGrid, color: '#f1f5f9' }, beginAtZero: true, ticks: { padding: 4 } },
+    };
+  }
+  const sharedLineInteraction = { mode: 'index', intersect: false };
+  function sharedLineTooltip(unitWord){
+    unitWord = unitWord || 'members';
+    return {
+      mode: 'index', intersect: false,
+      filter: function(item){ return item.parsed.y !== null; },
+      itemSort: function(a, b){ return (b.parsed.y||0) - (a.parsed.y||0); },
+      callbacks: {
+        label: function(c){ return ' ' + c.dataset.label + ': ' + fmtInt(c.parsed.y) + ' ' + unitWord; },
+        footer: function(items){
+          const total = items.reduce((s, it) => s + (it.parsed.y || 0), 0);
+          return 'Total: ' + fmtInt(total);
+        },
+      },
+    };
+  }
+
+  // ── Render: UI controls ──
+  function renderYearBar(){
+    const el = document.getElementById('dYearBar');
+    el.innerHTML = '';
+    YR.forEach(y => {
+      const on = state.activeYears.has(y);
+      const b = document.createElement('button');
+      b.className = 'pill-btn' + (on ? ' active' : '');
+      b.textContent = y + (y === 2026 ? ' *' : '');
+      if (on) { b.style.background = YC[y]; b.style.color = '#fff'; }
+      b.onclick = function(){
+        if (state.activeYears.has(y)) { if (state.activeYears.size > 1) state.activeYears.delete(y); }
+        else state.activeYears.add(y);
+        renderDrops();
+      };
+      el.appendChild(b);
+    });
+  }
+  function renderFilterBar(){
+    const show = ['overview', 'monthly', 'units'].includes(state.sub);
+    document.getElementById('dFilterBar').style.display = show ? '' : 'none';
+    if (!show) return;
+    const el = document.getElementById('dFiltBar');
+    el.innerHTML = '';
+    FILT.forEach(f => {
+      const on = state.filt === f;
+      const b = document.createElement('button');
+      b.className = 'pill-btn' + (on ? ' active' : '');
+      let lbl = f;
+      if (f === 'Traditional Scouting') lbl = 'Traditional Scouting';
+      b.textContent = lbl;
+      if (on) { b.style.background = FC[f] || '#1f3a5f'; b.style.color = '#fff'; }
+      b.onclick = function(){ state.filt = f; renderDrops(); };
+      el.appendChild(b);
+    });
+  }
+  function renderSubtabs(){
+    document.querySelectorAll('#dSubtabs .pill-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.sub === state.sub);
+    });
+    ['overview','monthly','districts','units'].forEach(s => {
+      const el = document.getElementById('d-' + s);
+      if (el) el.style.display = (s === state.sub) ? '' : 'none';
+    });
+  }
+
+  // ── Render: KPIs ──
+  function renderKPIs(){
+    const k = kpiData();
+    const fc = FC[state.filt] || '#c8102e';
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const partialThru = (D_DATA.partialLastMonthIdx >= 0 && D_DATA.partialLastMonthIdx < 12)
+      ? ('Jan – ' + months[D_DATA.partialLastMonthIdx])
+      : 'YTD';
+    const items = [
+      { label: 'Total Dropped', value: fmtInt(k.total), desc: 'Full years selected' },
+      { label: 'Lowest Year',   value: fmtInt(k.lowestVal), desc: 'Fewest drops · ' + String(k.lowestYr) },
+      { label: 'Average',       value: fmtInt(k.avg), desc: 'Per full year' },
+    ];
+    if (k.ytd !== null) items.push({ label: D_DATA.partialYear + ' YTD', value: fmtInt(k.ytd), desc: partialThru });
+
+    // Per-year retention cards — only for years that have yearStartTotals
+    activeYrs().forEach(function(y){
+      const r = retentionForYear(y);
+      if (!r) return;
+      const pct = (r.rate * 100).toFixed(1) + '%';
+      const desc = r.partial
+        ? ('Through ' + months[D_DATA.partialLastMonthIdx] + ' · ' + fmtInt(r.drops) + ' of ' + fmtInt(r.start))
+        : (fmtInt(r.drops) + ' of ' + fmtInt(r.start) + ' dropped');
+      const color = YC[y] || fc;
+      items.push({ label: 'Retention ' + y, value: pct, desc: desc, color: color });
+    });
+
+    document.getElementById('dKpis').innerHTML = items.map(function(it){
+      return '<div class="kpi"><div class="accent-bar" style="background:' + (it.color || fc) + '"></div>'
+        + '<div class="label">' + it.label + '</div>'
+        + '<div class="value">' + it.value + '</div>'
+        + '<div class="delta">' + it.desc + '</div></div>';
+    }).join('');
+  }
+
+  // ── Render: Charts (Overview) ──
+  function renderAnnualChart(){
+    killChart('annual');
+    const d = annualData();
+    dCharts.annual = new Chart(document.getElementById('dAnnualChart'), {
+      type: 'bar',
+      data: {
+        labels: d.map(r => r.year),
+        datasets: [{
+          data: d.map(r => r.count),
+          backgroundColor: d.map(r => YC[r.year]),
+          borderRadius: 4, maxBarThickness: 48,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmtInt(c.parsed.y) + ' drops' } } },
+        scales: gridScales(false, true),
+      },
+    });
+  }
+  function renderJanMayChart(){
+    killChart('janmay');
+    const d = janMayData();
+    dCharts.janmay = new Chart(document.getElementById('dJanMayChart'), {
+      type: 'bar',
+      data: {
+        labels: d.map(r => r.year),
+        datasets: [{
+          data: d.map(r => r.count),
+          backgroundColor: d.map(r => YC[r.year]),
+          borderRadius: 4, maxBarThickness: 42,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmtInt(c.parsed.y) + ' drops (Jan – May)' } } },
+        scales: gridScales(false, true),
+      },
+    });
+  }
+  function renderUTChart(){
+    const card = document.getElementById('dUTCard');
+    const show = state.filt === 'All' || state.filt === 'Traditional Scouting';
+    card.style.display = show ? '' : 'none';
+    if (!show) return;
+    killChart('ut');
+    document.getElementById('dUTTitle').textContent = state.filt === 'All' ? 'Unit Type by Year' : 'Traditional Scouting Types by Year';
+    const types = state.filt === 'All' ? ['Pack','Troop','Post','Ship','Crew'] : ['Pack','Troop','Ship','Crew'];
+    const yrs = activeYrs();
+    const TYPE_COLORS = { Pack: '#c8102e', Troop: '#1f3a5f', Crew: '#f1b434', Ship: '#0ea5b7', Post: '#7c3aed' };
+    dCharts.ut = new Chart(document.getElementById('dUTChart'), {
+      type: 'bar',
+      data: {
+        labels: yrs,
+        datasets: types.map(t => ({
+          label: t,
+          data: yrs.map(y => UTD[t][xi(y)]),
+          backgroundColor: TYPE_COLORS[t] || '#1f3a5f',
+          borderWidth: 0,
+        })),
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+          tooltip: {
+            itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
+            callbacks: {
+              label: c => ' ' + c.dataset.label + ': ' + fmtInt(c.parsed.y),
+              footer: items => 'Total: ' + fmtInt(items.reduce((s, it) => s + (it.parsed.y || 0), 0)),
+            },
+          },
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false } },
+          y: { stacked: true, grid: { color: '#f1f5f9' }, beginAtZero: true },
+        },
+      },
+    });
+  }
+
+  // ── Render: Charts (Monthly Trends) ──
+  function renderMonthlyChart(){
+    killChart('monthly');
+    const yrs = activeYrs();
+    document.getElementById('dMonthlyTitle').textContent = 'Monthly Drops — ' + state.filt;
+    const monthlyDatasets = yrs.map(y => {
+      const md = gM(state.filt, y);
+      // Chart.js v4 draws sorted metasets in reverse iteration, so a LOWER
+      // `order` value renders on TOP. Use (YR.length-1) - index so 2026 has
+      // the lowest order among years and ends up in front. Projection is
+      // assigned order=-1 below, so it sits on top of everything.
+      return {
+        label: String(y),
+        data: md.slice(),
+        order: (YR.length - 1) - YR.indexOf(y),
+        borderColor: YC[y],
+        backgroundColor: YC[y] + '20',
+        pointBackgroundColor: YC[y],
+        borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+        tension: 0.25,
+        borderDash: y === 2026 ? [6, 3] : [],
+        spanGaps: false,
+      };
+    });
+    {
+      const proj = projectCurrentYear(state.filt);
+      const lastIdx = D_DATA.partialLastMonthIdx;
+      if (proj && state.activeYears.has(D_DATA.partialYear)) {
+        const base = projDatasetBase();
+        base.data = proj;
+        base.pointRadius      = proj.map((v, i) => (i > lastIdx && v !== null) ? 4 : 0);
+        base.pointHoverRadius = proj.map((v, i) => (i > lastIdx && v !== null) ? 6 : 0);
+        monthlyDatasets.push(base);
+      }
+    }
+    dCharts.monthly = new Chart(document.getElementById('dMonthlyChart'), {
+      type: 'line',
+      data: {
+        labels: MO,
+        datasets: monthlyDatasets,
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: sharedLineInteraction,
+        plugins: {
+          legend: { position: 'bottom', reverse: true, labels: { boxWidth: 12, boxHeight: 12 } },
+          tooltip: sharedLineTooltip('drops'),
+        },
+        scales: gridScales(false, true),
+      },
+    });
+  }
+  function renderCumChart(){
+    killChart('cum');
+    const yrs = activeYrs();
+    document.getElementById('dCumTitle').textContent = 'Cumulative Drops — ' + state.filt;
+    const cumDatasets = yrs.map(y => {
+      const md = gM(state.filt, y);
+      let r = 0;
+      const cum = md.map(v => { if (v === null) return null; r += v; return r; });
+      return {
+        label: String(y),
+        data: cum,
+        order: (YR.length - 1) - YR.indexOf(y),
+        borderColor: YC[y],
+        backgroundColor: YC[y] + '20',
+        pointBackgroundColor: YC[y],
+        borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+        tension: 0.2,
+        borderDash: y === 2026 ? [6, 3] : [],
+        spanGaps: false, fill: false,
+      };
+    });
+    {
+      const proj = projectCurrentYear(state.filt);
+      const curYr = D_DATA.partialYear;
+      const lastIdx = D_DATA.partialLastMonthIdx;
+      if (proj && state.activeYears.has(curYr)) {
+        // Cumulative projection: start from actual cumulative at lastIdx,
+        // then add each projected month.
+        const cur = gM(state.filt, curYr);
+        let cumAtLast = 0;
+        for (let i = 0; i <= lastIdx; i++) cumAtLast += (cur[i] || 0);
+        const cumProj = new Array(12).fill(null);
+        cumProj[lastIdx] = cumAtLast;
+        let running = cumAtLast;
+        for (let i = lastIdx + 1; i < 12; i++) {
+          if (proj[i] === null) continue;
+          running += proj[i];
+          cumProj[i] = running;
+        }
+        const base = projDatasetBase();
+        base.data = cumProj;
+        base.tension = 0.2;
+        base.pointRadius      = cumProj.map((v, i) => (i > lastIdx && v !== null) ? 4 : 0);
+        base.pointHoverRadius = cumProj.map((v, i) => (i > lastIdx && v !== null) ? 6 : 0);
+        cumDatasets.push(base);
+      }
+    }
+    dCharts.cum = new Chart(document.getElementById('dCumChart'), {
+      type: 'line',
+      data: {
+        labels: MO,
+        datasets: cumDatasets,
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: sharedLineInteraction,
+        plugins: {
+          legend: { position: 'bottom', reverse: true, labels: { boxWidth: 12, boxHeight: 12 } },
+          tooltip: sharedLineTooltip('cumulative'),
+        },
+        scales: gridScales(false, true),
+      },
+    });
+  }
+
+  // ── Render: Charts (Districts) ──
+  function renderDistChart(){
+    killChart('dist');
+    const yrs = activeYrs();
+    dCharts.dist = new Chart(document.getElementById('dDistChart'), {
+      type: 'bar',
+      data: {
+        labels: DIST.map(d => d.name),
+        datasets: yrs.map(y => ({
+          label: String(y),
+          data: DIST.map(d => d.v[xi(y)]),
+          backgroundColor: YC[y],
+          borderRadius: 4, maxBarThickness: 24,
+        })),
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+          tooltip: {
+            callbacks: {
+              label: c => ' ' + c.dataset.label + ': ' + fmtInt(c.parsed.y) + ' drops',
+            },
+          },
+        },
+        scales: gridScales(false, true),
+      },
+    });
+  }
+  function renderDistCards(){
+    const el = document.getElementById('dDistCards');
+    el.innerHTML = '';
+    DIST.forEach(dd => {
+      const total = activeYrs().reduce((s, y) => s + dd.v[xi(y)], 0);
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div style="font-size:12px; font-weight:700; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.5px;">' + dd.name + '</div>'
+        + '<div style="font-size:28px; font-weight:700; margin-top:6px; color:' + dd.color + '">' + fmtInt(total) + '</div>'
+        + '<div style="font-size:11px; color:var(--ink-mute); margin-top:6px;">' + dd.note + '</div>';
+      el.appendChild(card);
+    });
+  }
+
+  // ── Render: Charts (Unit Analysis) ──
+  function renderTopUnitsChart(){
+    killChart('topunits');
+    const d = topUnitsData();
+    const fc = FC[state.filt] || '#c8102e';
+    document.getElementById('dTopUnitsTitle').textContent = 'Top Units — ' + state.filt + ' (' + activeYrs().join(', ') + ')';
+    const wrap = document.getElementById('dTopUnitsWrap');
+    const empty = document.getElementById('dTopUnitsEmpty');
+    if (!d.length) {
+      wrap.style.display = 'none';
+      empty.style.display = '';
+      return;
+    }
+    wrap.style.display = '';
+    empty.style.display = 'none';
+    wrap.style.height = Math.max(220, d.length * 36 + 60) + 'px';
+    dCharts.topunits = new Chart(document.getElementById('dTopUnitsChart'), {
+      type: 'bar',
+      data: {
+        labels: d.map(r => r.unit),
+        datasets: [{
+          data: d.map(r => r.count),
+          backgroundColor: d.map((_, i) => i === 0 ? fc : '#1f3a5f'),
+          borderRadius: 4, maxBarThickness: 22,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + fmtInt(c.parsed.x) + ' drops' } } },
+        scales: {
+          x: { grid: { display: true, color: '#f1f5f9' }, beginAtZero: true },
+          y: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        },
+      },
+    });
+  }
+
+  // ── Master render ──
+  function renderDrops(){
+    renderYearBar();
+    renderSubtabs();
+    renderFilterBar();
+    if (state.sub === 'overview')  { renderKPIs(); renderAnnualChart(); renderJanMayChart(); renderUTChart(); }
+    if (state.sub === 'monthly')   { renderMonthlyChart(); renderCumChart(); }
+    if (state.sub === 'districts') { renderDistChart(); renderDistCards(); }
+    if (state.sub === 'units')     { renderTopUnitsChart(); }
+  }
+  // expose for the top-tab handler
+  window.__d_render = renderDrops;
+
+  // Wire up subtab buttons
+  document.querySelectorAll('#dSubtabs .pill-btn').forEach(b => {
+    b.addEventListener('click', function(){
+      state.sub = b.dataset.sub;
+      renderDrops();
+    });
+  });
+
+
+  // Expose lightweight metadata for the outer top-tab handler
+  window.__d_data_meta = {
+    firstYear: YR[0],
+    partialYear: D_DATA.partialYear,
+    partialLastMonthIdx: D_DATA.partialLastMonthIdx,
+  };
+})();
+// ── Drops top-tab integration (outside the IIFE so it can see D_DATA via window scope) ──
+(function(){
+  function getDropsPane(){ return document.getElementById('pane-drops'); }
+  document.querySelectorAll('#topTabs .top-tab').forEach(function(b){
+    b.addEventListener('click', function(){
+      var tab = b.dataset.tab;
+      var pane = getDropsPane();
+      if (pane) pane.style.display = (tab === 'drops') ? '' : 'none';
+      if (tab === 'drops') {
+        // Update header subtitle to drops-specific text
+        var sub = document.getElementById('hdrSubtitle') || document.getElementById('headerSubtitle');
+        if (sub && window.__d_data_meta) {
+          var meta = window.__d_data_meta;
+          var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          var upTo = (meta.partialLastMonthIdx >= 0 && meta.partialLastMonthIdx < 12)
+            ? (' (through ' + months[meta.partialLastMonthIdx] + ' ' + meta.partialYear + ')')
+            : '';
+          sub.textContent = 'Membership drops · ' + meta.firstYear + ' – ' + meta.partialYear + upTo;
+        }
+        if (window.__d_render) window.__d_render();
+      }
     });
   });
 })();
