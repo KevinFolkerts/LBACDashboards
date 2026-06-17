@@ -125,6 +125,15 @@ body { padding-bottom: 76px; }
 /* Goal selector pill highlight */
 #goalSelector .pill-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+
+/* Goals tab: 5-card hero strip — allow auto-fit so 5 cards lay out cleanly */
+#pane-goals .kpis {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+@media (max-width: 1100px) {
+  #pane-goals .kpis { grid-template-columns: repeat(2, 1fr); }
+}
+
 </style>
 </head>
 <body>
@@ -564,8 +573,19 @@ body { padding-bottom: 76px; }
 
     <!-- Scenario comparison strip (compact) -->
     <div class="card" id="scenarioCompareCard" style="margin-top:14px; padding:14px 18px;">
-      <div style="font-size:11px; letter-spacing:.8px; text-transform:uppercase; color:var(--ink-mute); font-weight:600; margin-bottom:8px;">
-        Projected End of Year across all scenarios
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:8px;">
+        <div style="font-size:11px; letter-spacing:.8px; text-transform:uppercase; color:var(--ink-mute); font-weight:600;">
+          Projected End of Year across all scenarios
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+          <span style="font-size:11px; color:var(--ink-mute);">Custom retention:</span>
+          <input id="customRetInput" type="number" min="0" max="100" step="1"
+                 placeholder="0–100"
+                 style="width:78px; padding:4px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+          <span style="font-size:13px; color:var(--ink-mute);">%</span>
+          <button id="customRetApply" class="pill-btn" style="padding:4px 10px;">Add to chart</button>
+          <button id="customRetClear" class="pill-btn" style="padding:4px 10px;">Clear</button>
+        </div>
       </div>
       <div id="scenarioCompare" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;"></div>
     </div>
@@ -1931,23 +1951,76 @@ document.addEventListener('click', function(e){
     const partialThru = (D_DATA.partialLastMonthIdx >= 0 && D_DATA.partialLastMonthIdx < 12)
       ? ('Jan – ' + months[D_DATA.partialLastMonthIdx])
       : 'YTD';
-    const items = [
-      { label: 'Total Dropped', value: fmtInt(k.total), desc: 'Full years selected' },
-      { label: 'Lowest Year',   value: fmtInt(k.lowestVal), desc: 'Fewest drops · ' + String(k.lowestYr) },
-      { label: 'Average',       value: fmtInt(k.avg), desc: 'Per full year' },
-    ];
-    if (k.ytd !== null) items.push({ label: D_DATA.partialYear + ' YTD', value: fmtInt(k.ytd), desc: partialThru });
 
-    // Per-year retention cards — only for years that have yearStartTotals
+    // Helpers for YoY math.
+    // For drops, POSITIVE %% = drops rose YoY (bad). Render in red.
+    // NEGATIVE %% = drops fell YoY (good). Render in green.
+    function yoyTag(currentVal, priorVal){
+      if (priorVal == null || priorVal === 0 || currentVal == null) return '';
+      const pct = (currentVal - priorVal) / priorVal * 100;
+      const sign = pct >= 0 ? '+' : '';
+      const color = pct <= 0 ? '#15803d' : '#c8102e';
+      return ' &nbsp;<span style="color:' + color + '; font-weight:600;">'
+        + sign + pct.toFixed(1) + '% YoY</span>';
+    }
+
+    // Latest full year for the Total Dropped / Average context
+    const fullYrs = fullActiveYrs();
+    const latestFull = fullYrs.length ? fullYrs[fullYrs.length - 1] : null;
+    const priorFull  = fullYrs.length > 1 ? fullYrs[fullYrs.length - 2] : null;
+    const totalThisYr = latestFull ? gM(state.filt, latestFull).reduce((s,v)=>s+(v||0),0) : null;
+    const totalPriorYr = priorFull ? gM(state.filt, priorFull).reduce((s,v)=>s+(v||0),0) : null;
+
+    const items = [];
+    items.push({
+      label: 'Total Dropped',
+      value: fmtInt(k.total),
+      desc: 'Full years selected' + (latestFull && priorFull ? (' · ' + latestFull + ' vs ' + priorFull + ':' + yoyTag(totalThisYr, totalPriorYr)) : ''),
+    });
+    items.push({
+      label: 'Lowest Year',
+      value: fmtInt(k.lowestVal),
+      desc: 'Fewest drops · ' + String(k.lowestYr) + (k.avg ? (' · ' + ((k.lowestVal - k.avg)/k.avg*100).toFixed(1) + '% vs avg') : ''),
+    });
+    items.push({ label: 'Average', value: fmtInt(k.avg), desc: 'Per full year' });
+
+    // YTD partial-year card: compare to same months last year
+    if (k.ytd !== null) {
+      const curYr = D_DATA.partialYear;
+      const priorYrYTD = (curYr - 1);
+      const lastIdx = D_DATA.partialLastMonthIdx;
+      let priorYTD = null;
+      if (YR.includes(priorYrYTD)) {
+        const pa = gM(state.filt, priorYrYTD);
+        priorYTD = pa.slice(0, lastIdx + 1).reduce((s,v)=>s+(v||0),0);
+      }
+      items.push({
+        label: curYr + ' YTD',
+        value: fmtInt(k.ytd),
+        desc: partialThru + (priorYTD != null ? (' · vs ' + priorYrYTD + ':' + yoyTag(k.ytd, priorYTD)) : ''),
+      });
+    }
+
+    // Per-year retention cards — append YoY pt-change against prior year retention
     activeYrs().forEach(function(y){
       const r = retentionForYear(y);
       if (!r) return;
+      const prior = retentionForYear(y - 1);
       const pct = (r.rate * 100).toFixed(1) + '%';
-      const desc = r.partial
+      let descBase = r.partial
         ? ('Through ' + months[D_DATA.partialLastMonthIdx] + ' · ' + fmtInt(r.drops) + ' of ' + fmtInt(r.start))
         : (fmtInt(r.drops) + ' of ' + fmtInt(r.start) + ' dropped');
+      let yoyTag2 = '';
+      if (prior) {
+        const ptDelta = (r.rate - prior.rate) * 100;       // percentage-point delta
+        const sign = ptDelta >= 0 ? '+' : '';
+        // Higher retention = better. Positive pts = green.
+        const color = ptDelta >= 0 ? '#15803d' : '#c8102e';
+        yoyTag2 = ' &nbsp;<span style="color:' + color + '; font-weight:600;">'
+          + sign + ptDelta.toFixed(1) + ' pts vs ' + (y - 1) + '</span>';
+      }
       const color = YC[y] || fc;
-      items.push({ label: 'Retention ' + y, value: pct, desc: desc, color: color });
+      items.push({ label: 'Retention ' + y, value: pct, desc: descBase + yoyTag2, color: color });
     });
 
     document.getElementById('dKpis').innerHTML = items.map(function(it){
@@ -2303,7 +2376,7 @@ document.addEventListener('click', function(e){
 // + seasonal new-member forecast.
 // ============================================================
 (function(){
-  const G_DATA = {"currentYear": 2026, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "monthNames": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "paceThresholds": {"yellow": 0.9, "green": 1.0, "pulse": 1.1}, "scenarioOrder": ["bull", "median", "historic", "bear"], "scenarioLabels": {"bull": "Bull (best case)", "median": "Median", "historic": "Historic (2025)", "bear": "Bear (worst case)"}, "defaultScenario": "historic", "goals": [{"key": "overall", "label": "Overall Youth Growth", "type": "growthPct", "baseline": 1394, "current": 1320, "target": 1414.9, "growthPct": 1.5, "minTotal": null, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [1403, 1374, 1228, 1225, 1255, 1320, null, null, null, null, null, null], "priorYearLine": [1362, 1364, 1377, 1155, 1158, 1166, 1163, 1173, 1227, 1311, 1343, 1394], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1531.8, "gapToTarget": -116.9, "newMembersNeeded": 132.4, "pacePct": 1.0826, "anticipatedDropsRemaining": 37.5, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.6, 1343.0, 1391.6, 1445.2, 1479.0, 1531.9], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.72, -2.35, -0.72, -2.35, -8.87, -22.44], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.58, 13.35, 48.58, 53.65, 33.830000000000005, 52.86]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1519.4, "gapToTarget": -104.5, "newMembersNeeded": 144.8, "pacePct": 1.0739, "anticipatedDropsRemaining": 49.9, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.3, 1341.9, 1390.2, 1443.1, 1474.0, 1519.4], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.96, -3.13, -0.96, -3.13, -11.81, -29.88], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.34, 12.57, 48.339999999999996, 52.87, 30.89, 45.42]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1507.0, "gapToTarget": -92.1, "newMembersNeeded": 157.2, "pacePct": 1.0651, "anticipatedDropsRemaining": 62.3, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.1, 1340.9, 1389.0, 1441.1, 1469.0, 1507.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.2, -3.91, -1.2, -3.91, -14.75, -37.32], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.100000000000001, 11.79, 48.099999999999994, 52.09, 27.950000000000003, 37.98]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1501.0, "gapToTarget": -86.1, "newMembersNeeded": 163.2, "pacePct": 1.0609, "anticipatedDropsRemaining": 68.3, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.0, 1340.4, 1388.4, 1440.1, 1466.6, 1501.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.32, -4.29, -1.32, -4.29, -16.17, -40.92], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 8.98, 11.41, 47.98, 51.71, 26.53, 34.379999999999995]}}}, "rawAnticipatedRestOfYear": 207, "rawAnticipatedCarryToNextJan": 818}, {"key": "traditional", "label": "Traditional Scouting Growth", "type": "growthPct", "baseline": 962, "current": 896, "target": 1010.1, "growthPct": 5.0, "minTotal": null, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [970, 972, 863, 865, 893, 896, null, null, null, null, null, null], "priorYearLine": [1058, 1061, 1076, 882, 886, 890, 888, 898, 928, 961, 969, 962], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 1001.1, "gapToTarget": 9.0, "newMembersNeeded": 140.7, "pacePct": 0.9911, "anticipatedDropsRemaining": 26.6, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.6, 918.2, 945.5, 976.9, 993.9, 1001.1], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.72, -2.35, -0.72, -2.35, -7.96, -12.49], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.58, 12.65, 27.28, 31.35, 17.04, 7.209999999999999]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 992.3, "gapToTarget": 17.8, "newMembersNeeded": 149.5, "pacePct": 0.9824, "anticipatedDropsRemaining": 35.4, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.3, 917.2, 944.2, 974.8, 989.2, 992.3], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.96, -3.13, -0.96, -3.13, -10.6, -16.63], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.34, 11.870000000000001, 27.04, 30.570000000000004, 14.4, 3.0700000000000003]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 983.5, "gapToTarget": 26.6, "newMembersNeeded": 158.3, "pacePct": 0.9737, "anticipatedDropsRemaining": 44.2, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.1, 916.2, 943.0, 972.8, 984.6, 983.5], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.2, -3.91, -1.2, -3.91, -13.24, -20.77], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.100000000000001, 11.09, 26.8, 29.790000000000003, 11.76, -1.0700000000000003]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 979.2, "gapToTarget": 30.9, "newMembersNeeded": 162.6, "pacePct": 0.9694, "anticipatedDropsRemaining": 48.5, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.0, 915.7, 942.4, 971.8, 982.3, 979.2], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.32, -4.29, -1.32, -4.29, -14.52, -22.77], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 8.98, 10.71, 26.68, 29.410000000000004, 10.48, -3.0700000000000003]}}}, "rawAnticipatedRestOfYear": 147, "rawAnticipatedCarryToNextJan": 551}, {"key": "newFrontier", "label": "New Frontier Grant Floor", "type": "minimum", "baseline": 283, "current": 306, "target": 300, "growthPct": null, "minTotal": 300, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [282, 272, 247, 243, 244, 306, null, null, null, null, null, null], "priorYearLine": [185, 185, 184, 167, 165, 169, 168, 167, 189, 241, 266, 283], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 374.4, "gapToTarget": -74.4, "newMembersNeeded": 4.3, "pacePct": 1.248, "anticipatedDropsRemaining": 10.3, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 357.3, 374.4], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -0.72, -9.59], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 8.28, 17.11]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 371.0, "gapToTarget": -71.0, "newMembersNeeded": 7.7, "pacePct": 1.2367, "anticipatedDropsRemaining": 13.7, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 357.0, 370.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -0.96, -12.77], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 8.04, 13.93]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 367.6, "gapToTarget": -67.6, "newMembersNeeded": 11.1, "pacePct": 1.2253, "anticipatedDropsRemaining": 17.1, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 356.8, 367.6], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -1.2, -15.95], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 7.8, 10.75]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 365.9, "gapToTarget": -65.9, "newMembersNeeded": 12.8, "pacePct": 1.2197, "anticipatedDropsRemaining": 18.8, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 356.7, 365.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -1.32, -17.49], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 7.68, 9.21]}}}, "rawAnticipatedRestOfYear": 57, "rawAnticipatedCarryToNextJan": 168}]};
+  const G_DATA = {"currentYear": 2026, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "monthNames": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "paceThresholds": {"yellow": 0.9, "green": 1.0, "pulse": 1.1}, "scenarioOrder": ["bull", "median", "historic", "bear"], "scenarioLabels": {"bull": "Bull (best case)", "median": "Median", "historic": "Historic (2025)", "bear": "Bear (worst case)"}, "defaultScenario": "historic", "minRetentionThresholds": {"overallBreakeven": 0.1531, "overallGrowthTarget": 0.2541, "overallGrowthLabel": "+1.5% Overall", "overallBaseline": 1394, "overallTarget": 1414.9, "traditionalBreakeven": 0.5531, "traditionalGrowthTarget": 0.8803, "traditionalGrowthLabel": "+5.0% Traditional", "traditionalBaseline": 962, "traditionalTarget": 1010.1}, "goals": [{"key": "overall", "label": "Overall Youth Growth", "type": "growthPct", "baseline": 1394, "current": 1320, "target": 1414.9, "growthPct": 1.5, "minTotal": null, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [1403, 1374, 1228, 1225, 1255, 1320, null, null, null, null, null, null], "priorYearLine": [1362, 1364, 1377, 1155, 1158, 1166, 1163, 1173, 1227, 1311, 1343, 1394], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1531.8, "gapToTarget": -116.9, "newMembersNeeded": 132.4, "pacePct": 1.0826, "anticipatedDropsRemaining": 37.5, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.6, 1343.0, 1391.6, 1445.2, 1479.0, 1531.9], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.72, -2.35, -0.72, -2.35, -8.87, -22.44], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.58, 13.35, 48.58, 53.65, 33.830000000000005, 52.86]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1519.4, "gapToTarget": -104.5, "newMembersNeeded": 144.8, "pacePct": 1.0739, "anticipatedDropsRemaining": 49.9, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.3, 1341.9, 1390.2, 1443.1, 1474.0, 1519.4], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.96, -3.13, -0.96, -3.13, -11.81, -29.88], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.34, 12.57, 48.339999999999996, 52.87, 30.89, 45.42]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1507.0, "gapToTarget": -92.1, "newMembersNeeded": 157.2, "pacePct": 1.0651, "anticipatedDropsRemaining": 62.3, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.1, 1340.9, 1389.0, 1441.1, 1469.0, 1507.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.2, -3.91, -1.2, -3.91, -14.75, -37.32], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.100000000000001, 11.79, 48.099999999999994, 52.09, 27.950000000000003, 37.98]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1501.0, "gapToTarget": -86.1, "newMembersNeeded": 163.2, "pacePct": 1.0609, "anticipatedDropsRemaining": 68.3, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.0, 1340.4, 1388.4, 1440.1, 1466.6, 1501.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.32, -4.29, -1.32, -4.29, -16.17, -40.92], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 8.98, 11.41, 47.98, 51.71, 26.53, 34.379999999999995]}}}, "rawAnticipatedRestOfYear": 207, "rawAnticipatedCarryToNextJan": 818}, {"key": "traditional", "label": "Traditional Scouting Growth", "type": "growthPct", "baseline": 962, "current": 896, "target": 1010.1, "growthPct": 5.0, "minTotal": null, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [970, 972, 863, 865, 893, 896, null, null, null, null, null, null], "priorYearLine": [1058, 1061, 1076, 882, 886, 890, 888, 898, 928, 961, 969, 962], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 1001.1, "gapToTarget": 9.0, "newMembersNeeded": 140.7, "pacePct": 0.9911, "anticipatedDropsRemaining": 26.6, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.6, 918.2, 945.5, 976.9, 993.9, 1001.1], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.72, -2.35, -0.72, -2.35, -7.96, -12.49], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.58, 12.65, 27.28, 31.35, 17.04, 7.209999999999999]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 992.3, "gapToTarget": 17.8, "newMembersNeeded": 149.5, "pacePct": 0.9824, "anticipatedDropsRemaining": 35.4, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.3, 917.2, 944.2, 974.8, 989.2, 992.3], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.96, -3.13, -0.96, -3.13, -10.6, -16.63], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.34, 11.870000000000001, 27.04, 30.570000000000004, 14.4, 3.0700000000000003]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 983.5, "gapToTarget": 26.6, "newMembersNeeded": 158.3, "pacePct": 0.9737, "anticipatedDropsRemaining": 44.2, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.1, 916.2, 943.0, 972.8, 984.6, 983.5], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.2, -3.91, -1.2, -3.91, -13.24, -20.77], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.100000000000001, 11.09, 26.8, 29.790000000000003, 11.76, -1.0700000000000003]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 979.2, "gapToTarget": 30.9, "newMembersNeeded": 162.6, "pacePct": 0.9694, "anticipatedDropsRemaining": 48.5, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.0, 915.7, 942.4, 971.8, 982.3, 979.2], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.32, -4.29, -1.32, -4.29, -14.52, -22.77], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 8.98, 10.71, 26.68, 29.410000000000004, 10.48, -3.0700000000000003]}}}, "rawAnticipatedRestOfYear": 147, "rawAnticipatedCarryToNextJan": 551}, {"key": "newFrontier", "label": "New Frontier Grant Floor", "type": "minimum", "baseline": 283, "current": 306, "target": 300, "growthPct": null, "minTotal": 300, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [282, 272, 247, 243, 244, 306, null, null, null, null, null, null], "priorYearLine": [185, 185, 184, 167, 165, 169, 168, 167, 189, 241, 266, 283], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 374.4, "gapToTarget": -74.4, "newMembersNeeded": 4.3, "pacePct": 1.248, "anticipatedDropsRemaining": 10.3, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 357.3, 374.4], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -0.72, -9.59], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 8.28, 17.11]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 371.0, "gapToTarget": -71.0, "newMembersNeeded": 7.7, "pacePct": 1.2367, "anticipatedDropsRemaining": 13.7, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 357.0, 370.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -0.96, -12.77], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 8.04, 13.93]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 367.6, "gapToTarget": -67.6, "newMembersNeeded": 11.1, "pacePct": 1.2253, "anticipatedDropsRemaining": 17.1, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 356.8, 367.6], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -1.2, -15.95], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 7.8, 10.75]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 365.9, "gapToTarget": -65.9, "newMembersNeeded": 12.8, "pacePct": 1.2197, "anticipatedDropsRemaining": 18.8, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 356.7, 365.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -1.32, -17.49], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 7.68, 9.21]}}}, "rawAnticipatedRestOfYear": 57, "rawAnticipatedCarryToNextJan": 168}]};
   const MO = G_DATA.monthNames;
   const TH = G_DATA.paceThresholds;       // { yellow, green, pulse }
   const SCENARIOS = G_DATA.scenarioOrder; // ['bull','median','historic','bear']
@@ -2326,6 +2399,36 @@ document.addEventListener('click', function(e){
   }
   function killChart(id){ if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
   function activeGoal(){ return G_DATA.goals.find(g => g.key === state.goalKey) || G_DATA.goals[0]; }
+  // Build an anticipated path for an arbitrary retention rate (0..1).
+  // Mirrors the math aggregate_goals.py uses for scenarios but operates on
+  // values already in G_DATA. Recovers raw anticipated counts from any
+  // existing scenario's adjustedByPostMonth = rawByPostMonth * (1 - rate)
+  // so we don't need a separate raw array in the payload.
+  function customAnticipatedPath(retentionFraction){
+    const g = activeGoal();
+    if (!g) return null;
+    const lastIdx = g.lastReportedIdx;
+    const anyScen = Object.values(g.scenarios)[0];
+    if (!anyScen) return null;
+    const adj   = anyScen.flow.dropsAnticipated;     // negative numbers for future months
+    const scRet = anyScen.retentionRate;             // fraction
+    const denom = (1 - scRet) || 1;
+    const raw   = adj.map(function(v){ return v == null ? null : (-v) / denom; });
+    const nmF   = anyScen.flow.nmForecast;
+    const dropRate = 1 - retentionFraction;
+    const path = new Array(12).fill(null);
+    if (g.current == null || lastIdx < 0) return path;
+    path[lastIdx] = g.current;
+    let running = g.current;
+    for (let m = lastIdx + 1; m < 12; m++){
+      const adjDrops = (raw[m] != null ? raw[m] : 0) * dropRate;
+      const nm       = (nmF[m] != null ? nmF[m] : 0);
+      running = Math.round((running + nm - adjDrops) * 10) / 10;
+      path[m] = running;
+    }
+    return path;
+  }
+
   function activeScenario(){
     const g = activeGoal();
     if (!g) return null;
@@ -2458,13 +2561,44 @@ document.addEventListener('click', function(e){
            : '',
     };
 
-    const items = [card1, card2, card3, card4];
+    // Card 5 — Minimum retention needed to hit each goal level
+    const thr = G_DATA.minRetentionThresholds || {};
+    const curRet = (s.retentionRate != null) ? s.retentionRate : null;
+    function thrRow(label, value){
+      if (value == null) return '<div style="display:flex; justify-content:space-between; font-size:11px; color:#64748b;">'
+        + '<span>' + label + '</span><span>—</span></div>';
+      const pct = (value * 100).toFixed(1) + '%';
+      const ok = (curRet != null && curRet >= value);
+      const mark = ok ? '<span style="color:#15803d; font-weight:700;">&#10003;</span>'
+                      : '<span style="color:#c8102e; font-weight:700;">&#10007;</span>';
+      const valColor = ok ? '#15803d' : '#c8102e';
+      return '<div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; line-height:1.5;">'
+        + '<span style="color:#475569;">' + label + '</span>'
+        + '<span><span style="color:' + valColor + '; font-weight:700;">' + pct + '</span> &nbsp;' + mark + '</span>'
+        + '</div>';
+    }
+    const card5 = {
+      cls: '',
+      label: 'Min Retention Needed',
+      value: '',                // will be in delta block as multi-row
+      sub: thrRow('Breakeven (Overall)',     thr.overallBreakeven)
+         + thrRow((thr.overallGrowthLabel||'+1.5% Overall'),     thr.overallGrowthTarget)
+         + thrRow('Breakeven (Traditional)', thr.traditionalBreakeven)
+         + thrRow((thr.traditionalGrowthLabel||'+5% Traditional'), thr.traditionalGrowthTarget)
+         + '<div style="font-size:10px; color:#94a3b8; margin-top:6px;">vs '
+         + ((s.retentionRate != null) ? (s.retentionRate * 100).toFixed(1) + '% ' + SCEN_LABEL[state.scenario] : '—')
+         + '</div>',
+      noValue: true,
+    };
+
+    const items = [card1, card2, card3, card4, card5];
     el.innerHTML = items.map(function(it){
       const c = it.cls ? (' ' + it.cls) : '';
+      const valueHtml = it.noValue ? '' : ('<div class="value">' + it.value + '</div>');
       return '<div class="kpi' + c + '">'
         + '<div class="accent-bar"></div>'
         + '<div class="label">' + it.label + '</div>'
-        + '<div class="value">' + it.value + '</div>'
+        + valueHtml
         + '<div class="delta">' + it.sub + '</div></div>';
     }).join('');
   }
@@ -2517,11 +2651,7 @@ document.addEventListener('click', function(e){
     const targetPoint = MO.map(function(_, i){ return i === 11 ? g.target : null; });
 
     const accent = '#c8102e';
-    charts.traj = new Chart(document.getElementById('goalTrajectoryChart'), {
-      type: 'line',
-      data: {
-        labels: MO,
-        datasets: [
+    const trajDatasets = [
           {
             label: String(G_DATA.currentYear - 1) + ' (prior year)',
             data: prior,
@@ -2556,21 +2686,45 @@ document.addEventListener('click', function(e){
             tension: 0.2, fill: false, order: 0,
           },
           {
-            label: (g.type === 'minimum' ? 'Floor (' : 'Target (+') + (g.growthPct != null ? (g.growthPct + '%') : ('≥' + g.minTotal)) + ')',
-            data: targetPoint,
+            // Thin horizontal target line spanning all 12 months
+            label: (g.type === 'minimum' ? 'Floor (' : 'Target (+') + (g.growthPct != null ? (g.growthPct + '%') : ('≥' + g.minTotal)) + ') = ' + Math.round(g.target),
+            data: MO.map(function(){ return g.target; }),
             borderColor: '#16a34a',
-            backgroundColor: '#16a34a',
-            pointBackgroundColor: '#16a34a',
-            pointBorderColor: '#16a34a',
-            pointRadius: [0,0,0,0,0,0,0,0,0,0,0,8],
-            pointHoverRadius: [0,0,0,0,0,0,0,0,0,0,0,10],
-            pointStyle: 'rectRot',
-            borderWidth: 0,
-            showLine: false,
+            backgroundColor: 'transparent',
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            borderWidth: 1.5,
+            showLine: true,
+            fill: false,
             order: -1,
+            spanGaps: true,
           },
-        ],
-      },
+    ];
+    // Optional custom retention dataset (Scouting Blue, dotted)
+    if (state.customRetention != null) {
+      const cf = state.customRetention / 100.0;
+      const cPath = customAnticipatedPath(cf);
+      if (cPath) {
+        trajDatasets.push({
+          label: 'Custom retention (' + state.customRetention + '%)',
+          data: cPath,
+          borderColor: 'rgba(0,63,135,.95)',
+          backgroundColor: 'transparent',
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: 'rgba(0,63,135,.95)',
+          pointBorderWidth: 2,
+          pointStyle: 'circle',
+          borderWidth: 2,
+          pointRadius: cPath.map(function(v, i){ return (v != null && i > g.lastReportedIdx) ? 4 : 0; }),
+          pointHoverRadius: 6,
+          borderDash: [2, 4],
+          tension: 0.2, fill: false, order: -2,
+        });
+      }
+    }
+    charts.traj = new Chart(document.getElementById('goalTrajectoryChart'), {
+      type: 'line',
+      data: { labels: MO, datasets: trajDatasets },
       options: {
         responsive: true, maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
@@ -2672,6 +2826,43 @@ document.addEventListener('click', function(e){
     });
   }
 
+  function wireCustomRetention(){
+    const inp   = document.getElementById('customRetInput');
+    const apply = document.getElementById('customRetApply');
+    const clear = document.getElementById('customRetClear');
+    if (!inp || !apply || !clear) return;
+    if (inp.dataset.wired === '1') {
+      if (state.customRetention != null) inp.value = state.customRetention;
+      return;
+    }
+    inp.dataset.wired = '1';
+    function commit(){
+      let raw = inp.value;
+      if (raw === '' || raw == null) {
+        state.customRetention = null;
+        renderGoals();
+        return;
+      }
+      let v = parseInt(raw, 10);
+      if (Number.isNaN(v)) {
+        state.customRetention = null;
+        renderGoals();
+        return;
+      }
+      v = Math.max(0, Math.min(100, Math.round(v)));
+      inp.value = v;
+      state.customRetention = v;
+      renderGoals();
+    }
+    apply.addEventListener('click', commit);
+    inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); commit(); } });
+    clear.addEventListener('click', function(){
+      state.customRetention = null;
+      inp.value = '';
+      renderGoals();
+    });
+  }
+
   function renderGoals(){
     renderSelector();
     renderScenarioPills();
@@ -2679,6 +2870,7 @@ document.addEventListener('click', function(e){
     renderScenarioCompare();
     renderTrajectory();
     renderFlow();
+    wireCustomRetention();
   }
   window.__goals_render = renderGoals;
 
