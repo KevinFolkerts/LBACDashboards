@@ -104,6 +104,27 @@ body { padding-bottom: 76px; }
        cursor: pointer; transition: all .15s; }
 .png:hover { border-color: var(--accent); color: var(--accent); }
 
+
+/* ── Goal-tab pace-status KPIs ─────────────────────────────────────────── */
+.kpi.pace-green  { border-color: #16a34a; box-shadow: 0 0 0 1px rgba(22,163,74,.30), 0 1px 3px rgba(15,23,42,.04); }
+.kpi.pace-yellow { border-color: #f59e0b; box-shadow: 0 0 0 1px rgba(245,158,11,.35), 0 1px 3px rgba(15,23,42,.04); }
+.kpi.pace-red    { border-color: #c8102e; box-shadow: 0 0 0 1px rgba(200,16,46,.35), 0 1px 3px rgba(15,23,42,.04); }
+.kpi .pace-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-top: 6px; }
+.kpi.pace-green  .pace-badge { background: rgba(22,163,74,.12); color: #15803d; }
+.kpi.pace-yellow .pace-badge { background: rgba(245,158,11,.15); color: #b45309; }
+.kpi.pace-red    .pace-badge { background: rgba(200,16,46,.12); color: #c8102e; }
+
+/* Pulsing glow when pace > 110% — calls out an ahead-of-pace category */
+@keyframes lbac-pulse {
+  0%   { box-shadow: 0 0 0 1px rgba(22,163,74,.35), 0 0 4px  rgba(22,163,74,.0); }
+  50%  { box-shadow: 0 0 0 2px rgba(22,163,74,.55), 0 0 16px rgba(22,163,74,.5); }
+  100% { box-shadow: 0 0 0 1px rgba(22,163,74,.35), 0 0 4px  rgba(22,163,74,.0); }
+}
+.kpi.pace-pulse { animation: lbac-pulse 1.8s ease-in-out infinite; border-color: #16a34a; }
+
+/* Goal selector pill highlight */
+#goalSelector .pill-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
 </style>
 </head>
 <body>
@@ -119,6 +140,7 @@ body { padding-bottom: 76px; }
     <button class="top-tab active" data-tab="totals">Membership Totals</button>
     <button class="top-tab" data-tab="newmembers">New Members</button>
     <button class="top-tab" data-tab="drops">Drops</button>
+    <button class="top-tab" data-tab="goals">Goals</button>
   </div>
 
   <!-- PANE 1: MEMBERSHIP TOTALS -->
@@ -517,6 +539,66 @@ body { padding-bottom: 76px; }
     </div>
   </div>
   <!-- /pane-drops -->
+
+  <div id="pane-goals" style="display:none;">
+
+    <!-- Goal selector -->
+    <div class="filter-bar" style="margin-bottom:14px;">
+      <div class="filter-group" style="flex-wrap:wrap;">
+        <span class="filter-label">Goal</span>
+        <div class="pill-group" id="goalSelector" style="flex-wrap:wrap;"></div>
+      </div>
+    </div>
+
+    <!-- Retention scenario selector -->
+    <div class="filter-bar" style="margin-bottom:14px;">
+      <div class="filter-group" style="flex-wrap:wrap;">
+        <span class="filter-label">Retention scenario</span>
+        <div class="pill-group" id="scenarioSelector" style="flex-wrap:wrap;"></div>
+        <div class="hint" id="scenarioHint" style="margin-left:auto; max-width:520px;"></div>
+      </div>
+    </div>
+
+    <!-- Hero KPI strip -->
+    <div class="kpis" id="goalKpis"></div>
+
+    <!-- Scenario comparison strip (compact) -->
+    <div class="card" id="scenarioCompareCard" style="margin-top:14px; padding:14px 18px;">
+      <div style="font-size:11px; letter-spacing:.8px; text-transform:uppercase; color:var(--ink-mute); font-weight:600; margin-bottom:8px;">
+        Projected End of Year across all scenarios
+      </div>
+      <div id="scenarioCompare" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;"></div>
+    </div>
+
+    <!-- Trajectory chart -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-head">
+        <div>
+          <h2 id="goalTrajectoryTitle">Trajectory to Goal</h2>
+          <div class="hint" id="goalTrajectoryHint">Solid red = actual monthly snapshot · Dotted red with hollow markers = anticipated path Jul–Dec (current + projected new members − anticipated drops) · Thin grey = prior-year monthly trajectory for the same scope · Red dot at Dec = target</div>
+        </div>
+        <div class="card-controls"><button class="png" data-chart="goalTrajectoryChart" data-title="Trajectory to Goal">⤓ PNG</button></div>
+      </div>
+      <div class="chart-wrap-tall"><canvas id="goalTrajectoryChart"></canvas></div>
+    </div>
+
+    <!-- Monthly flow chart (recruits in / drops out) -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-head">
+        <div>
+          <h2 id="goalFlowTitle">Monthly Flow — Recruits In vs Drops Out</h2>
+          <div class="hint">Green = new members (solid Jan–Jun actual, hatched Jul–Dec forecast from 3-yr seasonal average) · Red = drops (solid actual, hatched anticipated from the Anticipated Drops sheet) · Black line = net change · Net for the remaining months tells you whether momentum carries you to goal</div>
+        </div>
+        <div class="card-controls"><button class="png" data-chart="goalFlowChart" data-title="Monthly Flow — Goals">⤓ PNG</button></div>
+      </div>
+      <div class="chart-wrap-tall"><canvas id="goalFlowChart"></canvas></div>
+    </div>
+
+    <div class="footer" style="margin-top:24px;">
+      Baseline = Dec of prior year (membership snapshot) · Anticipated drops sourced from <code>Anticipated Drops.xlsx</code> with the +1-month posting shift applied · Seasonal new-member forecast = 3-year average of 2023–2025 monthly registrations · Pace % = projected end-of-year / target · Pulses when projected end exceeds target by &gt;10%
+    </div>
+  </div>
+  <!-- /pane-goals -->
 
   <div class="footer">Source: monthly membership CSV exports · Council 032 Long Beach, CA</div>
 </div>
@@ -1579,6 +1661,8 @@ document.addEventListener('click', function(e){
       document.getElementById('pane-newmembers').style.display = (tab === 'newmembers') ? '' : 'none';
       var __dp = document.getElementById('pane-drops');
       if (__dp) __dp.style.display = (tab === 'drops') ? '' : 'none';
+      var __gp = document.getElementById('pane-goals');
+      if (__gp) __gp.style.display = (tab === 'goals') ? '' : 'none';
       // Update header subtitle
       const sub = document.getElementById('hdrSubtitle') || document.getElementById('headerSubtitle');
       if (sub) {
@@ -2192,6 +2276,8 @@ document.addEventListener('click', function(e){
       var tab = b.dataset.tab;
       var pane = getDropsPane();
       if (pane) pane.style.display = (tab === 'drops') ? '' : 'none';
+      var __gp_from_drops = document.getElementById('pane-goals');
+      if (__gp_from_drops) __gp_from_drops.style.display = (tab === 'goals') ? '' : 'none';
       if (tab === 'drops') {
         // Update header subtitle to drops-specific text
         var sub = document.getElementById('hdrSubtitle') || document.getElementById('headerSubtitle');
@@ -2207,6 +2293,410 @@ document.addEventListener('click', function(e){
       }
     });
   });
+})();
+
+</script>
+<script>
+// ============================================================
+// GOALS DASHBOARD MODULE — v3 (retention-scenario aware)
+// 2026 growth-goal tracking using actuals YTD + scheduled drops × retention
+// + seasonal new-member forecast.
+// ============================================================
+(function(){
+  const G_DATA = {"currentYear": 2026, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "monthNames": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "paceThresholds": {"yellow": 0.9, "green": 1.0, "pulse": 1.1}, "scenarioOrder": ["bull", "median", "historic", "bear"], "scenarioLabels": {"bull": "Bull (best case)", "median": "Median", "historic": "Historic (2025)", "bear": "Bear (worst case)"}, "defaultScenario": "historic", "goals": [{"key": "overall", "label": "Overall Youth Growth", "type": "growthPct", "baseline": 1394, "current": 1320, "target": 1414.9, "growthPct": 1.5, "minTotal": null, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [1403, 1374, 1228, 1225, 1255, 1320, null, null, null, null, null, null], "priorYearLine": [1362, 1364, 1377, 1155, 1158, 1166, 1163, 1173, 1227, 1311, 1343, 1394], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1531.8, "gapToTarget": -116.9, "newMembersNeeded": 132.4, "pacePct": 1.0826, "anticipatedDropsRemaining": 37.5, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.6, 1343.0, 1391.6, 1445.2, 1479.0, 1531.9], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.72, -2.35, -0.72, -2.35, -8.87, -22.44], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.58, 13.35, 48.58, 53.65, 33.830000000000005, 52.86]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1519.4, "gapToTarget": -104.5, "newMembersNeeded": 144.8, "pacePct": 1.0739, "anticipatedDropsRemaining": 49.9, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.3, 1341.9, 1390.2, 1443.1, 1474.0, 1519.4], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.96, -3.13, -0.96, -3.13, -11.81, -29.88], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.34, 12.57, 48.339999999999996, 52.87, 30.89, 45.42]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1507.0, "gapToTarget": -92.1, "newMembersNeeded": 157.2, "pacePct": 1.0651, "anticipatedDropsRemaining": 62.3, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.1, 1340.9, 1389.0, 1441.1, 1469.0, 1507.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.2, -3.91, -1.2, -3.91, -14.75, -37.32], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.100000000000001, 11.79, 48.099999999999994, 52.09, 27.950000000000003, 37.98]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 1394, "current": 1320, "target": 1414.9, "projectedEOY": 1501.0, "gapToTarget": -86.1, "newMembersNeeded": 163.2, "pacePct": 1.0609, "anticipatedDropsRemaining": 68.3, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 249.3, "anticipatedPath": [null, null, null, null, null, 1320, 1329.0, 1340.4, 1388.4, 1440.1, 1466.6, 1501.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 68, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.32, -4.29, -1.32, -4.29, -16.17, -40.92], "netActual": [13, -36, -150, -11, 19, 64, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 8.98, 11.41, 47.98, 51.71, 26.53, 34.379999999999995]}}}, "rawAnticipatedRestOfYear": 207, "rawAnticipatedCarryToNextJan": 818}, {"key": "traditional", "label": "Traditional Scouting Growth", "type": "growthPct", "baseline": 962, "current": 896, "target": 1010.1, "growthPct": 5.0, "minTotal": null, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [970, 972, 863, 865, 893, 896, null, null, null, null, null, null], "priorYearLine": [1058, 1061, 1076, 882, 886, 890, 888, 898, 928, 961, 969, 962], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 1001.1, "gapToTarget": 9.0, "newMembersNeeded": 140.7, "pacePct": 0.9911, "anticipatedDropsRemaining": 26.6, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.6, 918.2, 945.5, 976.9, 993.9, 1001.1], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.72, -2.35, -0.72, -2.35, -7.96, -12.49], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.58, 12.65, 27.28, 31.35, 17.04, 7.209999999999999]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 992.3, "gapToTarget": 17.8, "newMembersNeeded": 149.5, "pacePct": 0.9824, "anticipatedDropsRemaining": 35.4, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.3, 917.2, 944.2, 974.8, 989.2, 992.3], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.96, -3.13, -0.96, -3.13, -10.6, -16.63], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.34, 11.870000000000001, 27.04, 30.570000000000004, 14.4, 3.0700000000000003]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 983.5, "gapToTarget": 26.6, "newMembersNeeded": 158.3, "pacePct": 0.9737, "anticipatedDropsRemaining": 44.2, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.1, 916.2, 943.0, 972.8, 984.6, 983.5], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.2, -3.91, -1.2, -3.91, -13.24, -20.77], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 9.100000000000001, 11.09, 26.8, 29.790000000000003, 11.76, -1.0700000000000003]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 962, "current": 896, "target": 1010.1, "projectedEOY": 979.2, "gapToTarget": 30.9, "newMembersNeeded": 162.6, "pacePct": 0.9694, "anticipatedDropsRemaining": 48.5, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 131.7, "anticipatedPath": [null, null, null, null, null, 896, 905.0, 915.7, 942.4, 971.8, 982.3, 979.2], "flow": {"nmActual": [20, 14, 14, 10, 27, 6, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 10.3, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -4, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -1.32, -4.29, -1.32, -4.29, -14.52, -22.77], "netActual": [13, -3, -109, -4, 18, 2, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 8.98, 10.71, 26.68, 29.410000000000004, 10.48, -3.0700000000000003]}}}, "rawAnticipatedRestOfYear": 147, "rawAnticipatedCarryToNextJan": 551}, {"key": "newFrontier", "label": "New Frontier Grant Floor", "type": "minimum", "baseline": 283, "current": 306, "target": 300, "growthPct": null, "minTotal": 300, "lastReportedIdx": 5, "lastReportedLabel": "Jun 2026", "actualMonthly": [282, 272, 247, 243, 244, 306, null, null, null, null, null, null], "priorYearLine": [185, 185, 184, 167, 165, 169, 168, 167, 189, 241, 266, 283], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 374.4, "gapToTarget": -74.4, "newMembersNeeded": 4.3, "pacePct": 1.248, "anticipatedDropsRemaining": 10.3, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 357.3, 374.4], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -0.72, -9.59], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 8.28, 17.11]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 371.0, "gapToTarget": -71.0, "newMembersNeeded": 7.7, "pacePct": 1.2367, "anticipatedDropsRemaining": 13.7, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 357.0, 370.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -0.96, -12.77], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 8.04, 13.93]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 367.6, "gapToTarget": -67.6, "newMembersNeeded": 11.1, "pacePct": 1.2253, "anticipatedDropsRemaining": 17.1, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 356.8, 367.6], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -1.2, -15.95], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 7.8, 10.75]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 365.9, "gapToTarget": -65.9, "newMembersNeeded": 12.8, "pacePct": 1.2197, "anticipatedDropsRemaining": 18.8, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, 306, 306.0, 306.0, 326.7, 349.0, 356.7, 365.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, null, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, null, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.0, -1.32, -17.49], "netActual": [-1, -10, -25, -4, 1, 62, null, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, 0.0, 0.0, 20.7, 22.3, 7.68, 9.21]}}}, "rawAnticipatedRestOfYear": 57, "rawAnticipatedCarryToNextJan": 168}]};
+  const MO = G_DATA.monthNames;
+  const TH = G_DATA.paceThresholds;       // { yellow, green, pulse }
+  const SCENARIOS = G_DATA.scenarioOrder; // ['bull','median','historic','bear']
+  const SCEN_LABEL = G_DATA.scenarioLabels;
+
+  const state = {
+    goalKey: G_DATA.goals.length ? G_DATA.goals[0].key : null,
+    scenario: G_DATA.defaultScenario || 'historic',
+  };
+  const charts = {};
+
+  function fmtInt(n){
+    if (n === null || n === undefined || Number.isNaN(n)) return '—';
+    return Math.round(Number(n)).toLocaleString();
+  }
+  function fmtSigned(n){
+    if (n === null || n === undefined || Number.isNaN(n)) return '—';
+    const s = Math.round(Number(n)).toLocaleString();
+    return (n > 0 ? '+' : '') + s;
+  }
+  function killChart(id){ if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+  function activeGoal(){ return G_DATA.goals.find(g => g.key === state.goalKey) || G_DATA.goals[0]; }
+  function activeScenario(){
+    const g = activeGoal();
+    if (!g) return null;
+    return g.scenarios[state.scenario] || g.scenarios[G_DATA.defaultScenario];
+  }
+
+  function paceClass(pct){
+    if (pct === null || pct === undefined || Number.isNaN(pct)) return 'pace-red';
+    if (pct >= TH.pulse)  return 'pace-pulse';
+    if (pct >= TH.green)  return 'pace-green';
+    if (pct >= TH.yellow) return 'pace-yellow';
+    return 'pace-red';
+  }
+  function paceLabel(pct){
+    if (pct === null || pct === undefined || Number.isNaN(pct)) return 'No data';
+    if (pct >= TH.pulse)  return 'Well above goal';
+    if (pct >= TH.green)  return 'On track';
+    if (pct >= TH.yellow) return 'Slightly behind';
+    return 'Behind';
+  }
+  function paceTextClass(pct){
+    if (pct === null || pct === undefined) return '';
+    if (pct >= TH.green) return 'pace-green';
+    if (pct >= TH.yellow) return 'pace-yellow';
+    return 'pace-red';
+  }
+
+  // ── Goal selector pills ──
+  function renderSelector(){
+    const el = document.getElementById('goalSelector');
+    el.innerHTML = '';
+    G_DATA.goals.forEach(function(g){
+      const b = document.createElement('button');
+      b.className = 'pill-btn' + (g.key === state.goalKey ? ' active' : '');
+      b.textContent = g.label;
+      b.onclick = function(){ state.goalKey = g.key; renderGoals(); };
+      el.appendChild(b);
+    });
+  }
+
+  // ── Retention scenario pills ──
+  function renderScenarioPills(){
+    const el = document.getElementById('scenarioSelector');
+    el.innerHTML = '';
+    const g = activeGoal();
+    SCENARIOS.forEach(function(key){
+      if (!g.scenarios[key]) return;
+      const b = document.createElement('button');
+      const s = g.scenarios[key];
+      b.className = 'pill-btn' + (key === state.scenario ? ' active' : '');
+      b.textContent = SCEN_LABEL[key];
+      b.title = 'Retention rate ' + (s.retentionRate * 100).toFixed(1) + '%';
+      b.onclick = function(){ state.scenario = key; renderGoals(); };
+      el.appendChild(b);
+    });
+    const hint = document.getElementById('scenarioHint');
+    const cur = g.scenarios[state.scenario];
+    if (cur && hint) {
+      hint.textContent = 'Selected: ' + (cur.retentionRate * 100).toFixed(1)
+        + '% of youth scheduled to lapse will actually re-up. Switch scenarios to stress-test the projection.';
+    }
+  }
+
+  // ── Hero KPI strip ──
+  function renderKpis(){
+    const g = activeGoal(); if (!g) return;
+    const s = activeScenario(); if (!s) return;
+    const el = document.getElementById('goalKpis');
+    const cls = paceClass(s.pacePct);
+    const lab = paceLabel(s.pacePct);
+    const targetWord = (g.type === 'minimum') ? 'floor' : 'target';
+
+    // Card 1 — Current Membership
+    const card1 = {
+      cls: '',
+      label: 'Current Membership',
+      value: fmtInt(g.current),
+      sub: 'as of ' + g.lastReportedLabel + ' &nbsp;<span style="color:#64748b">·</span>&nbsp; '
+           + 'baseline (Dec ' + (G_DATA.currentYear - 1) + '): ' + fmtInt(g.baseline)
+           + ' &nbsp;<span style="color:#64748b">·</span>&nbsp; '
+           + targetWord + ': ' + fmtInt(g.target),
+    };
+
+    // Card 2 — Anticipated End of Year
+    const projDelta = (s.projectedEOY != null && g.target != null) ? (s.projectedEOY - g.target) : null;
+    const projWord = (projDelta == null) ? '' : (
+      projDelta >= 0
+        ? '<span style="color:#15803d">' + fmtSigned(projDelta) + ' above ' + targetWord + '</span>'
+        : '<span style="color:#c8102e">' + fmtSigned(projDelta) + ' from ' + targetWord + '</span>'
+    );
+    const card2 = {
+      cls: cls,
+      label: 'Anticipated End of Year',
+      value: fmtInt(s.projectedEOY),
+      sub: '<span class="pace-badge">' + lab + '</span>' + (projWord ? '<br>' + projWord : ''),
+    };
+
+    // Card 3 — Drops scheduled remaining (after retention adjustment)
+    const card3 = {
+      cls: '',
+      label: 'Drops Coming (after retention)',
+      value: fmtInt(s.anticipatedDropsRemaining),
+      sub: 'Jul – Dec, at ' + (s.retentionRate * 100).toFixed(1) + '% retention'
+           + ' &nbsp;<span style="color:#64748b">·</span>&nbsp; '
+           + fmtInt(g.rawAnticipatedRestOfYear) + ' scheduled before re-ups',
+    };
+
+    // Card 4 — New members needed
+    const needed = s.newMembersNeeded;
+    const expected = s.projectedNMRemaining;
+    const surplusDeficit = (needed != null && expected != null) ? (expected - needed) : null;
+    let card4cls = '';
+    if (needed != null) {
+      if (needed <= 0) card4cls = 'pace-green';
+      else if (expected != null && expected >= needed) card4cls = 'pace-green';
+      else if (expected != null && expected >= needed * 0.9) card4cls = 'pace-yellow';
+      else card4cls = 'pace-red';
+    }
+    const card4 = {
+      cls: card4cls,
+      label: 'New Members Needed',
+      value: (needed != null && needed <= 0) ? 'Already there' : fmtInt(needed),
+      sub: (expected != null)
+           ? ('seasonal forecast: ~' + fmtInt(expected) + ' new members through Dec'
+              + (surplusDeficit != null
+                  ? ' &nbsp;<span style="color:#64748b">·</span>&nbsp; <span style="color:'
+                    + (surplusDeficit >= 0 ? '#15803d' : '#c8102e') + '">'
+                    + fmtSigned(surplusDeficit) + ' vs needed</span>'
+                  : ''))
+           : '',
+    };
+
+    const items = [card1, card2, card3, card4];
+    el.innerHTML = items.map(function(it){
+      const c = it.cls ? (' ' + it.cls) : '';
+      return '<div class="kpi' + c + '">'
+        + '<div class="accent-bar"></div>'
+        + '<div class="label">' + it.label + '</div>'
+        + '<div class="value">' + it.value + '</div>'
+        + '<div class="delta">' + it.sub + '</div></div>';
+    }).join('');
+  }
+
+  // ── 4-up scenario comparison strip ──
+  function renderScenarioCompare(){
+    const g = activeGoal(); if (!g) return;
+    const el = document.getElementById('scenarioCompare');
+    el.innerHTML = '';
+    SCENARIOS.forEach(function(key){
+      const s = g.scenarios[key]; if (!s) return;
+      const cls = paceTextClass(s.pacePct);
+      const pacePct = (s.pacePct != null) ? (s.pacePct * 100).toFixed(1) + '%' : '—';
+      const projDelta = (s.projectedEOY != null && g.target != null) ? (s.projectedEOY - g.target) : null;
+      const isActive = (key === state.scenario);
+      const borderStyle = isActive ? 'border:2px solid #1f3a5f;' : 'border:1px solid var(--border);';
+      const html = '<div style="' + borderStyle + ' border-radius:8px; padding:10px 12px; background:#fff; cursor:pointer;" data-scenario="' + key + '">'
+        + '<div style="font-size:10px; letter-spacing:.5px; text-transform:uppercase; color:var(--ink-mute); font-weight:700;">'
+        + SCEN_LABEL[key] + ' (' + (s.retentionRate * 100).toFixed(1) + '%)'
+        + '</div>'
+        + '<div style="font-size:22px; font-weight:700; color:var(--ink); margin-top:4px; line-height:1.1;">'
+        + fmtInt(s.projectedEOY)
+        + '</div>'
+        + '<div style="font-size:11px; margin-top:4px;">'
+        + (projDelta != null
+            ? ('<span style="color:' + (projDelta >= 0 ? '#15803d' : '#c8102e') + '">' + fmtSigned(projDelta) + ' vs ' + (g.type==='minimum'?'floor':'target') + '</span>')
+            : '—')
+        + ' &nbsp;<span style="color:#64748b">·</span>&nbsp; <span class="' + cls + '" style="font-weight:600;">' + pacePct + '</span>'
+        + '</div>'
+        + '</div>';
+      el.insertAdjacentHTML('beforeend', html);
+    });
+    // Wire click to switch scenario
+    el.querySelectorAll('[data-scenario]').forEach(function(d){
+      d.onclick = function(){ state.scenario = d.dataset.scenario; renderGoals(); };
+    });
+  }
+
+  // ── Trajectory chart ──
+  function renderTrajectory(){
+    killChart('traj');
+    const g = activeGoal(); if (!g) return;
+    const s = activeScenario(); if (!s) return;
+    document.getElementById('goalTrajectoryTitle').textContent =
+      'Trajectory to ' + g.label + ' · ' + SCEN_LABEL[state.scenario] + ' retention';
+    const lastIdx = g.lastReportedIdx;
+    const actual = g.actualMonthly.map(function(v, i){ return (i <= lastIdx) ? v : null; });
+    const antic  = s.anticipatedPath;
+    const prior  = g.priorYearLine;
+    const targetPoint = MO.map(function(_, i){ return i === 11 ? g.target : null; });
+
+    const accent = '#c8102e';
+    charts.traj = new Chart(document.getElementById('goalTrajectoryChart'), {
+      type: 'line',
+      data: {
+        labels: MO,
+        datasets: [
+          {
+            label: String(G_DATA.currentYear - 1) + ' (prior year)',
+            data: prior,
+            borderColor: 'rgba(148,163,184,.85)',
+            backgroundColor: 'transparent',
+            pointBackgroundColor: 'rgba(148,163,184,.85)',
+            borderWidth: 1.5, pointRadius: 2, pointHoverRadius: 4,
+            tension: 0.25, fill: false, order: 5,
+          },
+          {
+            label: 'Actual ' + G_DATA.currentYear + ' (through ' + g.lastReportedLabel + ')',
+            data: actual,
+            borderColor: accent,
+            backgroundColor: 'rgba(200,16,46,.10)',
+            pointBackgroundColor: accent,
+            borderWidth: 3, pointRadius: 4, pointHoverRadius: 6,
+            tension: 0.2, fill: true, order: 1,
+          },
+          {
+            label: 'Anticipated path (Jul–Dec, ' + SCEN_LABEL[state.scenario] + ')',
+            data: antic,
+            borderColor: 'rgba(200,16,46,.7)',
+            backgroundColor: 'transparent',
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: 'rgba(200,16,46,.7)',
+            pointBorderWidth: 2,
+            pointStyle: 'circle',
+            borderWidth: 2,
+            pointRadius: antic.map(function(v, i){ return (v != null && i > lastIdx) ? 4 : 0; }),
+            pointHoverRadius: 6,
+            borderDash: [2, 4],
+            tension: 0.2, fill: false, order: 0,
+          },
+          {
+            label: (g.type === 'minimum' ? 'Floor (' : 'Target (+') + (g.growthPct != null ? (g.growthPct + '%') : ('≥' + g.minTotal)) + ')',
+            data: targetPoint,
+            borderColor: '#16a34a',
+            backgroundColor: '#16a34a',
+            pointBackgroundColor: '#16a34a',
+            pointBorderColor: '#16a34a',
+            pointRadius: [0,0,0,0,0,0,0,0,0,0,0,8],
+            pointHoverRadius: [0,0,0,0,0,0,0,0,0,0,0,10],
+            pointStyle: 'rectRot',
+            borderWidth: 0,
+            showLine: false,
+            order: -1,
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 14, boxHeight: 12 } },
+          tooltip: {
+            filter: function(t){ return t.parsed.y !== null; },
+            callbacks: {
+              label: function(c){
+                const v = Math.round(c.parsed.y).toLocaleString();
+                const dsLabel = c.dataset.label || '';
+                // Append YoY % to the current-year and anticipated-path lines
+                const isCurrentYearLine = dsLabel.indexOf('Actual ' + G_DATA.currentYear) === 0
+                  || dsLabel.indexOf('Anticipated path') === 0;
+                if (isCurrentYearLine) {
+                  const goal = activeGoal();
+                  const prior = (goal && goal.priorYearLine) ? goal.priorYearLine[c.dataIndex] : null;
+                  if (prior != null && prior > 0) {
+                    const yoy = (c.parsed.y - prior) / prior * 100;
+                    const sign = yoy >= 0 ? '+' : '';
+                    const dir  = yoy >= 0 ? 'growth' : 'draw';
+                    return ' ' + dsLabel + ': ' + v
+                      + ' (' + sign + yoy.toFixed(1) + '% ' + dir
+                      + ' vs ' + (G_DATA.currentYear - 1) + ')';
+                  }
+                }
+                return ' ' + dsLabel + ': ' + v;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { beginAtZero: false, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+
+  // ── Monthly Flow chart ──
+  function renderFlow(){
+    killChart('flow');
+    const g = activeGoal(); if (!g) return;
+    const s = activeScenario(); if (!s) return;
+    const f = s.flow;
+    const lastIdx = g.lastReportedIdx;
+
+    const greenSolid    = 'rgba(22,163,74,.85)';
+    const greenForecast = 'rgba(22,163,74,.35)';
+    const redSolid      = 'rgba(200,16,46,.85)';
+    const redAntic      = 'rgba(200,16,46,.35)';
+
+    const net = MO.map(function(_, i){
+      if (i <= lastIdx) return f.netActual[i];
+      return f.netForecast[i];
+    });
+    document.getElementById('goalFlowTitle').textContent =
+      'Monthly Flow — Recruits In vs Drops Out · ' + SCEN_LABEL[state.scenario] + ' retention';
+
+    charts.flow = new Chart(document.getElementById('goalFlowChart'), {
+      type: 'bar',
+      data: {
+        labels: MO,
+        datasets: [
+          { label: 'New members (actual)',   data: f.nmActual,         backgroundColor: greenSolid,    stack: 'nm', order: 3 },
+          { label: 'New members (forecast)', data: f.nmForecast,       backgroundColor: greenForecast, stack: 'nm', order: 3 },
+          { label: 'Drops (actual)',         data: f.dropsActual,      backgroundColor: redSolid,      stack: 'drops', order: 3 },
+          { label: 'Drops (anticipated × retention)', data: f.dropsAnticipated, backgroundColor: redAntic, stack: 'drops', order: 3 },
+          {
+            label: 'Net (recruits − drops)', data: net, type: 'line',
+            borderColor: '#1f3a5f', backgroundColor: '#1f3a5f', pointBackgroundColor: '#1f3a5f',
+            borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.2, fill: false, order: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 14, boxHeight: 12 } },
+          tooltip: {
+            filter: function(t){ return t.parsed.y !== null && t.parsed.y !== 0; },
+            callbacks: {
+              label: function(c){
+                const v = c.parsed.y;
+                if (c.dataset.label && c.dataset.label.indexOf('Net') === 0) {
+                  return ' ' + c.dataset.label + ': ' + (v >= 0 ? '+' : '') + Math.round(v);
+                }
+                return ' ' + c.dataset.label + ': ' + Math.round(Math.abs(v));
+              }
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { stacked: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+
+  function renderGoals(){
+    renderSelector();
+    renderScenarioPills();
+    renderKpis();
+    renderScenarioCompare();
+    renderTrajectory();
+    renderFlow();
+  }
+  window.__goals_render = renderGoals;
+
+  // Top-tab integration
+  (function(){
+    document.querySelectorAll('#topTabs .top-tab').forEach(function(b){
+      b.addEventListener('click', function(){
+        const tab = b.dataset.tab;
+        const pane = document.getElementById('pane-goals');
+        if (pane) pane.style.display = (tab === 'goals') ? '' : 'none';
+        if (tab === 'goals') {
+          var sub = document.getElementById('hdrSubtitle') || document.getElementById('headerSubtitle');
+          if (sub) sub.textContent = G_DATA.currentYear + ' growth goals · retention-adjusted projection through Dec';
+          renderGoals();
+        }
+      });
+    });
+  })();
 })();
 
 </script>
