@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="lbac-data-date" content="June 16, 2026" />
 <title>Council Dashboard</title>
 <script>
 /*!
@@ -104,8 +103,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .png-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* Chart ID chip — Giving Dashboard numbering scheme */
-.cid { display: inline-block; font: 700 10.5px/1 ui-monospace, Menlo, Consolas, monospace; color: #fff; background: var(--ink-mute); border-radius: 5px; padding: 2px 5px; margin-right: 7px; vertical-align: middle; letter-spacing: .5px; }
 </style>
 </head>
 <body>
@@ -149,7 +146,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   <div class="card" style="margin-bottom:16px;">
     <div class="card-head">
       <div>
-        <h2><span class="cid">101</span><span id="trendTitle">Cumulative pacing — days since registration opened</span></h2>
+        <h2 id="trendTitle">Cumulative pacing — days since registration opened</h2>
         <div class="hint" id="trendHint">Each year's curve starts on its own "Registration Opens" date so they overlay on a common timeline. Vertical markers show where the current 2026 cycle stands today.</div>
       </div>
       <div class="card-controls">
@@ -169,7 +166,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
           <button class="pill-btn active" data-y="auto">Auto</button>
           <button class="pill-btn" data-y="zero">From 0</button>
         </div>
-        <button class="png-btn" data-chart="trendChart" data-title="101 · Cumulative pacing — days since registration opened" title="Download PNG">&#x2913; PNG</button>
+        <button class="png-btn" data-chart="trendChart" data-title="Cumulative pacing — days since registration opened" title="Download PNG">&#x2913; PNG</button>
       </div>
     </div>
     <div class="chart-wrap-tall"><canvas id="trendChart"></canvas></div>
@@ -180,11 +177,11 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
     <div class="card">
       <div class="card-head">
         <div>
-          <h2><span class="cid">201</span>Composition mix — % share</h2>
+          <h2>Composition mix — % share</h2>
           <div class="hint">100%-stacked Youth / Adult / Other per year — shows how the participant make-up has shifted (Other grew from 32% of 2024 to 14% of 2026 so far).</div>
         </div>
         <div class="card-controls">
-          <button class="png-btn" data-chart="mixChart" data-title="201 · Composition mix — % share" title="Download PNG">&#x2913; PNG</button>
+          <button class="png-btn" data-chart="mixChart" data-title="Composition mix — % share" title="Download PNG">&#x2913; PNG</button>
         </div>
       </div>
       <div class="chart-wrap"><canvas id="mixChart"></canvas></div>
@@ -192,11 +189,11 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
     <div class="card">
       <div class="card-head">
         <div>
-          <h2><span class="cid">202</span>Youth, Adults &amp; Other</h2>
+          <h2>Youth, Adults &amp; Other</h2>
           <div class="hint">Stacked participants per year. Other = event staff and similar non-attendee roles, now broken out for all three years.</div>
         </div>
         <div class="card-controls">
-          <button class="png-btn" data-chart="yaChart" data-title="202 · Youth, Adults & Other" title="Download PNG">&#x2913; PNG</button>
+          <button class="png-btn" data-chart="yaChart" data-title="Youth, Adults & Other" title="Download PNG">&#x2913; PNG</button>
           <span class="y-toggle-label">Y-axis</span>
           <div class="pill-group mini y-toggle" data-chart="ya">
             <button class="pill-btn" data-y="auto">Auto</button>
@@ -213,11 +210,11 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
     <div class="card">
       <div class="card-head">
         <div>
-          <h2><span class="cid">301</span>Day-of-week registration pattern</h2>
+          <h2>Day-of-week registration pattern</h2>
           <div class="hint" id="dowHint">Which weekdays families actually hit "submit" — useful for marketing-push timing.</div>
         </div>
         <div class="card-controls">
-          <button class="png-btn" data-chart="dowChart" data-title="301 · Day-of-week registration pattern" title="Download PNG">&#x2913; PNG</button>
+          <button class="png-btn" data-chart="dowChart" data-title="Day-of-week registration pattern" title="Download PNG">&#x2913; PNG</button>
           <span class="y-toggle-label">Y-axis</span>
           <div class="pill-group mini y-toggle" data-chart="dow">
             <button class="pill-btn" data-y="auto">Auto</button>
@@ -258,9 +255,4101 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 // =========================================================
 // Long Beach Council — Webelos Weekend Registration Trends
 // =========================================================
-/*LBAC_DATA_START*/
-const DATA = {"years":["2024","2025","2026"],"totals":{"2024":{"regs":110,"participants":268,"youth":89,"adult":93,"other":86,"in_council":0,"out_council":0,"cancellation_blocks":5,"cancellation_events":5,"reg_days":39},"2025":{"regs":138,"participants":304,"youth":106,"adult":119,"other":79,"in_council":0,"out_council":0,"cancellation_blocks":5,"cancellation_events":5,"reg_days":63},"2026":{"regs":40,"participants":100,"youth":39,"adult":47,"other":14,"in_council":0,"out_council":0,"cancellation_blocks":0,"cancellation_events":0,"reg_days":33}},"pacing":{"2024":[{"d":0,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":1,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":2,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":3,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":4,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":5,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":6,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":7,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":8,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":9,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":10,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":11,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":12,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":13,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":14,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":15,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":16,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":17,"regs":27,"part":65,"youth":29,"adult":32,"other":4,"cancellations":0,"inc":0,"ooc":0},{"d":18,"regs":29,"part":73,"youth":32,"adult":36,"other":5,"cancellations":0,"inc":0,"ooc":0},{"d":19,"regs":35,"part":88,"youth":39,"adult":44,"other":5,"cancellations":0,"inc":0,"ooc":0},{"d":20,"regs":38,"part":94,"youth":42,"adult":47,"other":5,"cancellations":0,"inc":0,"ooc":0},{"d":21,"regs":44,"part":109,"youth":48,"adult":56,"other":5,"cancellations":0,"inc":0,"ooc":0},{"d":22,"regs":46,"part":116,"youth":51,"adult":58,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":23,"regs":46,"part":116,"youth":51,"adult":58,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":24,"regs":47,"part":118,"youth":52,"adult":59,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":25,"regs":49,"part":123,"youth":54,"adult":62,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":26,"regs":49,"part":123,"youth":54,"adult":62,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":27,"regs":50,"part":125,"youth":55,"adult":63,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":28,"regs":52,"part":128,"youth":56,"adult":64,"other":8,"cancellations":0,"inc":0,"ooc":0},{"d":29,"regs":55,"part":135,"youth":58,"adult":66,"other":11,"cancellations":0,"inc":0,"ooc":0},{"d":30,"regs":57,"part":138,"youth":58,"adult":66,"other":14,"cancellations":0,"inc":0,"ooc":0},{"d":31,"regs":58,"part":144,"youth":59,"adult":68,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":32,"regs":58,"part":144,"youth":59,"adult":68,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":33,"regs":60,"part":149,"youth":61,"adult":71,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":34,"regs":61,"part":153,"youth":63,"adult":73,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":35,"regs":61,"part":153,"youth":63,"adult":73,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":36,"regs":62,"part":154,"youth":64,"adult":73,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":37,"regs":66,"part":163,"youth":69,"adult":77,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":38,"regs":67,"part":165,"youth":70,"adult":78,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":39,"regs":67,"part":171,"youth":74,"adult":80,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":40,"regs":68,"part":173,"youth":75,"adult":81,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":41,"regs":68,"part":173,"youth":75,"adult":81,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":42,"regs":68,"part":173,"youth":75,"adult":81,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":43,"regs":69,"part":174,"youth":76,"adult":81,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":44,"regs":69,"part":174,"youth":76,"adult":81,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":45,"regs":69,"part":174,"youth":76,"adult":81,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":46,"regs":71,"part":176,"youth":76,"adult":82,"other":18,"cancellations":1,"inc":0,"ooc":0},{"d":47,"regs":72,"part":181,"youth":79,"adult":84,"other":18,"cancellations":1,"inc":0,"ooc":0},{"d":48,"regs":74,"part":190,"youth":83,"adult":86,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":49,"regs":74,"part":190,"youth":83,"adult":86,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":50,"regs":74,"part":190,"youth":83,"adult":86,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":51,"regs":74,"part":190,"youth":83,"adult":86,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":52,"regs":76,"part":196,"youth":85,"adult":88,"other":23,"cancellations":1,"inc":0,"ooc":0},{"d":53,"regs":76,"part":196,"youth":85,"adult":88,"other":23,"cancellations":1,"inc":0,"ooc":0},{"d":54,"regs":76,"part":196,"youth":85,"adult":88,"other":23,"cancellations":1,"inc":0,"ooc":0},{"d":55,"regs":78,"part":201,"youth":88,"adult":90,"other":23,"cancellations":1,"inc":0,"ooc":0},{"d":56,"regs":78,"part":201,"youth":88,"adult":90,"other":23,"cancellations":1,"inc":0,"ooc":0},{"d":57,"regs":79,"part":202,"youth":88,"adult":90,"other":24,"cancellations":1,"inc":0,"ooc":0},{"d":58,"regs":80,"part":204,"youth":88,"adult":90,"other":26,"cancellations":1,"inc":0,"ooc":0},{"d":59,"regs":84,"part":212,"youth":90,"adult":91,"other":31,"cancellations":1,"inc":0,"ooc":0},{"d":60,"regs":84,"part":212,"youth":90,"adult":91,"other":31,"cancellations":1,"inc":0,"ooc":0},{"d":61,"regs":84,"part":212,"youth":90,"adult":91,"other":31,"cancellations":1,"inc":0,"ooc":0},{"d":62,"regs":84,"part":212,"youth":90,"adult":91,"other":31,"cancellations":1,"inc":0,"ooc":0},{"d":63,"regs":85,"part":214,"youth":91,"adult":92,"other":31,"cancellations":1,"inc":0,"ooc":0},{"d":64,"regs":87,"part":219,"youth":91,"adult":92,"other":36,"cancellations":1,"inc":0,"ooc":0},{"d":65,"regs":88,"part":221,"youth":91,"adult":92,"other":38,"cancellations":1,"inc":0,"ooc":0},{"d":66,"regs":90,"part":228,"youth":91,"adult":92,"other":45,"cancellations":1,"inc":0,"ooc":0},{"d":67,"regs":91,"part":230,"youth":91,"adult":92,"other":47,"cancellations":1,"inc":0,"ooc":0},{"d":68,"regs":95,"part":237,"youth":92,"adult":93,"other":52,"cancellations":2,"inc":0,"ooc":0},{"d":69,"regs":100,"part":244,"youth":92,"adult":93,"other":59,"cancellations":2,"inc":0,"ooc":0},{"d":70,"regs":105,"part":251,"youth":93,"adult":94,"other":64,"cancellations":2,"inc":0,"ooc":0},{"d":71,"regs":107,"part":254,"youth":93,"adult":95,"other":66,"cancellations":2,"inc":0,"ooc":0},{"d":72,"regs":108,"part":257,"youth":93,"adult":95,"other":69,"cancellations":2,"inc":0,"ooc":0},{"d":73,"regs":108,"part":257,"youth":93,"adult":95,"other":69,"cancellations":2,"inc":0,"ooc":0},{"d":74,"regs":108,"part":257,"youth":93,"adult":95,"other":69,"cancellations":2,"inc":0,"ooc":0},{"d":75,"regs":108,"part":257,"youth":93,"adult":95,"other":69,"cancellations":2,"inc":0,"ooc":0},{"d":76,"regs":108,"part":257,"youth":93,"adult":95,"other":69,"cancellations":2,"inc":0,"ooc":0},{"d":77,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":78,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":79,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":80,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":81,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":82,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":83,"regs":108,"part":252,"youth":90,"adult":93,"other":69,"cancellations":4,"inc":0,"ooc":0},{"d":84,"regs":108,"part":249,"youth":89,"adult":93,"other":67,"cancellations":5,"inc":0,"ooc":0},{"d":85,"regs":110,"part":268,"youth":89,"adult":93,"other":86,"cancellations":5,"inc":0,"ooc":0}],"2025":[{"d":0,"regs":24,"part":55,"youth":24,"adult":30,"other":1,"cancellations":0,"inc":0,"ooc":0},{"d":1,"regs":26,"part":59,"youth":26,"adult":32,"other":1,"cancellations":0,"inc":0,"ooc":0},{"d":2,"regs":26,"part":59,"youth":26,"adult":32,"other":1,"cancellations":0,"inc":0,"ooc":0},{"d":3,"regs":28,"part":65,"youth":29,"adult":33,"other":3,"cancellations":0,"inc":0,"ooc":0},{"d":4,"regs":30,"part":70,"youth":31,"adult":36,"other":3,"cancellations":0,"inc":0,"ooc":0},{"d":5,"regs":31,"part":72,"youth":32,"adult":36,"other":4,"cancellations":0,"inc":0,"ooc":0},{"d":6,"regs":34,"part":78,"youth":35,"adult":39,"other":4,"cancellations":0,"inc":0,"ooc":0},{"d":7,"regs":37,"part":90,"youth":39,"adult":45,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":8,"regs":38,"part":91,"youth":39,"adult":45,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":9,"regs":38,"part":91,"youth":39,"adult":45,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":10,"regs":39,"part":92,"youth":39,"adult":45,"other":8,"cancellations":0,"inc":0,"ooc":0},{"d":11,"regs":41,"part":94,"youth":39,"adult":46,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":12,"regs":41,"part":94,"youth":39,"adult":46,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":13,"regs":45,"part":101,"youth":42,"adult":49,"other":10,"cancellations":0,"inc":0,"ooc":0},{"d":14,"regs":47,"part":106,"youth":44,"adult":52,"other":10,"cancellations":0,"inc":0,"ooc":0},{"d":15,"regs":48,"part":108,"youth":45,"adult":53,"other":10,"cancellations":0,"inc":0,"ooc":0},{"d":16,"regs":49,"part":110,"youth":45,"adult":53,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":17,"regs":49,"part":110,"youth":45,"adult":53,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":18,"regs":49,"part":110,"youth":45,"adult":53,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":19,"regs":49,"part":110,"youth":45,"adult":53,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":20,"regs":52,"part":119,"youth":47,"adult":55,"other":17,"cancellations":0,"inc":0,"ooc":0},{"d":21,"regs":53,"part":120,"youth":48,"adult":55,"other":17,"cancellations":1,"inc":0,"ooc":0},{"d":22,"regs":53,"part":120,"youth":48,"adult":55,"other":17,"cancellations":1,"inc":0,"ooc":0},{"d":23,"regs":54,"part":124,"youth":49,"adult":56,"other":19,"cancellations":1,"inc":0,"ooc":0},{"d":24,"regs":55,"part":126,"youth":50,"adult":57,"other":19,"cancellations":1,"inc":0,"ooc":0},{"d":25,"regs":55,"part":126,"youth":50,"adult":57,"other":19,"cancellations":1,"inc":0,"ooc":0},{"d":26,"regs":55,"part":126,"youth":50,"adult":57,"other":19,"cancellations":1,"inc":0,"ooc":0},{"d":27,"regs":56,"part":128,"youth":51,"adult":58,"other":19,"cancellations":1,"inc":0,"ooc":0},{"d":28,"regs":56,"part":128,"youth":51,"adult":58,"other":19,"cancellations":1,"inc":0,"ooc":0},{"d":29,"regs":61,"part":138,"youth":55,"adult":62,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":30,"regs":63,"part":143,"youth":57,"adult":65,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":31,"regs":64,"part":145,"youth":58,"adult":66,"other":21,"cancellations":1,"inc":0,"ooc":0},{"d":32,"regs":68,"part":160,"youth":64,"adult":72,"other":24,"cancellations":1,"inc":0,"ooc":0},{"d":33,"regs":69,"part":162,"youth":65,"adult":73,"other":24,"cancellations":1,"inc":0,"ooc":0},{"d":34,"regs":69,"part":162,"youth":65,"adult":73,"other":24,"cancellations":1,"inc":0,"ooc":0},{"d":35,"regs":69,"part":162,"youth":65,"adult":73,"other":24,"cancellations":1,"inc":0,"ooc":0},{"d":36,"regs":70,"part":161,"youth":65,"adult":72,"other":24,"cancellations":3,"inc":0,"ooc":0},{"d":37,"regs":70,"part":161,"youth":65,"adult":72,"other":24,"cancellations":3,"inc":0,"ooc":0},{"d":38,"regs":71,"part":166,"youth":66,"adult":73,"other":27,"cancellations":3,"inc":0,"ooc":0},{"d":39,"regs":73,"part":170,"youth":68,"adult":75,"other":27,"cancellations":3,"inc":0,"ooc":0},{"d":40,"regs":74,"part":172,"youth":69,"adult":76,"other":27,"cancellations":3,"inc":0,"ooc":0},{"d":41,"regs":78,"part":182,"youth":73,"adult":81,"other":28,"cancellations":3,"inc":0,"ooc":0},{"d":42,"regs":80,"part":186,"youth":75,"adult":83,"other":28,"cancellations":3,"inc":0,"ooc":0},{"d":43,"regs":83,"part":192,"youth":77,"adult":86,"other":29,"cancellations":3,"inc":0,"ooc":0},{"d":44,"regs":84,"part":194,"youth":78,"adult":87,"other":29,"cancellations":3,"inc":0,"ooc":0},{"d":45,"regs":85,"part":196,"youth":79,"adult":88,"other":29,"cancellations":3,"inc":0,"ooc":0},{"d":46,"regs":86,"part":199,"youth":80,"adult":89,"other":30,"cancellations":3,"inc":0,"ooc":0},{"d":47,"regs":87,"part":200,"youth":80,"adult":90,"other":30,"cancellations":3,"inc":0,"ooc":0},{"d":48,"regs":88,"part":202,"youth":81,"adult":91,"other":30,"cancellations":3,"inc":0,"ooc":0},{"d":49,"regs":89,"part":204,"youth":82,"adult":92,"other":30,"cancellations":3,"inc":0,"ooc":0},{"d":50,"regs":90,"part":205,"youth":82,"adult":92,"other":31,"cancellations":3,"inc":0,"ooc":0},{"d":51,"regs":91,"part":211,"youth":83,"adult":97,"other":31,"cancellations":3,"inc":0,"ooc":0},{"d":52,"regs":92,"part":213,"youth":84,"adult":97,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":53,"regs":93,"part":215,"youth":85,"adult":98,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":54,"regs":93,"part":215,"youth":85,"adult":98,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":55,"regs":93,"part":215,"youth":85,"adult":98,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":56,"regs":94,"part":218,"youth":86,"adult":100,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":57,"regs":94,"part":218,"youth":86,"adult":100,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":58,"regs":94,"part":218,"youth":86,"adult":100,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":59,"regs":94,"part":218,"youth":86,"adult":100,"other":32,"cancellations":3,"inc":0,"ooc":0},{"d":60,"regs":95,"part":219,"youth":86,"adult":100,"other":33,"cancellations":3,"inc":0,"ooc":0},{"d":61,"regs":95,"part":219,"youth":86,"adult":100,"other":33,"cancellations":3,"inc":0,"ooc":0},{"d":62,"regs":95,"part":219,"youth":86,"adult":100,"other":33,"cancellations":3,"inc":0,"ooc":0},{"d":63,"regs":95,"part":219,"youth":86,"adult":100,"other":33,"cancellations":3,"inc":0,"ooc":0},{"d":64,"regs":95,"part":219,"youth":86,"adult":100,"other":33,"cancellations":3,"inc":0,"ooc":0},{"d":65,"regs":98,"part":226,"youth":89,"adult":103,"other":34,"cancellations":3,"inc":0,"ooc":0},{"d":66,"regs":98,"part":226,"youth":89,"adult":103,"other":34,"cancellations":3,"inc":0,"ooc":0},{"d":67,"regs":99,"part":228,"youth":89,"adult":103,"other":36,"cancellations":3,"inc":0,"ooc":0},{"d":68,"regs":100,"part":229,"youth":89,"adult":103,"other":37,"cancellations":3,"inc":0,"ooc":0},{"d":69,"regs":100,"part":229,"youth":89,"adult":103,"other":37,"cancellations":3,"inc":0,"ooc":0},{"d":70,"regs":100,"part":229,"youth":89,"adult":103,"other":37,"cancellations":3,"inc":0,"ooc":0},{"d":71,"regs":101,"part":230,"youth":89,"adult":103,"other":38,"cancellations":3,"inc":0,"ooc":0},{"d":72,"regs":101,"part":230,"youth":89,"adult":103,"other":38,"cancellations":3,"inc":0,"ooc":0},{"d":73,"regs":103,"part":235,"youth":90,"adult":104,"other":41,"cancellations":3,"inc":0,"ooc":0},{"d":74,"regs":103,"part":235,"youth":90,"adult":104,"other":41,"cancellations":3,"inc":0,"ooc":0},{"d":75,"regs":103,"part":235,"youth":90,"adult":104,"other":41,"cancellations":3,"inc":0,"ooc":0},{"d":76,"regs":105,"part":239,"youth":90,"adult":104,"other":45,"cancellations":3,"inc":0,"ooc":0},{"d":77,"regs":108,"part":246,"youth":91,"adult":106,"other":49,"cancellations":3,"inc":0,"ooc":0},{"d":78,"regs":108,"part":246,"youth":91,"adult":106,"other":49,"cancellations":3,"inc":0,"ooc":0},{"d":79,"regs":110,"part":252,"youth":91,"adult":106,"other":55,"cancellations":3,"inc":0,"ooc":0},{"d":80,"regs":119,"part":270,"youth":98,"adult":113,"other":59,"cancellations":3,"inc":0,"ooc":0},{"d":81,"regs":121,"part":273,"youth":99,"adult":114,"other":60,"cancellations":3,"inc":0,"ooc":0},{"d":82,"regs":122,"part":272,"youth":98,"adult":113,"other":61,"cancellations":4,"inc":0,"ooc":0},{"d":83,"regs":125,"part":276,"youth":98,"adult":113,"other":65,"cancellations":4,"inc":0,"ooc":0},{"d":84,"regs":125,"part":276,"youth":98,"adult":113,"other":65,"cancellations":4,"inc":0,"ooc":0},{"d":85,"regs":126,"part":277,"youth":98,"adult":113,"other":66,"cancellations":4,"inc":0,"ooc":0},{"d":86,"regs":127,"part":279,"youth":99,"adult":114,"other":66,"cancellations":4,"inc":0,"ooc":0},{"d":87,"regs":129,"part":284,"youth":102,"adult":116,"other":66,"cancellations":4,"inc":0,"ooc":0},{"d":88,"regs":133,"part":298,"youth":104,"adult":118,"other":76,"cancellations":4,"inc":0,"ooc":0},{"d":89,"regs":135,"part":300,"youth":104,"adult":118,"other":78,"cancellations":4,"inc":0,"ooc":0},{"d":90,"regs":135,"part":300,"youth":104,"adult":118,"other":78,"cancellations":4,"inc":0,"ooc":0},{"d":91,"regs":135,"part":300,"youth":104,"adult":118,"other":78,"cancellations":4,"inc":0,"ooc":0},{"d":92,"regs":136,"part":301,"youth":105,"adult":118,"other":78,"cancellations":5,"inc":0,"ooc":0},{"d":93,"regs":136,"part":301,"youth":105,"adult":118,"other":78,"cancellations":5,"inc":0,"ooc":0},{"d":94,"regs":136,"part":301,"youth":105,"adult":118,"other":78,"cancellations":5,"inc":0,"ooc":0},{"d":95,"regs":137,"part":302,"youth":105,"adult":118,"other":79,"cancellations":5,"inc":0,"ooc":0},{"d":96,"regs":137,"part":302,"youth":105,"adult":118,"other":79,"cancellations":5,"inc":0,"ooc":0},{"d":97,"regs":137,"part":302,"youth":105,"adult":118,"other":79,"cancellations":5,"inc":0,"ooc":0},{"d":98,"regs":138,"part":304,"youth":106,"adult":119,"other":79,"cancellations":5,"inc":0,"ooc":0}],"2026":[{"d":0,"regs":0,"part":0,"youth":0,"adult":0,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":1,"regs":1,"part":3,"youth":1,"adult":2,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":2,"regs":1,"part":3,"youth":1,"adult":2,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":3,"regs":1,"part":3,"youth":1,"adult":2,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":4,"regs":1,"part":3,"youth":1,"adult":2,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":5,"regs":1,"part":3,"youth":1,"adult":2,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":6,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":7,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":8,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":9,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":10,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":11,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":12,"regs":2,"part":6,"youth":2,"adult":4,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":13,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":14,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":15,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":16,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":17,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":18,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":19,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":20,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":21,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":22,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":23,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":24,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":25,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":26,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":27,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":28,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":29,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":30,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":31,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":32,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":33,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":34,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":35,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":36,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":37,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":38,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":39,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":40,"regs":3,"part":8,"youth":3,"adult":5,"other":0,"cancellations":0,"inc":0,"ooc":0},{"d":41,"regs":4,"part":12,"youth":4,"adult":7,"other":1,"cancellations":0,"inc":0,"ooc":0},{"d":42,"regs":5,"part":16,"youth":6,"adult":8,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":43,"regs":5,"part":16,"youth":6,"adult":8,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":44,"regs":6,"part":18,"youth":7,"adult":9,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":45,"regs":6,"part":18,"youth":7,"adult":9,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":46,"regs":6,"part":18,"youth":7,"adult":9,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":47,"regs":7,"part":20,"youth":8,"adult":10,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":48,"regs":7,"part":20,"youth":8,"adult":10,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":49,"regs":7,"part":20,"youth":8,"adult":10,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":50,"regs":7,"part":20,"youth":8,"adult":10,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":51,"regs":7,"part":20,"youth":8,"adult":10,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":52,"regs":8,"part":25,"youth":9,"adult":14,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":53,"regs":8,"part":25,"youth":9,"adult":14,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":54,"regs":9,"part":27,"youth":10,"adult":15,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":55,"regs":9,"part":27,"youth":10,"adult":15,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":56,"regs":9,"part":27,"youth":10,"adult":15,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":57,"regs":9,"part":27,"youth":10,"adult":15,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":58,"regs":9,"part":27,"youth":10,"adult":15,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":59,"regs":9,"part":27,"youth":10,"adult":15,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":60,"regs":11,"part":34,"youth":14,"adult":18,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":61,"regs":11,"part":34,"youth":14,"adult":18,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":62,"regs":11,"part":34,"youth":14,"adult":18,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":63,"regs":11,"part":34,"youth":14,"adult":18,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":64,"regs":12,"part":36,"youth":15,"adult":19,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":65,"regs":12,"part":36,"youth":15,"adult":19,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":66,"regs":12,"part":36,"youth":15,"adult":19,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":67,"regs":12,"part":36,"youth":15,"adult":19,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":68,"regs":12,"part":36,"youth":15,"adult":19,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":69,"regs":12,"part":36,"youth":15,"adult":19,"other":2,"cancellations":0,"inc":0,"ooc":0},{"d":70,"regs":13,"part":41,"youth":16,"adult":19,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":71,"regs":13,"part":41,"youth":16,"adult":19,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":72,"regs":14,"part":43,"youth":17,"adult":20,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":73,"regs":14,"part":43,"youth":17,"adult":20,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":74,"regs":14,"part":43,"youth":17,"adult":20,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":75,"regs":15,"part":45,"youth":18,"adult":21,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":76,"regs":16,"part":48,"youth":19,"adult":23,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":77,"regs":17,"part":50,"youth":20,"adult":24,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":78,"regs":18,"part":52,"youth":21,"adult":25,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":79,"regs":19,"part":54,"youth":22,"adult":26,"other":6,"cancellations":0,"inc":0,"ooc":0},{"d":80,"regs":20,"part":55,"youth":22,"adult":26,"other":7,"cancellations":0,"inc":0,"ooc":0},{"d":81,"regs":22,"part":58,"youth":23,"adult":27,"other":8,"cancellations":0,"inc":0,"ooc":0},{"d":82,"regs":22,"part":58,"youth":23,"adult":27,"other":8,"cancellations":0,"inc":0,"ooc":0},{"d":83,"regs":23,"part":61,"youth":24,"adult":29,"other":8,"cancellations":0,"inc":0,"ooc":0},{"d":84,"regs":23,"part":61,"youth":24,"adult":29,"other":8,"cancellations":0,"inc":0,"ooc":0},{"d":85,"regs":24,"part":62,"youth":24,"adult":29,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":86,"regs":25,"part":64,"youth":25,"adult":30,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":87,"regs":26,"part":67,"youth":26,"adult":32,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":88,"regs":27,"part":69,"youth":27,"adult":33,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":89,"regs":27,"part":69,"youth":27,"adult":33,"other":9,"cancellations":0,"inc":0,"ooc":0},{"d":90,"regs":29,"part":75,"youth":28,"adult":35,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":91,"regs":29,"part":75,"youth":28,"adult":35,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":92,"regs":29,"part":75,"youth":28,"adult":35,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":93,"regs":30,"part":78,"youth":29,"adult":37,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":94,"regs":31,"part":82,"youth":31,"adult":39,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":95,"regs":31,"part":82,"youth":31,"adult":39,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":96,"regs":31,"part":82,"youth":31,"adult":39,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":97,"regs":31,"part":82,"youth":31,"adult":39,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":98,"regs":31,"part":82,"youth":31,"adult":39,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":99,"regs":32,"part":84,"youth":32,"adult":40,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":100,"regs":32,"part":84,"youth":32,"adult":40,"other":12,"cancellations":0,"inc":0,"ooc":0},{"d":101,"regs":33,"part":86,"youth":33,"adult":40,"other":13,"cancellations":0,"inc":0,"ooc":0},{"d":102,"regs":33,"part":86,"youth":33,"adult":40,"other":13,"cancellations":0,"inc":0,"ooc":0},{"d":103,"regs":34,"part":88,"youth":34,"adult":41,"other":13,"cancellations":0,"inc":0,"ooc":0},{"d":104,"regs":39,"part":99,"youth":39,"adult":47,"other":13,"cancellations":0,"inc":0,"ooc":0},{"d":105,"regs":39,"part":99,"youth":39,"adult":47,"other":13,"cancellations":0,"inc":0,"ooc":0},{"d":106,"regs":40,"part":100,"youth":39,"adult":47,"other":14,"cancellations":0,"inc":0,"ooc":0},{"d":107,"regs":40,"part":100,"youth":39,"adult":47,"other":14,"cancellations":0,"inc":0,"ooc":0}]},"dow":{"2024":{"regs":[14,14,9,38,7,14,14],"youth":[5,7,5,36,9,14,13],"adult":[10,5,4,39,10,15,10],"other":[4,32,10,21,4,5,10],"part":[19,44,19,96,23,34,33],"inc":[0,0,0,0,0,0,0],"ooc":[0,0,0,0,0,0,0]},"2025":{"regs":[21,21,8,21,38,17,12],"youth":[19,15,2,14,37,10,9],"adult":[15,17,2,15,47,9,14],"other":[14,20,5,15,7,7,11],"part":[48,52,9,44,91,26,34],"inc":[0,0,0,0,0,0,0],"ooc":[0,0,0,0,0,0,0]},"2026":{"regs":[6,5,5,5,4,12,3],"youth":[4,5,5,6,4,11,4],"adult":[5,6,8,5,4,17,2],"other":[2,0,2,1,0,4,5],"part":[11,11,15,12,8,32,11],"inc":[0,0,0,0,0,0,0],"ooc":[0,0,0,0,0,0,0]},"all":{"regs":[41,40,22,64,49,43,29],"youth":[28,27,12,56,50,35,26],"adult":[30,28,14,59,61,41,26],"other":[20,52,17,37,11,16,26],"part":[78,107,43,152,122,92,78],"inc":[0,0,0,0,0,0,0],"ooc":[0,0,0,0,0,0,0]}},"dowOrder":["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],"mix":{"years":["2024","2025","2026"],"youth":[89,106,39],"adult":[93,119,47],"other":[86,79,14],"youth_staff":[0,0,0],"adult_staff":[0,0,0],"in_council":[0,0,0],"out_council":[0,0,0],"participants":[268,304,100],"regs":[110,138,40]},"events":{"2024":{"opens":"2024-05-20","closes":"2024-07-31","session":"2024-08-09"},"2025":{"opens":"2025-04-25","closes":"2025-07-25","session":"2025-08-01"},"2026":{"opens":"2026-03-01","closes":"2026-07-22","session":"2026-07-31"}},"parity":{"current_2026":{"days_since_open":107,"regs":40,"participants":100,"youth":39,"adult":47,"other":14,"days_until_session":45,"session_date":"2026-07-31"}},"paceCompare":{"2024_regs_at_same_day":110,"2025_regs_at_same_day":138,"2024_part_at_same_day":268,"2025_part_at_same_day":304,"pct_window_2026":74.8,"2024_regs_at_same_pct":76,"2025_regs_at_same_pct":100,"2024_part_at_same_pct":196,"2025_part_at_same_pct":229,"equiv_day_2024":54,"equiv_day_2025":68},"today":"2026-06-16","windows":{"2024":72,"2025":91,"2026":143},"openToSession":{"2024":81,"2025":98,"2026":152},"finals":{"2024":{"regs":110,"part":268,"youth":89,"adult":93,"other":86,"inc":0,"ooc":0,"cancellations":5},"2025":{"regs":138,"part":304,"youth":106,"adult":119,"other":79,"inc":0,"ooc":0,"cancellations":5},"2026":{"regs":40,"part":100,"youth":39,"adult":47,"other":14,"inc":0,"ooc":0,"cancellations":0}},"cancellations":{"2024":{"blocks":5,"events":5},"2025":{"blocks":5,"events":5},"2026":{"blocks":0,"events":0}},"source":"Participation_Count_Changes_WAOL{2024,2025,2026}.csv"};
-/*LBAC_DATA_END*/
+const DATA = {
+ "years": [
+  "2024",
+  "2025",
+  "2026"
+ ],
+ "totals": {
+  "2024": {
+   "regs": 110,
+   "participants": 268,
+   "youth": 89,
+   "adult": 93,
+   "other": 86,
+   "in_council": 0,
+   "out_council": 0,
+   "cancellation_blocks": 5,
+   "cancellation_events": 5,
+   "reg_days": 39
+  },
+  "2025": {
+   "regs": 138,
+   "participants": 304,
+   "youth": 106,
+   "adult": 119,
+   "other": 79,
+   "in_council": 0,
+   "out_council": 0,
+   "cancellation_blocks": 5,
+   "cancellation_events": 5,
+   "reg_days": 63
+  },
+  "2026": {
+   "regs": 71,
+   "participants": 178,
+   "youth": 67,
+   "adult": 73,
+   "other": 38,
+   "in_council": 0,
+   "out_council": 0,
+   "cancellation_blocks": 0,
+   "cancellation_events": 0,
+   "reg_days": 51
+  }
+ },
+ "pacing": {
+  "2024": [
+   {
+    "d": 0,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 1,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 2,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 3,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 4,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 5,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 6,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 7,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 8,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 9,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 10,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 11,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 12,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 13,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 14,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 15,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 16,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 17,
+    "regs": 27,
+    "part": 65,
+    "youth": 29,
+    "adult": 32,
+    "other": 4,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 18,
+    "regs": 29,
+    "part": 73,
+    "youth": 32,
+    "adult": 36,
+    "other": 5,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 19,
+    "regs": 35,
+    "part": 88,
+    "youth": 39,
+    "adult": 44,
+    "other": 5,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 20,
+    "regs": 38,
+    "part": 94,
+    "youth": 42,
+    "adult": 47,
+    "other": 5,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 21,
+    "regs": 44,
+    "part": 109,
+    "youth": 48,
+    "adult": 56,
+    "other": 5,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 22,
+    "regs": 46,
+    "part": 116,
+    "youth": 51,
+    "adult": 58,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 23,
+    "regs": 46,
+    "part": 116,
+    "youth": 51,
+    "adult": 58,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 24,
+    "regs": 47,
+    "part": 118,
+    "youth": 52,
+    "adult": 59,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 25,
+    "regs": 49,
+    "part": 123,
+    "youth": 54,
+    "adult": 62,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 26,
+    "regs": 49,
+    "part": 123,
+    "youth": 54,
+    "adult": 62,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 27,
+    "regs": 50,
+    "part": 125,
+    "youth": 55,
+    "adult": 63,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 28,
+    "regs": 52,
+    "part": 128,
+    "youth": 56,
+    "adult": 64,
+    "other": 8,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 29,
+    "regs": 55,
+    "part": 135,
+    "youth": 58,
+    "adult": 66,
+    "other": 11,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 30,
+    "regs": 57,
+    "part": 138,
+    "youth": 58,
+    "adult": 66,
+    "other": 14,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 31,
+    "regs": 58,
+    "part": 144,
+    "youth": 59,
+    "adult": 68,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 32,
+    "regs": 58,
+    "part": 144,
+    "youth": 59,
+    "adult": 68,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 33,
+    "regs": 60,
+    "part": 149,
+    "youth": 61,
+    "adult": 71,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 34,
+    "regs": 61,
+    "part": 153,
+    "youth": 63,
+    "adult": 73,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 35,
+    "regs": 61,
+    "part": 153,
+    "youth": 63,
+    "adult": 73,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 36,
+    "regs": 62,
+    "part": 154,
+    "youth": 64,
+    "adult": 73,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 37,
+    "regs": 66,
+    "part": 163,
+    "youth": 69,
+    "adult": 77,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 38,
+    "regs": 67,
+    "part": 165,
+    "youth": 70,
+    "adult": 78,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 39,
+    "regs": 67,
+    "part": 171,
+    "youth": 74,
+    "adult": 80,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 40,
+    "regs": 68,
+    "part": 173,
+    "youth": 75,
+    "adult": 81,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 41,
+    "regs": 68,
+    "part": 173,
+    "youth": 75,
+    "adult": 81,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 42,
+    "regs": 68,
+    "part": 173,
+    "youth": 75,
+    "adult": 81,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 43,
+    "regs": 69,
+    "part": 174,
+    "youth": 76,
+    "adult": 81,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 44,
+    "regs": 69,
+    "part": 174,
+    "youth": 76,
+    "adult": 81,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 45,
+    "regs": 69,
+    "part": 174,
+    "youth": 76,
+    "adult": 81,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 46,
+    "regs": 71,
+    "part": 176,
+    "youth": 76,
+    "adult": 82,
+    "other": 18,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 47,
+    "regs": 72,
+    "part": 181,
+    "youth": 79,
+    "adult": 84,
+    "other": 18,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 48,
+    "regs": 74,
+    "part": 190,
+    "youth": 83,
+    "adult": 86,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 49,
+    "regs": 74,
+    "part": 190,
+    "youth": 83,
+    "adult": 86,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 50,
+    "regs": 74,
+    "part": 190,
+    "youth": 83,
+    "adult": 86,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 51,
+    "regs": 74,
+    "part": 190,
+    "youth": 83,
+    "adult": 86,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 52,
+    "regs": 76,
+    "part": 196,
+    "youth": 85,
+    "adult": 88,
+    "other": 23,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 53,
+    "regs": 76,
+    "part": 196,
+    "youth": 85,
+    "adult": 88,
+    "other": 23,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 54,
+    "regs": 76,
+    "part": 196,
+    "youth": 85,
+    "adult": 88,
+    "other": 23,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 55,
+    "regs": 78,
+    "part": 201,
+    "youth": 88,
+    "adult": 90,
+    "other": 23,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 56,
+    "regs": 78,
+    "part": 201,
+    "youth": 88,
+    "adult": 90,
+    "other": 23,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 57,
+    "regs": 79,
+    "part": 202,
+    "youth": 88,
+    "adult": 90,
+    "other": 24,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 58,
+    "regs": 80,
+    "part": 204,
+    "youth": 88,
+    "adult": 90,
+    "other": 26,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 59,
+    "regs": 84,
+    "part": 212,
+    "youth": 90,
+    "adult": 91,
+    "other": 31,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 60,
+    "regs": 84,
+    "part": 212,
+    "youth": 90,
+    "adult": 91,
+    "other": 31,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 61,
+    "regs": 84,
+    "part": 212,
+    "youth": 90,
+    "adult": 91,
+    "other": 31,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 62,
+    "regs": 84,
+    "part": 212,
+    "youth": 90,
+    "adult": 91,
+    "other": 31,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 63,
+    "regs": 85,
+    "part": 214,
+    "youth": 91,
+    "adult": 92,
+    "other": 31,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 64,
+    "regs": 87,
+    "part": 219,
+    "youth": 91,
+    "adult": 92,
+    "other": 36,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 65,
+    "regs": 88,
+    "part": 221,
+    "youth": 91,
+    "adult": 92,
+    "other": 38,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 66,
+    "regs": 90,
+    "part": 228,
+    "youth": 91,
+    "adult": 92,
+    "other": 45,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 67,
+    "regs": 91,
+    "part": 230,
+    "youth": 91,
+    "adult": 92,
+    "other": 47,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 68,
+    "regs": 95,
+    "part": 237,
+    "youth": 92,
+    "adult": 93,
+    "other": 52,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 69,
+    "regs": 100,
+    "part": 244,
+    "youth": 92,
+    "adult": 93,
+    "other": 59,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 70,
+    "regs": 105,
+    "part": 251,
+    "youth": 93,
+    "adult": 94,
+    "other": 64,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 71,
+    "regs": 107,
+    "part": 254,
+    "youth": 93,
+    "adult": 95,
+    "other": 66,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 72,
+    "regs": 108,
+    "part": 257,
+    "youth": 93,
+    "adult": 95,
+    "other": 69,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 73,
+    "regs": 108,
+    "part": 257,
+    "youth": 93,
+    "adult": 95,
+    "other": 69,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 74,
+    "regs": 108,
+    "part": 257,
+    "youth": 93,
+    "adult": 95,
+    "other": 69,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 75,
+    "regs": 108,
+    "part": 257,
+    "youth": 93,
+    "adult": 95,
+    "other": 69,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 76,
+    "regs": 108,
+    "part": 257,
+    "youth": 93,
+    "adult": 95,
+    "other": 69,
+    "cancellations": 2,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 77,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 78,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 79,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 80,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 81,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 82,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 83,
+    "regs": 108,
+    "part": 252,
+    "youth": 90,
+    "adult": 93,
+    "other": 69,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 84,
+    "regs": 108,
+    "part": 249,
+    "youth": 89,
+    "adult": 93,
+    "other": 67,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 85,
+    "regs": 110,
+    "part": 268,
+    "youth": 89,
+    "adult": 93,
+    "other": 86,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   }
+  ],
+  "2025": [
+   {
+    "d": 0,
+    "regs": 24,
+    "part": 55,
+    "youth": 24,
+    "adult": 30,
+    "other": 1,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 1,
+    "regs": 26,
+    "part": 59,
+    "youth": 26,
+    "adult": 32,
+    "other": 1,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 2,
+    "regs": 26,
+    "part": 59,
+    "youth": 26,
+    "adult": 32,
+    "other": 1,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 3,
+    "regs": 28,
+    "part": 65,
+    "youth": 29,
+    "adult": 33,
+    "other": 3,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 4,
+    "regs": 30,
+    "part": 70,
+    "youth": 31,
+    "adult": 36,
+    "other": 3,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 5,
+    "regs": 31,
+    "part": 72,
+    "youth": 32,
+    "adult": 36,
+    "other": 4,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 6,
+    "regs": 34,
+    "part": 78,
+    "youth": 35,
+    "adult": 39,
+    "other": 4,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 7,
+    "regs": 37,
+    "part": 90,
+    "youth": 39,
+    "adult": 45,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 8,
+    "regs": 38,
+    "part": 91,
+    "youth": 39,
+    "adult": 45,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 9,
+    "regs": 38,
+    "part": 91,
+    "youth": 39,
+    "adult": 45,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 10,
+    "regs": 39,
+    "part": 92,
+    "youth": 39,
+    "adult": 45,
+    "other": 8,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 11,
+    "regs": 41,
+    "part": 94,
+    "youth": 39,
+    "adult": 46,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 12,
+    "regs": 41,
+    "part": 94,
+    "youth": 39,
+    "adult": 46,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 13,
+    "regs": 45,
+    "part": 101,
+    "youth": 42,
+    "adult": 49,
+    "other": 10,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 14,
+    "regs": 47,
+    "part": 106,
+    "youth": 44,
+    "adult": 52,
+    "other": 10,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 15,
+    "regs": 48,
+    "part": 108,
+    "youth": 45,
+    "adult": 53,
+    "other": 10,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 16,
+    "regs": 49,
+    "part": 110,
+    "youth": 45,
+    "adult": 53,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 17,
+    "regs": 49,
+    "part": 110,
+    "youth": 45,
+    "adult": 53,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 18,
+    "regs": 49,
+    "part": 110,
+    "youth": 45,
+    "adult": 53,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 19,
+    "regs": 49,
+    "part": 110,
+    "youth": 45,
+    "adult": 53,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 20,
+    "regs": 52,
+    "part": 119,
+    "youth": 47,
+    "adult": 55,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 21,
+    "regs": 53,
+    "part": 120,
+    "youth": 48,
+    "adult": 55,
+    "other": 17,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 22,
+    "regs": 53,
+    "part": 120,
+    "youth": 48,
+    "adult": 55,
+    "other": 17,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 23,
+    "regs": 54,
+    "part": 124,
+    "youth": 49,
+    "adult": 56,
+    "other": 19,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 24,
+    "regs": 55,
+    "part": 126,
+    "youth": 50,
+    "adult": 57,
+    "other": 19,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 25,
+    "regs": 55,
+    "part": 126,
+    "youth": 50,
+    "adult": 57,
+    "other": 19,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 26,
+    "regs": 55,
+    "part": 126,
+    "youth": 50,
+    "adult": 57,
+    "other": 19,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 27,
+    "regs": 56,
+    "part": 128,
+    "youth": 51,
+    "adult": 58,
+    "other": 19,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 28,
+    "regs": 56,
+    "part": 128,
+    "youth": 51,
+    "adult": 58,
+    "other": 19,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 29,
+    "regs": 61,
+    "part": 138,
+    "youth": 55,
+    "adult": 62,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 30,
+    "regs": 63,
+    "part": 143,
+    "youth": 57,
+    "adult": 65,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 31,
+    "regs": 64,
+    "part": 145,
+    "youth": 58,
+    "adult": 66,
+    "other": 21,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 32,
+    "regs": 68,
+    "part": 160,
+    "youth": 64,
+    "adult": 72,
+    "other": 24,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 33,
+    "regs": 69,
+    "part": 162,
+    "youth": 65,
+    "adult": 73,
+    "other": 24,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 34,
+    "regs": 69,
+    "part": 162,
+    "youth": 65,
+    "adult": 73,
+    "other": 24,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 35,
+    "regs": 69,
+    "part": 162,
+    "youth": 65,
+    "adult": 73,
+    "other": 24,
+    "cancellations": 1,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 36,
+    "regs": 70,
+    "part": 161,
+    "youth": 65,
+    "adult": 72,
+    "other": 24,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 37,
+    "regs": 70,
+    "part": 161,
+    "youth": 65,
+    "adult": 72,
+    "other": 24,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 38,
+    "regs": 71,
+    "part": 166,
+    "youth": 66,
+    "adult": 73,
+    "other": 27,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 39,
+    "regs": 73,
+    "part": 170,
+    "youth": 68,
+    "adult": 75,
+    "other": 27,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 40,
+    "regs": 74,
+    "part": 172,
+    "youth": 69,
+    "adult": 76,
+    "other": 27,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 41,
+    "regs": 78,
+    "part": 182,
+    "youth": 73,
+    "adult": 81,
+    "other": 28,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 42,
+    "regs": 80,
+    "part": 186,
+    "youth": 75,
+    "adult": 83,
+    "other": 28,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 43,
+    "regs": 83,
+    "part": 192,
+    "youth": 77,
+    "adult": 86,
+    "other": 29,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 44,
+    "regs": 84,
+    "part": 194,
+    "youth": 78,
+    "adult": 87,
+    "other": 29,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 45,
+    "regs": 85,
+    "part": 196,
+    "youth": 79,
+    "adult": 88,
+    "other": 29,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 46,
+    "regs": 86,
+    "part": 199,
+    "youth": 80,
+    "adult": 89,
+    "other": 30,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 47,
+    "regs": 87,
+    "part": 200,
+    "youth": 80,
+    "adult": 90,
+    "other": 30,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 48,
+    "regs": 88,
+    "part": 202,
+    "youth": 81,
+    "adult": 91,
+    "other": 30,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 49,
+    "regs": 89,
+    "part": 204,
+    "youth": 82,
+    "adult": 92,
+    "other": 30,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 50,
+    "regs": 90,
+    "part": 205,
+    "youth": 82,
+    "adult": 92,
+    "other": 31,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 51,
+    "regs": 91,
+    "part": 211,
+    "youth": 83,
+    "adult": 97,
+    "other": 31,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 52,
+    "regs": 92,
+    "part": 213,
+    "youth": 84,
+    "adult": 97,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 53,
+    "regs": 93,
+    "part": 215,
+    "youth": 85,
+    "adult": 98,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 54,
+    "regs": 93,
+    "part": 215,
+    "youth": 85,
+    "adult": 98,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 55,
+    "regs": 93,
+    "part": 215,
+    "youth": 85,
+    "adult": 98,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 56,
+    "regs": 94,
+    "part": 218,
+    "youth": 86,
+    "adult": 100,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 57,
+    "regs": 94,
+    "part": 218,
+    "youth": 86,
+    "adult": 100,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 58,
+    "regs": 94,
+    "part": 218,
+    "youth": 86,
+    "adult": 100,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 59,
+    "regs": 94,
+    "part": 218,
+    "youth": 86,
+    "adult": 100,
+    "other": 32,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 60,
+    "regs": 95,
+    "part": 219,
+    "youth": 86,
+    "adult": 100,
+    "other": 33,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 61,
+    "regs": 95,
+    "part": 219,
+    "youth": 86,
+    "adult": 100,
+    "other": 33,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 62,
+    "regs": 95,
+    "part": 219,
+    "youth": 86,
+    "adult": 100,
+    "other": 33,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 63,
+    "regs": 95,
+    "part": 219,
+    "youth": 86,
+    "adult": 100,
+    "other": 33,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 64,
+    "regs": 95,
+    "part": 219,
+    "youth": 86,
+    "adult": 100,
+    "other": 33,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 65,
+    "regs": 98,
+    "part": 226,
+    "youth": 89,
+    "adult": 103,
+    "other": 34,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 66,
+    "regs": 98,
+    "part": 226,
+    "youth": 89,
+    "adult": 103,
+    "other": 34,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 67,
+    "regs": 99,
+    "part": 228,
+    "youth": 89,
+    "adult": 103,
+    "other": 36,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 68,
+    "regs": 100,
+    "part": 229,
+    "youth": 89,
+    "adult": 103,
+    "other": 37,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 69,
+    "regs": 100,
+    "part": 229,
+    "youth": 89,
+    "adult": 103,
+    "other": 37,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 70,
+    "regs": 100,
+    "part": 229,
+    "youth": 89,
+    "adult": 103,
+    "other": 37,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 71,
+    "regs": 101,
+    "part": 230,
+    "youth": 89,
+    "adult": 103,
+    "other": 38,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 72,
+    "regs": 101,
+    "part": 230,
+    "youth": 89,
+    "adult": 103,
+    "other": 38,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 73,
+    "regs": 103,
+    "part": 235,
+    "youth": 90,
+    "adult": 104,
+    "other": 41,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 74,
+    "regs": 103,
+    "part": 235,
+    "youth": 90,
+    "adult": 104,
+    "other": 41,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 75,
+    "regs": 103,
+    "part": 235,
+    "youth": 90,
+    "adult": 104,
+    "other": 41,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 76,
+    "regs": 105,
+    "part": 239,
+    "youth": 90,
+    "adult": 104,
+    "other": 45,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 77,
+    "regs": 108,
+    "part": 246,
+    "youth": 91,
+    "adult": 106,
+    "other": 49,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 78,
+    "regs": 108,
+    "part": 246,
+    "youth": 91,
+    "adult": 106,
+    "other": 49,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 79,
+    "regs": 110,
+    "part": 252,
+    "youth": 91,
+    "adult": 106,
+    "other": 55,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 80,
+    "regs": 119,
+    "part": 270,
+    "youth": 98,
+    "adult": 113,
+    "other": 59,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 81,
+    "regs": 121,
+    "part": 273,
+    "youth": 99,
+    "adult": 114,
+    "other": 60,
+    "cancellations": 3,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 82,
+    "regs": 122,
+    "part": 272,
+    "youth": 98,
+    "adult": 113,
+    "other": 61,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 83,
+    "regs": 125,
+    "part": 276,
+    "youth": 98,
+    "adult": 113,
+    "other": 65,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 84,
+    "regs": 125,
+    "part": 276,
+    "youth": 98,
+    "adult": 113,
+    "other": 65,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 85,
+    "regs": 126,
+    "part": 277,
+    "youth": 98,
+    "adult": 113,
+    "other": 66,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 86,
+    "regs": 127,
+    "part": 279,
+    "youth": 99,
+    "adult": 114,
+    "other": 66,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 87,
+    "regs": 129,
+    "part": 284,
+    "youth": 102,
+    "adult": 116,
+    "other": 66,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 88,
+    "regs": 133,
+    "part": 298,
+    "youth": 104,
+    "adult": 118,
+    "other": 76,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 89,
+    "regs": 135,
+    "part": 300,
+    "youth": 104,
+    "adult": 118,
+    "other": 78,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 90,
+    "regs": 135,
+    "part": 300,
+    "youth": 104,
+    "adult": 118,
+    "other": 78,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 91,
+    "regs": 135,
+    "part": 300,
+    "youth": 104,
+    "adult": 118,
+    "other": 78,
+    "cancellations": 4,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 92,
+    "regs": 136,
+    "part": 301,
+    "youth": 105,
+    "adult": 118,
+    "other": 78,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 93,
+    "regs": 136,
+    "part": 301,
+    "youth": 105,
+    "adult": 118,
+    "other": 78,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 94,
+    "regs": 136,
+    "part": 301,
+    "youth": 105,
+    "adult": 118,
+    "other": 78,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 95,
+    "regs": 137,
+    "part": 302,
+    "youth": 105,
+    "adult": 118,
+    "other": 79,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 96,
+    "regs": 137,
+    "part": 302,
+    "youth": 105,
+    "adult": 118,
+    "other": 79,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 97,
+    "regs": 137,
+    "part": 302,
+    "youth": 105,
+    "adult": 118,
+    "other": 79,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 98,
+    "regs": 138,
+    "part": 304,
+    "youth": 106,
+    "adult": 119,
+    "other": 79,
+    "cancellations": 5,
+    "inc": 0,
+    "ooc": 0
+   }
+  ],
+  "2026": [
+   {
+    "d": 0,
+    "regs": 0,
+    "part": 0,
+    "youth": 0,
+    "adult": 0,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 1,
+    "regs": 1,
+    "part": 3,
+    "youth": 1,
+    "adult": 2,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 2,
+    "regs": 1,
+    "part": 3,
+    "youth": 1,
+    "adult": 2,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 3,
+    "regs": 1,
+    "part": 3,
+    "youth": 1,
+    "adult": 2,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 4,
+    "regs": 1,
+    "part": 3,
+    "youth": 1,
+    "adult": 2,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 5,
+    "regs": 1,
+    "part": 3,
+    "youth": 1,
+    "adult": 2,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 6,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 7,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 8,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 9,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 10,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 11,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 12,
+    "regs": 2,
+    "part": 6,
+    "youth": 2,
+    "adult": 4,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 13,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 14,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 15,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 16,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 17,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 18,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 19,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 20,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 21,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 22,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 23,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 24,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 25,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 26,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 27,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 28,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 29,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 30,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 31,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 32,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 33,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 34,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 35,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 36,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 37,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 38,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 39,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 40,
+    "regs": 3,
+    "part": 8,
+    "youth": 3,
+    "adult": 5,
+    "other": 0,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 41,
+    "regs": 4,
+    "part": 12,
+    "youth": 4,
+    "adult": 7,
+    "other": 1,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 42,
+    "regs": 5,
+    "part": 16,
+    "youth": 6,
+    "adult": 8,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 43,
+    "regs": 5,
+    "part": 16,
+    "youth": 6,
+    "adult": 8,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 44,
+    "regs": 6,
+    "part": 18,
+    "youth": 7,
+    "adult": 9,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 45,
+    "regs": 6,
+    "part": 18,
+    "youth": 7,
+    "adult": 9,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 46,
+    "regs": 6,
+    "part": 18,
+    "youth": 7,
+    "adult": 9,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 47,
+    "regs": 7,
+    "part": 20,
+    "youth": 8,
+    "adult": 10,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 48,
+    "regs": 7,
+    "part": 20,
+    "youth": 8,
+    "adult": 10,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 49,
+    "regs": 7,
+    "part": 20,
+    "youth": 8,
+    "adult": 10,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 50,
+    "regs": 7,
+    "part": 20,
+    "youth": 8,
+    "adult": 10,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 51,
+    "regs": 7,
+    "part": 20,
+    "youth": 8,
+    "adult": 10,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 52,
+    "regs": 8,
+    "part": 25,
+    "youth": 9,
+    "adult": 14,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 53,
+    "regs": 8,
+    "part": 25,
+    "youth": 9,
+    "adult": 14,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 54,
+    "regs": 9,
+    "part": 27,
+    "youth": 10,
+    "adult": 15,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 55,
+    "regs": 9,
+    "part": 27,
+    "youth": 10,
+    "adult": 15,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 56,
+    "regs": 9,
+    "part": 27,
+    "youth": 10,
+    "adult": 15,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 57,
+    "regs": 9,
+    "part": 27,
+    "youth": 10,
+    "adult": 15,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 58,
+    "regs": 9,
+    "part": 27,
+    "youth": 10,
+    "adult": 15,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 59,
+    "regs": 9,
+    "part": 27,
+    "youth": 10,
+    "adult": 15,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 60,
+    "regs": 11,
+    "part": 34,
+    "youth": 14,
+    "adult": 18,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 61,
+    "regs": 11,
+    "part": 34,
+    "youth": 14,
+    "adult": 18,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 62,
+    "regs": 11,
+    "part": 34,
+    "youth": 14,
+    "adult": 18,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 63,
+    "regs": 11,
+    "part": 34,
+    "youth": 14,
+    "adult": 18,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 64,
+    "regs": 12,
+    "part": 36,
+    "youth": 15,
+    "adult": 19,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 65,
+    "regs": 12,
+    "part": 36,
+    "youth": 15,
+    "adult": 19,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 66,
+    "regs": 12,
+    "part": 36,
+    "youth": 15,
+    "adult": 19,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 67,
+    "regs": 12,
+    "part": 36,
+    "youth": 15,
+    "adult": 19,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 68,
+    "regs": 12,
+    "part": 36,
+    "youth": 15,
+    "adult": 19,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 69,
+    "regs": 12,
+    "part": 36,
+    "youth": 15,
+    "adult": 19,
+    "other": 2,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 70,
+    "regs": 13,
+    "part": 41,
+    "youth": 16,
+    "adult": 19,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 71,
+    "regs": 13,
+    "part": 41,
+    "youth": 16,
+    "adult": 19,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 72,
+    "regs": 14,
+    "part": 43,
+    "youth": 17,
+    "adult": 20,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 73,
+    "regs": 14,
+    "part": 43,
+    "youth": 17,
+    "adult": 20,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 74,
+    "regs": 14,
+    "part": 43,
+    "youth": 17,
+    "adult": 20,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 75,
+    "regs": 15,
+    "part": 45,
+    "youth": 18,
+    "adult": 21,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 76,
+    "regs": 16,
+    "part": 48,
+    "youth": 19,
+    "adult": 23,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 77,
+    "regs": 17,
+    "part": 50,
+    "youth": 20,
+    "adult": 24,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 78,
+    "regs": 18,
+    "part": 52,
+    "youth": 21,
+    "adult": 25,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 79,
+    "regs": 19,
+    "part": 54,
+    "youth": 22,
+    "adult": 26,
+    "other": 6,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 80,
+    "regs": 20,
+    "part": 55,
+    "youth": 22,
+    "adult": 26,
+    "other": 7,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 81,
+    "regs": 22,
+    "part": 58,
+    "youth": 23,
+    "adult": 27,
+    "other": 8,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 82,
+    "regs": 22,
+    "part": 58,
+    "youth": 23,
+    "adult": 27,
+    "other": 8,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 83,
+    "regs": 23,
+    "part": 61,
+    "youth": 24,
+    "adult": 29,
+    "other": 8,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 84,
+    "regs": 23,
+    "part": 61,
+    "youth": 24,
+    "adult": 29,
+    "other": 8,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 85,
+    "regs": 24,
+    "part": 62,
+    "youth": 24,
+    "adult": 29,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 86,
+    "regs": 25,
+    "part": 64,
+    "youth": 25,
+    "adult": 30,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 87,
+    "regs": 26,
+    "part": 67,
+    "youth": 26,
+    "adult": 32,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 88,
+    "regs": 27,
+    "part": 69,
+    "youth": 27,
+    "adult": 33,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 89,
+    "regs": 27,
+    "part": 69,
+    "youth": 27,
+    "adult": 33,
+    "other": 9,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 90,
+    "regs": 29,
+    "part": 75,
+    "youth": 28,
+    "adult": 35,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 91,
+    "regs": 29,
+    "part": 75,
+    "youth": 28,
+    "adult": 35,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 92,
+    "regs": 29,
+    "part": 75,
+    "youth": 28,
+    "adult": 35,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 93,
+    "regs": 30,
+    "part": 78,
+    "youth": 29,
+    "adult": 37,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 94,
+    "regs": 31,
+    "part": 82,
+    "youth": 31,
+    "adult": 39,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 95,
+    "regs": 31,
+    "part": 82,
+    "youth": 31,
+    "adult": 39,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 96,
+    "regs": 31,
+    "part": 82,
+    "youth": 31,
+    "adult": 39,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 97,
+    "regs": 31,
+    "part": 82,
+    "youth": 31,
+    "adult": 39,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 98,
+    "regs": 31,
+    "part": 82,
+    "youth": 31,
+    "adult": 39,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 99,
+    "regs": 32,
+    "part": 84,
+    "youth": 32,
+    "adult": 40,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 100,
+    "regs": 32,
+    "part": 84,
+    "youth": 32,
+    "adult": 40,
+    "other": 12,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 101,
+    "regs": 33,
+    "part": 86,
+    "youth": 33,
+    "adult": 40,
+    "other": 13,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 102,
+    "regs": 33,
+    "part": 86,
+    "youth": 33,
+    "adult": 40,
+    "other": 13,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 103,
+    "regs": 34,
+    "part": 88,
+    "youth": 34,
+    "adult": 41,
+    "other": 13,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 104,
+    "regs": 39,
+    "part": 99,
+    "youth": 39,
+    "adult": 47,
+    "other": 13,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 105,
+    "regs": 39,
+    "part": 99,
+    "youth": 39,
+    "adult": 47,
+    "other": 13,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 106,
+    "regs": 40,
+    "part": 100,
+    "youth": 39,
+    "adult": 47,
+    "other": 14,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 107,
+    "regs": 41,
+    "part": 101,
+    "youth": 39,
+    "adult": 47,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 108,
+    "regs": 41,
+    "part": 101,
+    "youth": 39,
+    "adult": 47,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 109,
+    "regs": 41,
+    "part": 101,
+    "youth": 39,
+    "adult": 47,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 110,
+    "regs": 42,
+    "part": 103,
+    "youth": 40,
+    "adult": 48,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 111,
+    "regs": 42,
+    "part": 103,
+    "youth": 40,
+    "adult": 48,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 112,
+    "regs": 42,
+    "part": 103,
+    "youth": 40,
+    "adult": 48,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 113,
+    "regs": 42,
+    "part": 103,
+    "youth": 40,
+    "adult": 48,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 114,
+    "regs": 43,
+    "part": 106,
+    "youth": 41,
+    "adult": 50,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 115,
+    "regs": 44,
+    "part": 108,
+    "youth": 42,
+    "adult": 51,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 116,
+    "regs": 44,
+    "part": 108,
+    "youth": 42,
+    "adult": 51,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 117,
+    "regs": 45,
+    "part": 110,
+    "youth": 43,
+    "adult": 52,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 118,
+    "regs": 45,
+    "part": 110,
+    "youth": 43,
+    "adult": 52,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 119,
+    "regs": 47,
+    "part": 114,
+    "youth": 45,
+    "adult": 54,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 120,
+    "regs": 48,
+    "part": 116,
+    "youth": 46,
+    "adult": 55,
+    "other": 15,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 121,
+    "regs": 52,
+    "part": 135,
+    "youth": 56,
+    "adult": 63,
+    "other": 16,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 122,
+    "regs": 58,
+    "part": 150,
+    "youth": 63,
+    "adult": 70,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 123,
+    "regs": 60,
+    "part": 154,
+    "youth": 65,
+    "adult": 72,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 124,
+    "regs": 60,
+    "part": 154,
+    "youth": 65,
+    "adult": 72,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 125,
+    "regs": 60,
+    "part": 154,
+    "youth": 65,
+    "adult": 72,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 126,
+    "regs": 60,
+    "part": 154,
+    "youth": 65,
+    "adult": 72,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 127,
+    "regs": 60,
+    "part": 154,
+    "youth": 65,
+    "adult": 72,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 128,
+    "regs": 60,
+    "part": 154,
+    "youth": 65,
+    "adult": 72,
+    "other": 17,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 129,
+    "regs": 62,
+    "part": 158,
+    "youth": 66,
+    "adult": 73,
+    "other": 19,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 130,
+    "regs": 63,
+    "part": 159,
+    "youth": 66,
+    "adult": 73,
+    "other": 20,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 131,
+    "regs": 64,
+    "part": 163,
+    "youth": 66,
+    "adult": 73,
+    "other": 24,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 132,
+    "regs": 64,
+    "part": 163,
+    "youth": 66,
+    "adult": 73,
+    "other": 24,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 133,
+    "regs": 64,
+    "part": 163,
+    "youth": 66,
+    "adult": 73,
+    "other": 24,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 134,
+    "regs": 65,
+    "part": 164,
+    "youth": 66,
+    "adult": 73,
+    "other": 25,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 135,
+    "regs": 67,
+    "part": 166,
+    "youth": 67,
+    "adult": 73,
+    "other": 26,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 136,
+    "regs": 68,
+    "part": 170,
+    "youth": 67,
+    "adult": 73,
+    "other": 30,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 137,
+    "regs": 69,
+    "part": 172,
+    "youth": 67,
+    "adult": 73,
+    "other": 32,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 138,
+    "regs": 69,
+    "part": 172,
+    "youth": 67,
+    "adult": 73,
+    "other": 32,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 139,
+    "regs": 69,
+    "part": 172,
+    "youth": 67,
+    "adult": 73,
+    "other": 32,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 140,
+    "regs": 69,
+    "part": 172,
+    "youth": 67,
+    "adult": 73,
+    "other": 32,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 141,
+    "regs": 71,
+    "part": 178,
+    "youth": 67,
+    "adult": 73,
+    "other": 38,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 142,
+    "regs": 71,
+    "part": 178,
+    "youth": 67,
+    "adult": 73,
+    "other": 38,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   },
+   {
+    "d": 143,
+    "regs": 71,
+    "part": 178,
+    "youth": 67,
+    "adult": 73,
+    "other": 38,
+    "cancellations": 0,
+    "inc": 0,
+    "ooc": 0
+   }
+  ]
+ },
+ "dow": {
+  "2024": {
+   "regs": [
+    14,
+    14,
+    9,
+    38,
+    7,
+    14,
+    14
+   ],
+   "youth": [
+    5,
+    7,
+    5,
+    36,
+    9,
+    14,
+    13
+   ],
+   "adult": [
+    10,
+    5,
+    4,
+    39,
+    10,
+    15,
+    10
+   ],
+   "other": [
+    4,
+    32,
+    10,
+    21,
+    4,
+    5,
+    10
+   ],
+   "part": [
+    19,
+    44,
+    19,
+    96,
+    23,
+    34,
+    33
+   ],
+   "inc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "ooc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "2025": {
+   "regs": [
+    21,
+    21,
+    8,
+    21,
+    38,
+    17,
+    12
+   ],
+   "youth": [
+    19,
+    15,
+    2,
+    14,
+    37,
+    10,
+    9
+   ],
+   "adult": [
+    15,
+    17,
+    2,
+    15,
+    47,
+    9,
+    14
+   ],
+   "other": [
+    14,
+    20,
+    5,
+    15,
+    7,
+    7,
+    11
+   ],
+   "part": [
+    48,
+    52,
+    9,
+    44,
+    91,
+    26,
+    34
+   ],
+   "inc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "ooc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "2026": {
+   "regs": [
+    10,
+    13,
+    15,
+    9,
+    7,
+    12,
+    5
+   ],
+   "youth": [
+    5,
+    17,
+    14,
+    8,
+    6,
+    11,
+    6
+   ],
+   "adult": [
+    6,
+    16,
+    17,
+    7,
+    6,
+    17,
+    4
+   ],
+   "other": [
+    9,
+    3,
+    9,
+    4,
+    4,
+    4,
+    5
+   ],
+   "part": [
+    20,
+    36,
+    40,
+    19,
+    16,
+    32,
+    15
+   ],
+   "inc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "ooc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "all": {
+   "regs": [
+    45,
+    48,
+    32,
+    68,
+    52,
+    43,
+    31
+   ],
+   "youth": [
+    29,
+    39,
+    21,
+    58,
+    52,
+    35,
+    28
+   ],
+   "adult": [
+    31,
+    38,
+    23,
+    61,
+    63,
+    41,
+    28
+   ],
+   "other": [
+    27,
+    55,
+    24,
+    40,
+    15,
+    16,
+    26
+   ],
+   "part": [
+    87,
+    132,
+    68,
+    159,
+    130,
+    92,
+    82
+   ],
+   "inc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "ooc": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "dowOrder": [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+  "Sun"
+ ],
+ "mix": {
+  "years": [
+   "2024",
+   "2025",
+   "2026"
+  ],
+  "youth": [
+   89,
+   106,
+   67
+  ],
+  "adult": [
+   93,
+   119,
+   73
+  ],
+  "other": [
+   86,
+   79,
+   38
+  ],
+  "youth_staff": [
+   0,
+   0,
+   0
+  ],
+  "adult_staff": [
+   0,
+   0,
+   0
+  ],
+  "in_council": [
+   0,
+   0,
+   0
+  ],
+  "out_council": [
+   0,
+   0,
+   0
+  ],
+  "participants": [
+   268,
+   304,
+   178
+  ],
+  "regs": [
+   110,
+   138,
+   71
+  ]
+ },
+ "events": {
+  "2024": {
+   "opens": "2024-05-20",
+   "closes": "2024-07-31",
+   "session": "2024-08-09"
+  },
+  "2025": {
+   "opens": "2025-04-25",
+   "closes": "2025-07-25",
+   "session": "2025-08-01"
+  },
+  "2026": {
+   "opens": "2026-03-01",
+   "closes": "2026-07-22",
+   "session": "2026-07-31"
+  }
+ },
+ "parity": {
+  "current_2026": {
+   "days_since_open": 143,
+   "regs": 71,
+   "participants": 178,
+   "youth": 67,
+   "adult": 73,
+   "other": 38,
+   "days_until_session": 9,
+   "session_date": "2026-07-31"
+  }
+ },
+ "paceCompare": {
+  "2024_regs_at_same_day": 110,
+  "2025_regs_at_same_day": 138,
+  "2024_part_at_same_day": 268,
+  "2025_part_at_same_day": 304,
+  "pct_window_2026": 100.0,
+  "2024_regs_at_same_pct": 108,
+  "2025_regs_at_same_pct": 135,
+  "2024_part_at_same_pct": 257,
+  "2025_part_at_same_pct": 300,
+  "equiv_day_2024": 72,
+  "equiv_day_2025": 91
+ },
+ "today": "2026-07-22",
+ "windows": {
+  "2024": 72,
+  "2025": 91,
+  "2026": 143
+ },
+ "openToSession": {
+  "2024": 81,
+  "2025": 98,
+  "2026": 152
+ },
+ "finals": {
+  "2024": {
+   "regs": 110,
+   "part": 268,
+   "youth": 89,
+   "adult": 93,
+   "other": 86,
+   "inc": 0,
+   "ooc": 0,
+   "cancellations": 5
+  },
+  "2025": {
+   "regs": 138,
+   "part": 304,
+   "youth": 106,
+   "adult": 119,
+   "other": 79,
+   "inc": 0,
+   "ooc": 0,
+   "cancellations": 5
+  },
+  "2026": {
+   "regs": 71,
+   "part": 178,
+   "youth": 67,
+   "adult": 73,
+   "other": 38,
+   "inc": 0,
+   "ooc": 0,
+   "cancellations": 0
+  }
+ },
+ "cancellations": {
+  "2024": {
+   "blocks": 5,
+   "events": 5
+  },
+  "2025": {
+   "blocks": 5,
+   "events": 5
+  },
+  "2026": {
+   "blocks": 0,
+   "events": 0
+  }
+ },
+ "source": "Participation_Count_Changes_WAOL{2024,2025,2026}.csv"
+};
 
 // ── Brand palette (matches assets/dashboard.css) ──
 const COLORS = {
@@ -887,5 +4976,5 @@ document.querySelectorAll('.png-btn').forEach(b => {
 renderAll();
 
 </script>
-<!--LBAC_LAST_UPDATED_CHIP--><style>.lbac-last-updated{position:fixed;top:10px;right:14px;background:rgba(15,23,42,.78);color:#e2e8f0;font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.3px;padding:6px 10px;border-radius:999px;z-index:99999;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18);}</style><div class="lbac-last-updated">Last updated &middot; June 16, 2026</div><!--LBAC_LAST_UPDATED_CHIP--></body>
+<!--LBAC_LAST_UPDATED_CHIP--><style>.lbac-last-updated{position:fixed;top:10px;right:14px;background:rgba(15,23,42,.78);color:#e2e8f0;font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.3px;padding:6px 10px;border-radius:999px;z-index:99999;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18);}</style><div class="lbac-last-updated">Last updated &middot; July 22, 2026</div><!--LBAC_LAST_UPDATED_CHIP--></body>
 </html>

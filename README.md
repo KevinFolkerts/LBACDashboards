@@ -32,6 +32,17 @@ That's it. Details below.
 
 ## Sorting rules
 
+**my.scouting.org downloads need no renaming.** Drop `data.csv`,
+`data2.csv`, `dataadult.csv`, etc. straight into the inbox — the sorter
+identifies each report by its contents (snapshot vs monthly-trend columns,
+single-council vs 9-council) and renames it to your convention
+(`Jul26.csv`, `Jul26B.csv`, `Jul26 Adults.csv`, `Dropped 2026.csv`, …).
+The month/year comes from the file's download date. New Member / Dropped /
+Lapsed / Crossover share an identical format, so those are recognized by
+matching against your existing files for the same year; if the sorter can't
+tell (e.g. the first download of a new year), it asks you right in the
+console window.
+
 `routing_rules.json` maps filename patterns to destination folders (first
 match wins). Same-named files at the destination are archived to
 `_Archive\<name>__replaced_<timestamp>.csv` before the new file takes over.
