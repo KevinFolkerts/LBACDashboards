@@ -61,8 +61,9 @@ py -3 refresh_membership.py            (uses lbac_paths.json defaults)
 py -3 refresh_membership.py --check    (validate only, write nothing)
 ```
 
-**Giving Dashboard exception:** donor files are sorted automatically, but the
-Giving Dashboard itself is refreshed in a Cowork chat with Claude.
+**Cowork-refreshed dashboards (Giving, Camp Coyote):** their files are sorted
+automatically, but those dashboards are refreshed in a Cowork chat with
+Claude rather than by a `refresh_*.py` script.
 
 ## Publishing updates
 
