@@ -152,6 +152,7 @@ body { padding-bottom: 76px; }
     <button class="top-tab" data-tab="newmembers">New Members</button>
     <button class="top-tab" data-tab="drops">Drops</button>
     <button class="top-tab" data-tab="goals">Goals</button>
+    <button class="top-tab" data-tab="flow">Membership Flow</button>
   </div>
 
   <!-- PANE 1: MEMBERSHIP TOTALS -->
@@ -491,6 +492,17 @@ body { padding-bottom: 76px; }
 </div>
 <div class="chart-wrap"><canvas id="dUTChart"></canvas></div>
       </div>
+      <div class="card" id="dRetCard" style="margin-top:16px;">
+        <div class="card-head">
+  <div>
+    <h2 id="dRetTitle"><span class="cid">308</span>Retention Rate by Year</h2>
+        <div class="hint">(Year-start members &minus; drops) &divide; year-start members &middot; follows the program filter above &middot; current year is YTD</div>
+  </div>
+  <div class="card-controls"><button class="png" data-chart="dRetentionChart" data-title="308 · Retention Rate by Year — Drops">⤓ PNG</button></div>
+</div>
+<div class="chart-wrap" id="dRetWrap"><canvas id="dRetentionChart"></canvas></div>
+        <p id="dRetEmpty" class="empty-state" style="display:none;">Retention needs a year-start baseline (the December youth snapshot of the prior year). Baselines exist for 2025–2026 today; add Dec22.csv / Dec23.csv exports via the inbox and refresh to light up 2023–2024.</p>
+      </div>
     </div>
 
     <!-- Sub-pane: Monthly Trends -->
@@ -623,6 +635,46 @@ body { padding-bottom: 76px; }
     </div>
   </div>
   <!-- /pane-goals -->
+
+  
+  <!-- PANE 5: MEMBERSHIP FLOW -->
+  <style>
+    #flowTable th, #flowTable td { padding:6px 12px; text-align:right; border-bottom:1px solid #f1f5f9; white-space:nowrap; }
+    #flowTable th:first-child, #flowTable td:first-child { text-align:left; }
+    #flowTable thead th { position:sticky; top:0; background:#f8fafc; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:.05em; }
+    #flowTable td.pos { color:#15803d; font-weight:600; } #flowTable td.neg { color:#c8102e; font-weight:600; }
+  </style>
+  <div id="pane-flow" style="display:none">
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Category</span>
+        <div class="pill-group" id="flowCatPills"></div>
+      </div>
+      <div class="filter-note" id="flowCatNote"></div>
+    </div>
+    <div class="kpis" id="flowKpis"></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head">
+        <div>
+          <h2><span class="cid">501</span>Monthly Membership Flow <span id="flowYears"></span></h2>
+          <div class="hint">Bars (left axis): green = new members, red = drops · white circle = monthly net (new &#8722; drops) · black line (right axis) = total membership · dashed rules mark January</div>
+        </div>
+        <div class="card-controls">
+          <button class="png" data-chart="flowChart" data-title="501 · Monthly Membership Flow">&#10515; PNG</button>
+        </div>
+      </div>
+      <div class="chart-wrap-tall" style="height:520px"><canvas id="flowChart"></canvas></div>
+      <div class="hint" id="flowCoverage" style="margin-top:8px;margin-bottom:0;"></div>
+    </div>
+    <details class="card" style="margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;color:#1f3a5f;padding:2px 0;">View monthly data table</summary>
+      <div style="max-height:420px;overflow:auto;margin-top:10px;">
+        <table id="flowTable"><thead><tr><th>Month</th><th>New members</th><th>Drops</th><th>Net</th><th>Total membership</th></tr></thead><tbody></tbody></table>
+      </div>
+    </details>
+    <div class="footer">Traditional = Packs, Troops, Crews &amp; Ships excl. ScoutReach &amp; LFL &#183; SR = ScoutReach (New Frontier 03) &#183; 2023 totals derived from the &#8220;Same Month Last Year&#8221; column of the 2024 monthly exports &#183; new-member / drop counts from the yearly registration files</div>
+  </div>
+  <!-- /pane-flow -->
 
   <div class="footer">Source: monthly membership CSV exports · Council 032 Long Beach, CA</div>
 </div>
@@ -845,7 +897,7 @@ function renderTrendChart(view) {
 }
 
 function renderTrendSequential(view) {
-  document.getElementById('trendTitle').textContent = 'Total Membership — 25-Month Trend';
+  document.getElementById('trendTitle').innerHTML = '<span class="cid">101</span>Total Membership — 25-Month Trend';
   document.getElementById('trendHint').textContent = 'Continuous timeline of actual monthly values. Dashed segment (' + getData().monthLabels[0] + ' – ' + getData().monthLabels[getData().currentPeriodStart] + ') is reconstructed from "Same Month Last Year" data; solid segment (' + getData().monthLabels[getData().currentPeriodStart] + ' – ' + getData().currentMonthLabel + ') is the current reporting period. Both segments share the ' + getData().monthLabels[getData().currentPeriodStart] + ' data point where they meet.';
   const startIdx = getData().currentPeriodStart;
   const monthly = view.monthlyTotal;
@@ -882,7 +934,7 @@ function renderTrendSequential(view) {
 }
 
 function renderTrendYoY(view) {
-  document.getElementById('trendTitle').textContent = 'Total Membership — Year-over-Year Overlay';
+  document.getElementById('trendTitle').innerHTML = '<span class="cid">101</span>Total Membership — Year-over-Year Overlay';
   document.getElementById('trendHint').textContent = 'At each x-axis position, the dashed line shows what membership was 12 months earlier. So at "' + getData().monthLabels[getData().currentPeriodStart] + '" the dashed value is the ' + getData().monthLabels[0] + ' number; at "' + getData().currentMonthLabel + '" the dashed value is the ' + getData().priorYearLabel + ' number. Use this for direct YoY comparison.';
   const startIdx = getData().currentPeriodStart;
   const monthly = view.monthlyTotal;
@@ -1220,6 +1272,7 @@ document.addEventListener('click', function(e){
   /*LBAC_DATA_START*/
   const NM_DATA = {"YEARS": [2021, 2022, 2023, 2024, 2025, 2026], "partialYear": 2026, "partialLastMonthIdx": 6, "M": {"All": [[32, 13, 9, 2, 0, 1, 6, 8, 31, 57, 80, 114], [5, 16, 48, 71, 48, 32, 14, 17, 29, 57, 33, 44], [20, 23, 44, 25, 17, 31, 11, 11, 25, 39, 67, 39], [36, 40, 20, 12, 13, 6, 14, 20, 69, 44, 16, 105], [25, 14, 16, 9, 6, 16, 6, 16, 54, 85, 45, 82], [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null]], "Traditional Scouting": [[32, 13, 9, 2, 0, 1, 1, 5, 31, 57, 35, 65], [5, 14, 44, 48, 43, 10, 14, 17, 25, 53, 30, 10], [19, 17, 42, 22, 15, 21, 11, 11, 20, 38, 40, 23], [30, 21, 20, 11, 11, 6, 14, 20, 34, 30, 16, 15], [19, 14, 16, 9, 6, 12, 6, 14, 30, 33, 19, 21], [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null]], "Pack (Trad)": [[22, 10, 3, 0, 0, 1, 0, 2, 24, 42, 30, 46], [4, 4, 25, 21, 17, 4, 6, 14, 20, 47, 24, 7], [5, 10, 25, 17, 8, 16, 9, 9, 19, 31, 39, 13], [8, 14, 12, 7, 0, 4, 5, 10, 32, 21, 12, 7], [6, 12, 11, 5, 5, 6, 5, 9, 26, 29, 10, 16], [13, 7, 11, 9, 20, 8, 4, null, null, null, null, null]], "Pack (SR)": [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 27], [0, 2, 3, 23, 5, 2, 0, 0, 4, 4, 3, 1], [0, 6, 2, 3, 2, 0, 0, 0, 5, 1, 1, 7], [0, 19, 0, 1, 2, 0, 0, 0, 35, 14, 0, 51], [2, 0, 0, 0, 0, 4, 0, 0, 22, 52, 26, 22], [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null]], "Troop": [[5, 1, 3, 2, 0, 0, 1, 3, 6, 12, 2, 11], [1, 5, 17, 18, 25, 6, 8, 2, 2, 6, 6, 2], [9, 4, 11, 5, 5, 3, 0, 1, 0, 5, 1, 1], [7, 4, 8, 4, 10, 2, 6, 10, 1, 8, 4, 6], [11, 1, 4, 4, 1, 3, 1, 4, 3, 4, 9, 5], [6, 7, 3, 1, 4, 4, 1, null, null, null, null, null]], "Crew": [[1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 9], [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 2, 0, 0, null, null, null, null, null]], "Ship": [[4, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 5], [0, 5, 1, 9, 1, 0, 0, 1, 3, 0, 0, 0], [4, 3, 1, 0, 2, 2, 2, 1, 1, 2, 0, 0], [14, 3, 0, 0, 1, 0, 3, 0, 0, 1, 0, 2], [2, 1, 0, 0, 0, 3, 0, 1, 0, 0, 0, 0], [1, 0, 0, 0, 1, 2, 0, null, null, null, null, null]], "Post": [[0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 21, 22], [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 33], [1, 0, 0, 0, 0, 10, 0, 0, 0, 0, 26, 9], [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39], [4, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 39], [1, 3, 2, 0, 2, 0, 1, null, null, null, null, null]]}, "TU": {"All": [{"u": "Post 0279 EX", "d": [31, 33, 36, 37, 32, 4]}, {"u": "Pack 0088 FP", "d": [12, 9, 33, 12, 19, 10]}, {"u": "Pack 0075 FP", "d": [33, 10, 23, 14, 10, 2]}, {"u": "Pack 0714 FP", "d": [11, 10, 10, 11, 41, 1]}, {"u": "Pack 0007 FP", "d": [7, 15, 22, 18, 15, 3]}, {"u": "Pack 0134 FP", "d": [13, 11, 23, 11, 10, 4]}, {"u": "Pack 0078 FP", "d": [16, 15, 7, 8, 15, 10]}, {"u": "Pack 0371 FP", "d": [10, 22, 6, 11, 11, 6]}, {"u": "Pack 0222 FP", "d": [0, 38, 13, 7, 4, 4]}, {"u": "Pack 0205 BP", "d": [10, 19, 16, 9, 5, 3]}, {"u": "Pack 0206 FP", "d": [13, 11, 13, 5, 13, 3]}, {"u": "Pack 0702 FP", "d": [0, 0, 0, 27, 30, 0]}, {"u": "Pack 0032 FP", "d": [3, 8, 17, 13, 12, 1]}, {"u": "Pack 0062 FP", "d": [16, 13, 5, 10, 4, 4]}, {"u": "Pack 0021 FP", "d": [11, 4, 9, 11, 11, 6]}], "Traditional Scouting": [{"u": "Pack 0088 FP", "d": [12, 9, 33, 12, 19, 10]}, {"u": "Pack 0075 FP", "d": [33, 10, 23, 14, 10, 2]}, {"u": "Pack 0007 FP", "d": [7, 15, 22, 18, 15, 3]}, {"u": "Pack 0134 FP", "d": [13, 11, 23, 11, 10, 4]}, {"u": "Pack 0078 FP", "d": [16, 15, 7, 8, 15, 10]}, {"u": "Pack 0222 FP", "d": [0, 38, 13, 7, 4, 4]}, {"u": "Pack 0371 FP", "d": [10, 22, 6, 11, 11, 6]}, {"u": "Pack 0205 BP", "d": [10, 19, 16, 9, 5, 3]}, {"u": "Pack 0206 FP", "d": [13, 11, 13, 5, 13, 3]}, {"u": "Pack 0032 FP", "d": [3, 8, 17, 13, 12, 1]}, {"u": "Pack 0021 FP", "d": [11, 4, 9, 11, 11, 6]}, {"u": "Pack 0062 FP", "d": [16, 13, 5, 10, 4, 4]}, {"u": "Troop 0222 BT", "d": [0, 20, 7, 10, 5, 0]}, {"u": "Troop 0134 FT", "d": [6, 7, 7, 7, 3, 8]}, {"u": "Pack 0208 FP", "d": [11, 10, 6, 3, 2, 1]}], "Pack (Trad)": [{"u": "Pack 0088 FP", "d": [12, 9, 33, 12, 19, 10]}, {"u": "Pack 0075 FP", "d": [33, 10, 23, 14, 10, 2]}, {"u": "Pack 0007 FP", "d": [7, 15, 22, 18, 15, 3]}, {"u": "Pack 0134 FP", "d": [13, 11, 23, 11, 10, 4]}, {"u": "Pack 0078 FP", "d": [16, 15, 7, 8, 15, 10]}, {"u": "Pack 0371 FP", "d": [10, 22, 6, 11, 11, 6]}, {"u": "Pack 0222 FP", "d": [0, 38, 13, 7, 4, 4]}, {"u": "Pack 0205 BP", "d": [10, 19, 16, 9, 5, 3]}, {"u": "Pack 0206 FP", "d": [13, 11, 13, 5, 13, 3]}, {"u": "Pack 0032 FP", "d": [3, 8, 17, 13, 12, 1]}, {"u": "Pack 0062 FP", "d": [16, 13, 5, 10, 4, 4]}, {"u": "Pack 0021 FP", "d": [11, 4, 9, 11, 11, 6]}, {"u": "Pack 0208 FP", "d": [11, 10, 6, 3, 2, 1]}, {"u": "Pack 0117 BP", "d": [7, 5, 3, 0, 0, 0]}, {"u": "Pack 0140 FP", "d": [12, 0, 0, 0, 0, 0]}], "Pack (SR)": [{"u": "Pack 0714 FP", "d": [11, 10, 10, 11, 41, 1]}, {"u": "Pack 0702 FP", "d": [0, 0, 0, 27, 30, 0]}, {"u": "Pack 0734 FP", "d": [13, 0, 1, 10, 20, 0]}, {"u": "Pack 0730 FP", "d": [12, 7, 5, 3, 10, 0]}, {"u": "Pack 0754 FP", "d": [0, 0, 0, 0, 0, 32]}, {"u": "Pack 0736 FP", "d": [15, 5, 11, 0, 0, 0]}, {"u": "Pack 0703 FP", "d": [0, 25, 0, 0, 0, 0]}, {"u": "Pack 0710 FP", "d": [0, 0, 0, 24, 0, 0]}, {"u": "Pack 0715 FP", "d": [0, 0, 0, 0, 22, 0]}, {"u": "Pack 0750 FP", "d": [0, 0, 0, 20, 1, 0]}, {"u": "Pack 0753 FP", "d": [0, 0, 0, 0, 0, 20]}, {"u": "Pack 0751 FP", "d": [0, 0, 0, 17, 0, 0]}, {"u": "Pack 0713 FP", "d": [0, 0, 0, 10, 4, 0]}, {"u": "Pack 0752 FP", "d": [0, 0, 0, 0, 0, 10]}], "Troop": [{"u": "Troop 0222 BT", "d": [0, 20, 7, 10, 5, 0]}, {"u": "Troop 0134 FT", "d": [6, 7, 7, 7, 3, 8]}, {"u": "Troop 0212 BT", "d": [4, 0, 11, 11, 5, 0]}, {"u": "Troop 0222 GT", "d": [0, 14, 0, 10, 3, 0]}, {"u": "Troop 0413 GT", "d": [0, 17, 0, 4, 0, 0]}, {"u": "Troop 0065 BT", "d": [2, 6, 2, 2, 6, 0]}, {"u": "Troop 0413 FT", "d": [0, 9, 0, 2, 4, 2]}, {"u": "Troop 0140 BT", "d": [2, 8, 1, 1, 2, 0]}, {"u": "Troop 0134 GT", "d": [9, 4, 0, 0, 0, 0]}, {"u": "Troop 0105 BT", "d": [0, 0, 0, 2, 4, 7]}, {"u": "Troop 0074 GT", "d": [0, 0, 0, 3, 4, 4]}, {"u": "Troop 0247 BT", "d": [0, 2, 4, 2, 2, 0]}, {"u": "Troop 0120 BT", "d": [5, 2, 0, 2, 1, 0]}, {"u": "Troop 0067 BT", "d": [2, 4, 2, 1, 0, 0]}, {"u": "Troop 0014 BT", "d": [2, 2, 2, 3, 0, 0]}], "Crew": [{"u": "Crew 0228 NA", "d": [4, 1, 14, 2, 1, 2]}, {"u": "Crew 0134 UNK", "d": [0, 1, 1, 0, 1, 0]}, {"u": "Crew 0126 UNK", "d": [1, 0, 0, 0, 0, 0]}, {"u": "Crew 0074 NA", "d": [0, 0, 0, 0, 0, 0]}], "Ship": [{"u": "Ship 0550 NA", "d": [8, 7, 5, 9, 2, 2]}, {"u": "Ship 0564 NA", "d": [3, 7, 5, 4, 0, 1]}, {"u": "Ship 0549 NA", "d": [2, 0, 3, 9, 4, 0]}, {"u": "Ship 0566 NA", "d": [0, 6, 3, 2, 1, 1]}, {"u": "Ship 0522 UNK", "d": [0, 0, 2, 0, 0, 0]}, {"u": "Ship 0501 UNK", "d": [1, 0, 0, 0, 0, 0]}], "Post": [{"u": "Post 0279 EX", "d": [31, 33, 36, 37, 32, 4]}, {"u": "Post 2704 UNK", "d": [3, 1, 10, 8, 15, 5]}, {"u": "Post 0295 UNK", "d": [13, 0, 0, 0, 0, 0]}]}, "DIST": [{"name": "Iron Star", "v": [231, 293, 261, 204, 192, 100], "color": "#c8102e", "note": "231 \u2192 192 (peak 293 in 2022)"}, {"name": "New Frontier", "v": [51, 47, 27, 122, 128, 63], "color": "#1f3a5f", "note": "Up sharply: 51 \u2192 128"}, {"name": "LFL", "v": [51, 54, 46, 45, 47, 16], "color": "#0ea5b7", "note": "Steady \u2248 49/yr"}, {"name": "Neptune", "v": [20, 20, 18, 24, 7, 4], "color": "#f1b434", "note": "Down sharply: 20 \u2192 7"}], "UTD": {"Pack": [237, 240, 228, 254, 268, 135], "Troop": [46, 98, 45, 70, 50, 26], "Crew": [5, 2, 15, 2, 2, 2], "Ship": [14, 20, 18, 24, 7, 4], "Post": [47, 34, 46, 45, 47, 9]}};
   /*LBAC_DATA_END*/
+  window.NM_DATA = NM_DATA; // exposed for Membership Flow tab
   const M = NM_DATA.M;
   const TU = NM_DATA.TU;
   const DIST = NM_DATA.DIST;
@@ -1469,7 +1522,7 @@ document.addEventListener('click', function(e){
     card.style.display = show ? '' : 'none';
     if (!show) return;
     killChart('ut');
-    document.getElementById('nmUTTitle').textContent = state.filt === 'All' ? 'Unit Type by Year' : 'Traditional Scouting Types by Year';
+    document.getElementById('nmUTTitle').innerHTML = '<span class="cid">203</span>' + (state.filt === 'All' ? 'Unit Type by Year' : 'Traditional Scouting Types by Year');
     const types = state.filt === 'All' ? ['Pack','Troop','Post','Ship','Crew'] : ['Pack','Troop','Ship','Crew'];
     const yrs = activeYrs();
     const TYPE_COLORS = { Pack: '#c8102e', Troop: '#1f3a5f', Crew: '#f1b434', Ship: '#0ea5b7', Post: '#7c3aed' };
@@ -1509,7 +1562,7 @@ document.addEventListener('click', function(e){
   function renderMonthlyChart(){
     killChart('monthly');
     const yrs = activeYrs();
-    document.getElementById('nmMonthlyTitle').textContent = 'Monthly New Members — ' + state.filt;
+    document.getElementById('nmMonthlyTitle').innerHTML = '<span class="cid">204</span>Monthly New Members — ' + state.filt;
     const monthlyDatasets = yrs.map(y => {
       const md = gM(state.filt, y);
       // Chart.js v4 draws sorted metasets in reverse iteration, so a LOWER
@@ -1560,7 +1613,7 @@ document.addEventListener('click', function(e){
   function renderCumChart(){
     killChart('cum');
     const yrs = activeYrs();
-    document.getElementById('nmCumTitle').textContent = 'Cumulative Registrations — ' + state.filt;
+    document.getElementById('nmCumTitle').innerHTML = '<span class="cid">205</span>Cumulative Registrations — ' + state.filt;
     const cumDatasets = yrs.map(y => {
       const md = gM(state.filt, y);
       let r = 0;
@@ -1671,7 +1724,7 @@ document.addEventListener('click', function(e){
     killChart('topunits');
     const d = topUnitsData();
     const fc = FC[state.filt] || '#c8102e';
-    document.getElementById('nmTopUnitsTitle').textContent = 'Top Units — ' + state.filt + ' (' + activeYrs().join(', ') + ')';
+    document.getElementById('nmTopUnitsTitle').innerHTML = '<span class="cid">207</span>Top Units — ' + state.filt + ' (' + activeYrs().join(', ') + ')';
     const wrap = document.getElementById('nmTopUnitsWrap');
     const empty = document.getElementById('nmTopUnitsEmpty');
     if (!d.length) {
@@ -1792,6 +1845,7 @@ document.addEventListener('click', function(e){
   /*LBAC_DATA_START*/
   const D_DATA = {"YEARS": [2023, 2024, 2025, 2026], "partialYear": 2026, "partialLastMonthIdx": 6, "M": {"All": [[207, 86, 33, 16, 4, 28, 2, 0, 0, 2, 6, 3], [233, 50, 0, 3, 3, 6, 33, 9, 4, 12, 0, 17], [19, 11, 17, 223, 9, 12, 9, 11, 4, 11, 13, 40], [8, 53, 166, 21, 11, 6, 8, null, null, null, null, null]], "Traditional Scouting": [[188, 54, 33, 15, 4, 22, 2, 0, 0, 2, 0, 2], [222, 7, 0, 3, 1, 5, 26, 9, 2, 7, 0, 17], [16, 10, 10, 196, 6, 10, 7, 8, 2, 9, 11, 33], [7, 17, 123, 14, 9, 5, 6, null, null, null, null, null]], "Pack (Trad)": [[72, 20, 5, 14, 4, 21, 2, 0, 0, 2, 0, 2], [78, 0, 0, 3, 0, 2, 0, 3, 0, 1, 0, 8], [12, 5, 2, 86, 4, 6, 2, 3, 0, 3, 8, 24], [5, 10, 32, 11, 3, 4, 5, null, null, null, null, null]], "Pack (SR)": [[0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 13, 2, 0, 1, 1, 0, 0, 1, 5], [1, 10, 25, 4, 0, 0, 0, null, null, null, null, null]], "Troop": [[99, 31, 24, 0, 0, 1, 0, 0, 0, 0, 0, 0], [105, 7, 0, 0, 1, 1, 22, 6, 1, 5, 0, 8], [4, 3, 8, 90, 1, 4, 5, 5, 2, 3, 3, 8], [1, 4, 81, 1, 4, 0, 1, null, null, null, null, null]], "Crew": [[0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0], [18, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1], [0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1], [0, 2, 3, 0, 0, 1, 0, null, null, null, null, null]], "Ship": [[17, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [21, 0, 0, 0, 0, 1, 3, 0, 1, 1, 0, 0], [0, 2, 0, 15, 1, 0, 0, 0, 0, 3, 0, 0], [1, 1, 7, 2, 2, 0, 0, null, null, null, null, null]], "Post": [[19, 0, 0, 1, 0, 6, 0, 0, 0, 0, 6, 1], [11, 34, 0, 0, 2, 1, 7, 0, 2, 5, 0, 0], [3, 1, 7, 14, 1, 2, 1, 2, 2, 2, 1, 2], [0, 26, 18, 3, 2, 1, 2, null, null, null, null, null]]}, "TU": {"All": [{"u": "Post 0279 EX", "d": [29, 49, 33, 44]}, {"u": "Troop 0120 BT", "d": [29, 20, 11, 13]}, {"u": "Troop 0134 FT", "d": [18, 16, 20, 11]}, {"u": "Pack 0007 FP", "d": [6, 8, 24, 13]}, {"u": "Troop 0065 BT", "d": [19, 11, 12, 6]}, {"u": "Pack 0075 FP", "d": [20, 6, 17, 5]}, {"u": "Pack 0088 FP", "d": [12, 10, 15, 8]}, {"u": "Pack 0078 FP", "d": [23, 12, 7, 2]}, {"u": "Pack 0371 FP", "d": [7, 12, 11, 11]}, {"u": "Pack 0134 FP", "d": [12, 9, 14, 2]}, {"u": "Ship 0550 NA", "d": [9, 10, 11, 7]}, {"u": "Pack 0205 BP", "d": [8, 9, 14, 5]}, {"u": "Troop 0212 BT", "d": [7, 10, 10, 6]}, {"u": "Post 2704 UNK", "d": [4, 13, 5, 8]}, {"u": "Pack 0021 FP", "d": [4, 1, 17, 6]}], "Traditional Scouting": [{"u": "Troop 0120 BT", "d": [29, 20, 11, 13]}, {"u": "Troop 0134 FT", "d": [18, 16, 20, 11]}, {"u": "Pack 0007 FP", "d": [6, 8, 24, 13]}, {"u": "Troop 0065 BT", "d": [19, 11, 12, 6]}, {"u": "Pack 0075 FP", "d": [20, 6, 17, 5]}, {"u": "Pack 0088 FP", "d": [12, 10, 15, 8]}, {"u": "Pack 0078 FP", "d": [23, 12, 7, 2]}, {"u": "Pack 0371 FP", "d": [7, 12, 11, 11]}, {"u": "Ship 0550 NA", "d": [9, 10, 11, 7]}, {"u": "Pack 0134 FP", "d": [12, 9, 14, 2]}, {"u": "Pack 0205 BP", "d": [8, 9, 14, 5]}, {"u": "Troop 0212 BT", "d": [7, 10, 10, 6]}, {"u": "Pack 0021 FP", "d": [4, 1, 17, 6]}, {"u": "Pack 0206 FP", "d": [2, 11, 8, 6]}, {"u": "Crew 0228 NA", "d": [4, 18, 3, 2]}], "Pack (Trad)": [{"u": "Pack 0007 FP", "d": [6, 8, 24, 13]}, {"u": "Pack 0075 FP", "d": [20, 6, 17, 5]}, {"u": "Pack 0088 FP", "d": [12, 10, 15, 8]}, {"u": "Pack 0078 FP", "d": [23, 12, 7, 2]}, {"u": "Pack 0371 FP", "d": [7, 12, 11, 11]}, {"u": "Pack 0134 FP", "d": [12, 9, 14, 2]}, {"u": "Pack 0205 BP", "d": [8, 9, 14, 5]}, {"u": "Pack 0021 FP", "d": [4, 1, 17, 6]}, {"u": "Pack 0032 FP", "d": [9, 4, 11, 3]}, {"u": "Pack 0206 FP", "d": [2, 11, 8, 6]}, {"u": "Pack 0222 FP", "d": [8, 6, 8, 1]}, {"u": "Pack 0208 FP", "d": [7, 2, 4, 5]}, {"u": "Pack 0014 FP", "d": [14, 0, 0, 0]}, {"u": "Pack 0062 FP", "d": [4, 4, 4, 0]}, {"u": "Pack 0117 BP", "d": [6, 0, 0, 0]}], "Pack (SR)": [{"u": "Pack 0714 FP", "d": [1, 4, 10, 8]}, {"u": "Pack 0730 FP", "d": [3, 2, 5, 11]}, {"u": "Pack 0734 FP", "d": [2, 3, 4, 8]}, {"u": "Pack 0736 FP", "d": [11, 0, 0, 0]}, {"u": "Pack 0703 FP", "d": [6, 0, 0, 0]}, {"u": "Pack 0710 FP", "d": [0, 0, 1, 4]}, {"u": "Pack 0751 FP", "d": [0, 0, 0, 4]}, {"u": "Pack 0750 FP", "d": [0, 0, 0, 4]}, {"u": "Pack 0702 FP", "d": [0, 0, 3, 0]}, {"u": "Pack 0713 FP", "d": [0, 0, 0, 1]}], "Troop": [{"u": "Troop 0120 BT", "d": [29, 20, 11, 13]}, {"u": "Troop 0134 FT", "d": [18, 16, 20, 11]}, {"u": "Troop 0065 BT", "d": [19, 11, 12, 6]}, {"u": "Troop 0212 BT", "d": [7, 10, 10, 6]}, {"u": "Troop 0074 BT", "d": [6, 9, 5, 6]}, {"u": "Troop 0222 BT", "d": [2, 5, 7, 11]}, {"u": "Troop 0371 BT", "d": [5, 6, 10, 4]}, {"u": "Troop 0067 BT", "d": [9, 6, 6, 3]}, {"u": "Troop 0075 BT", "d": [7, 8, 4, 3]}, {"u": "Troop 0105 BT", "d": [9, 8, 3, 1]}, {"u": "Troop 0413 GT", "d": [5, 8, 7, 0]}, {"u": "Troop 0014 BT", "d": [7, 8, 3, 2]}, {"u": "Troop 0247 BT", "d": [3, 8, 6, 2]}, {"u": "Troop 0224 BT", "d": [6, 5, 4, 2]}, {"u": "Troop 0021 BT", "d": [1, 3, 3, 9]}], "Crew": [{"u": "Crew 0228 NA", "d": [4, 18, 3, 2]}, {"u": "Crew 0134 UNK", "d": [0, 3, 3, 4]}], "Ship": [{"u": "Ship 0550 NA", "d": [9, 10, 11, 7]}, {"u": "Ship 0564 NA", "d": [8, 7, 2, 3]}, {"u": "Ship 0549 NA", "d": [3, 3, 8, 2]}, {"u": "Ship 0566 NA", "d": [1, 6, 0, 1]}, {"u": "Ship 0522 UNK", "d": [0, 1, 0, 0]}], "Post": [{"u": "Post 0279 EX", "d": [29, 49, 33, 44]}, {"u": "Post 2704 UNK", "d": [4, 13, 5, 8]}]}, "DIST": [{"name": "Iron Star", "v": [301, 272, 297, 168], "color": "#c8102e", "note": "Steady \u2248 290/yr"}, {"name": "New Frontier", "v": [23, 9, 23, 40], "color": "#1f3a5f", "note": "Steady \u2248 18/yr"}, {"name": "LFL", "v": [42, 62, 38, 52], "color": "#0ea5b7", "note": "Steady \u2248 47/yr"}, {"name": "Neptune", "v": [21, 27, 21, 13], "color": "#f1b434", "note": "Steady \u2248 23/yr"}], "UTD": {"Pack": [165, 104, 178, 110], "Troop": [155, 156, 136, 92], "Crew": [4, 21, 6, 6], "Ship": [21, 27, 21, 13], "Post": [33, 62, 38, 52]}, "yearStartTotals": {"All": {"2025": 1336, "2026": 1394}, "Traditional Scouting": {"2025": 1036, "2026": 962}, "Pack (Trad)": {"2025": 479, "2026": 439}, "Pack (SR)": {"2025": 183, "2026": 283}, "Troop": {"2025": 500, "2026": 481}, "Crew": {"2025": 17, "2026": 10}, "Ship": {"2025": 40, "2026": 32}, "Post": {"2025": 117, "2026": 149}}};
   /*LBAC_DATA_END*/
+  window.D_DATA = D_DATA; // exposed for Membership Flow tab
   const M = D_DATA.M;
   const TU = D_DATA.TU;
   const DIST = D_DATA.DIST;
@@ -2132,7 +2186,7 @@ document.addEventListener('click', function(e){
     card.style.display = show ? '' : 'none';
     if (!show) return;
     killChart('ut');
-    document.getElementById('dUTTitle').textContent = state.filt === 'All' ? 'Unit Type by Year' : 'Traditional Scouting Types by Year';
+    document.getElementById('dUTTitle').innerHTML = '<span class="cid">303</span>' + (state.filt === 'All' ? 'Unit Type by Year' : 'Traditional Scouting Types by Year');
     const types = state.filt === 'All' ? ['Pack','Troop','Post','Ship','Crew'] : ['Pack','Troop','Ship','Crew'];
     const yrs = activeYrs();
     const TYPE_COLORS = { Pack: '#c8102e', Troop: '#1f3a5f', Crew: '#f1b434', Ship: '#0ea5b7', Post: '#7c3aed' };
@@ -2172,7 +2226,7 @@ document.addEventListener('click', function(e){
   function renderMonthlyChart(){
     killChart('monthly');
     const yrs = activeYrs();
-    document.getElementById('dMonthlyTitle').textContent = 'Monthly Drops — ' + state.filt;
+    document.getElementById('dMonthlyTitle').innerHTML = '<span class="cid">304</span>Monthly Drops — ' + state.filt;
     const monthlyDatasets = yrs.map(y => {
       const md = gM(state.filt, y);
       // Chart.js v4 draws sorted metasets in reverse iteration, so a LOWER
@@ -2223,7 +2277,7 @@ document.addEventListener('click', function(e){
   function renderCumChart(){
     killChart('cum');
     const yrs = activeYrs();
-    document.getElementById('dCumTitle').textContent = 'Cumulative Drops — ' + state.filt;
+    document.getElementById('dCumTitle').innerHTML = '<span class="cid">305</span>Cumulative Drops — ' + state.filt;
     const cumDatasets = yrs.map(y => {
       const md = gM(state.filt, y);
       let r = 0;
@@ -2334,7 +2388,7 @@ document.addEventListener('click', function(e){
     killChart('topunits');
     const d = topUnitsData();
     const fc = FC[state.filt] || '#c8102e';
-    document.getElementById('dTopUnitsTitle').textContent = 'Top Units — ' + state.filt + ' (' + activeYrs().join(', ') + ')';
+    document.getElementById('dTopUnitsTitle').innerHTML = '<span class="cid">307</span>Top Units — ' + state.filt + ' (' + activeYrs().join(', ') + ')';
     const wrap = document.getElementById('dTopUnitsWrap');
     const empty = document.getElementById('dTopUnitsEmpty');
     if (!d.length) {
@@ -2366,12 +2420,72 @@ document.addEventListener('click', function(e){
     });
   }
 
+  // ── Render: Chart (308 · Retention Rate by Year) ──
+  // Same definition as the retention KPI cards: (yearStart − drops) ÷ yearStart,
+  // per the program filter. Years without a year-start baseline are omitted;
+  // the current year is computed YTD and labeled with its last reported month.
+  function renderRetentionChart(){
+    killChart('retention');
+    const rows = [];
+    activeYrs().forEach(function(y){
+      const r = retentionForYear(y);
+      if (r) rows.push({ y: y, r: r });
+    });
+    const wrap = document.getElementById('dRetWrap');
+    const empty = document.getElementById('dRetEmpty');
+    document.getElementById('dRetTitle').innerHTML =
+      '<span class="cid">308</span>Retention Rate by Year — ' + state.filt;
+    if (!rows.length) {
+      wrap.style.display = 'none';
+      empty.style.display = '';
+      return;
+    }
+    wrap.style.display = '';
+    empty.style.display = 'none';
+    dCharts.retention = new Chart(document.getElementById('dRetentionChart'), {
+      type: 'bar',
+      data: {
+        labels: rows.map(function(x){
+          return String(x.y) + (x.r.partial
+            ? ' (thru ' + months[D_DATA.partialLastMonthIdx] + ')' : '');
+        }),
+        datasets: [{
+          data: rows.map(function(x){ return +(x.r.rate * 100).toFixed(1); }),
+          backgroundColor: rows.map(function(x){ return YC[x.y] || '#1f3a5f'; }),
+          borderRadius: 4, maxBarThickness: 64,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(c){
+                const x = rows[c.dataIndex];
+                return ' ' + c.parsed.y.toFixed(1) + '% retained — '
+                  + fmtInt(x.r.drops) + ' of ' + fmtInt(x.r.start)
+                  + ' dropped' + (x.r.partial ? ' (YTD)' : '');
+              },
+            },
+          },
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: { beginAtZero: true, max: 100,
+               grid: { color: 'rgba(0,0,0,.06)' },
+               ticks: { callback: function(v){ return v + '%'; } } },
+        },
+      },
+    });
+  }
+
   // ── Master render ──
   function renderDrops(){
     renderYearBar();
     renderSubtabs();
     renderFilterBar();
-    if (state.sub === 'overview')  { renderKPIs(); renderAnnualChart(); renderJanMayChart(); renderUTChart(); }
+    if (state.sub === 'overview')  { renderKPIs(); renderAnnualChart(); renderJanMayChart(); renderUTChart(); renderRetentionChart(); }
     if (state.sub === 'monthly')   { renderMonthlyChart(); renderCumChart(); }
     if (state.sub === 'districts') { renderDistChart(); renderDistCards(); }
     if (state.sub === 'units')     { renderTopUnitsChart(); }
@@ -2431,7 +2545,7 @@ document.addEventListener('click', function(e){
 // ============================================================
 (function(){
   /*LBAC_DATA_START*/
-  const G_DATA = {"currentYear": 2026, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "monthNames": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "paceThresholds": {"yellow": 0.9, "green": 1.0, "pulse": 1.1}, "scenarioOrder": ["bull", "median", "historic", "bear"], "scenarioLabels": {"bull": "Bull (best case)", "median": "Median", "historic": "Historic (2025)", "bear": "Bear (worst case)"}, "defaultScenario": "historic", "minRetentionThresholds": {"overallBreakeven": 0.1034, "overallGrowthTarget": 0.2064, "overallGrowthLabel": "+1.5% Overall", "overallBaseline": 1394, "overallTarget": 1414.9, "traditionalBreakeven": 0.5427, "traditionalGrowthTarget": 0.879, "traditionalGrowthLabel": "+5.0% Traditional", "traditionalBaseline": 962, "traditionalTarget": 1010.1}, "goals": [{"key": "overall", "label": "Overall Youth Growth", "type": "growthPct", "baseline": 1394, "current": 1337, "target": 1414.9, "growthPct": 1.5, "minTotal": null, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "actualMonthly": [1403, 1374, 1228, 1225, 1255, 1333, 1337, null, null, null, null, null], "priorYearLine": [1362, 1364, 1377, 1155, 1158, 1166, 1163, 1173, 1227, 1311, 1343, 1394], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1539.3, "gapToTarget": -124.4, "newMembersNeeded": 114.6, "pacePct": 1.0879, "anticipatedDropsRemaining": 36.7, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1350.4, 1399.0, 1452.7, 1486.5, 1539.4], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -2.35, -0.72, -2.35, -8.87, -22.44], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 13.35, 48.58, 53.65, 33.830000000000005, 52.86]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1527.1, "gapToTarget": -112.2, "newMembersNeeded": 126.8, "pacePct": 1.0793, "anticipatedDropsRemaining": 48.9, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1349.6, 1397.9, 1450.8, 1481.7, 1527.1], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.13, -0.96, -3.13, -11.81, -29.88], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 12.57, 48.339999999999996, 52.87, 30.89, 45.42]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1514.9, "gapToTarget": -100.0, "newMembersNeeded": 139.0, "pacePct": 1.0707, "anticipatedDropsRemaining": 61.1, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1348.8, 1396.9, 1449.0, 1477.0, 1515.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.91, -1.2, -3.91, -14.75, -37.32], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.79, 48.099999999999994, 52.09, 27.950000000000003, 37.98]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1509.0, "gapToTarget": -94.1, "newMembersNeeded": 144.9, "pacePct": 1.0665, "anticipatedDropsRemaining": 67.0, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1348.4, 1396.4, 1448.1, 1474.6, 1509.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -4.29, -1.32, -4.29, -16.17, -40.92], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.41, 47.98, 51.71, 26.53, 34.379999999999995]}}}, "rawAnticipatedRestOfYear": 207, "rawAnticipatedCarryToNextJan": 818}, {"key": "traditional", "label": "Traditional Scouting Growth", "type": "growthPct", "baseline": 962, "current": 906, "target": 1010.1, "growthPct": 5.0, "minTotal": null, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "actualMonthly": [970, 972, 863, 865, 893, 904, 906, null, null, null, null, null], "priorYearLine": [1058, 1061, 1076, 882, 886, 890, 888, 898, 928, 961, 969, 962], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 1001.5, "gapToTarget": 8.6, "newMembersNeeded": 130.0, "pacePct": 0.9915, "anticipatedDropsRemaining": 25.9, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 918.6, 945.9, 977.2, 994.2, 1001.4], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -2.35, -0.72, -2.35, -7.96, -12.49], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 12.65, 27.28, 31.35, 17.04, 7.209999999999999]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 993.0, "gapToTarget": 17.1, "newMembersNeeded": 138.5, "pacePct": 0.9831, "anticipatedDropsRemaining": 34.4, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 917.9, 944.9, 975.5, 989.9, 993.0], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.13, -0.96, -3.13, -10.6, -16.63], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.870000000000001, 27.04, 30.570000000000004, 14.4, 3.0700000000000003]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 984.4, "gapToTarget": 25.7, "newMembersNeeded": 147.1, "pacePct": 0.9746, "anticipatedDropsRemaining": 43.0, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 917.1, 943.9, 973.7, 985.5, 984.4], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.91, -1.2, -3.91, -13.24, -20.77], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.09, 26.8, 29.790000000000003, 11.76, -1.0700000000000003]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 980.2, "gapToTarget": 29.9, "newMembersNeeded": 151.3, "pacePct": 0.9704, "anticipatedDropsRemaining": 47.2, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 916.7, 943.4, 972.8, 983.3, 980.2], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -4.29, -1.32, -4.29, -14.52, -22.77], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 10.71, 26.68, 29.410000000000004, 10.48, -3.0700000000000003]}}}, "rawAnticipatedRestOfYear": 147, "rawAnticipatedCarryToNextJan": 551}, {"key": "newFrontier", "label": "New Frontier Grant Floor", "type": "minimum", "baseline": 283, "current": 306, "target": 300, "growthPct": null, "minTotal": 300, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "actualMonthly": [282, 272, 247, 243, 244, 306, 306, null, null, null, null, null], "priorYearLine": [185, 185, 184, 167, 165, 169, 168, 167, 189, 241, 266, 283], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 374.4, "gapToTarget": -74.4, "newMembersNeeded": 4.3, "pacePct": 1.248, "anticipatedDropsRemaining": 10.3, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 357.3, 374.4], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.72, -9.59], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 8.28, 17.11]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 371.0, "gapToTarget": -71.0, "newMembersNeeded": 7.7, "pacePct": 1.2367, "anticipatedDropsRemaining": 13.7, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 357.0, 370.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.96, -12.77], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 8.04, 13.93]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 367.6, "gapToTarget": -67.6, "newMembersNeeded": 11.1, "pacePct": 1.2253, "anticipatedDropsRemaining": 17.1, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 356.8, 367.6], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -1.2, -15.95], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 7.8, 10.75]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 365.9, "gapToTarget": -65.9, "newMembersNeeded": 12.8, "pacePct": 1.2197, "anticipatedDropsRemaining": 18.8, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 356.7, 365.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -1.32, -17.49], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 7.68, 9.21]}}}, "rawAnticipatedRestOfYear": 57, "rawAnticipatedCarryToNextJan": 168}]};
+  const G_DATA = {"currentYear": 2026, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "monthNames": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "paceThresholds": {"yellow": 0.9, "green": 1.0, "pulse": 1.1}, "scenarioOrder": ["bull", "median", "historic", "bear"], "scenarioLabels": {"bull": "Bull (best case)", "median": "Median", "historic": "Historic (2025)", "bear": "Bear (worst case)"}, "defaultScenario": "historic", "minRetentionThresholds": {"overallBreakeven": 0.1034, "overallGrowthTarget": 0.2064, "overallGrowthLabel": "+1.5% Overall", "overallBaseline": 1394, "overallTarget": 1414.9, "traditionalBreakeven": 0.5427, "traditionalGrowthTarget": 0.879, "traditionalGrowthLabel": "+5.0% Traditional", "traditionalBaseline": 962, "traditionalTarget": 1010.1}, "goals": [{"key": "overall", "label": "Overall Youth Growth", "type": "growthPct", "baseline": 1394, "current": 1337, "target": 1414.9, "growthPct": 1.5, "minTotal": null, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "actualMonthly": [1403, 1374, 1228, 1225, 1255, 1333, 1337, null, null, null, null, null], "priorYearLine": [1362, 1364, 1377, 1155, 1158, 1166, 1163, 1173, 1227, 1311, 1343, 1394], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1539.3, "gapToTarget": -124.4, "newMembersNeeded": 114.6, "pacePct": 1.0879, "anticipatedDropsRemaining": 36.7, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1350.4, 1399.0, 1452.7, 1486.5, 1539.4], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -2.35, -0.72, -2.35, -8.87, -22.44], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 13.35, 48.58, 53.65, 33.830000000000005, 52.86]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1527.1, "gapToTarget": -112.2, "newMembersNeeded": 126.8, "pacePct": 1.0793, "anticipatedDropsRemaining": 48.9, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1349.6, 1397.9, 1450.8, 1481.7, 1527.1], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.13, -0.96, -3.13, -11.81, -29.88], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 12.57, 48.339999999999996, 52.87, 30.89, 45.42]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1514.9, "gapToTarget": -100.0, "newMembersNeeded": 139.0, "pacePct": 1.0707, "anticipatedDropsRemaining": 61.1, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1348.8, 1396.9, 1449.0, 1477.0, 1515.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.91, -1.2, -3.91, -14.75, -37.32], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.79, 48.099999999999994, 52.09, 27.950000000000003, 37.98]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 1394, "current": 1337, "target": 1414.9, "projectedEOY": 1509.0, "gapToTarget": -94.1, "newMembersNeeded": 144.9, "pacePct": 1.0665, "anticipatedDropsRemaining": 67.0, "rawAnticipatedRemaining": 207, "projectedNMRemaining": 239.0, "anticipatedPath": [null, null, null, null, null, null, 1337, 1348.4, 1396.4, 1448.1, 1474.6, 1509.0], "flow": {"nmActual": [21, 17, 16, 10, 30, 81, 8, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.7, 49.3, 56.0, 42.7, 75.3], "dropsActual": [-8, -53, -166, -21, -11, -6, -8, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -4.29, -1.32, -4.29, -16.17, -40.92], "netActual": [13, -36, -150, -11, 19, 75, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.41, 47.98, 51.71, 26.53, 34.379999999999995]}}}, "rawAnticipatedRestOfYear": 207, "rawAnticipatedCarryToNextJan": 818}, {"key": "traditional", "label": "Traditional Scouting Growth", "type": "growthPct", "baseline": 962, "current": 906, "target": 1010.1, "growthPct": 5.0, "minTotal": null, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "actualMonthly": [970, 972, 863, 865, 893, 904, 906, null, null, null, null, null], "priorYearLine": [1058, 1061, 1076, 882, 886, 890, 888, 898, 928, 961, 969, 962], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 1001.5, "gapToTarget": 8.6, "newMembersNeeded": 130.0, "pacePct": 0.9915, "anticipatedDropsRemaining": 25.9, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 918.6, 945.9, 977.2, 994.2, 1001.4], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -2.35, -0.72, -2.35, -7.96, -12.49], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 12.65, 27.28, 31.35, 17.04, 7.209999999999999]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 992.9, "gapToTarget": 17.2, "newMembersNeeded": 138.6, "pacePct": 0.983, "anticipatedDropsRemaining": 34.5, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 917.9, 944.9, 975.5, 989.9, 993.0], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.13, -0.96, -3.13, -10.6, -16.63], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.870000000000001, 27.04, 30.570000000000004, 14.4, 3.0700000000000003]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 984.4, "gapToTarget": 25.7, "newMembersNeeded": 147.1, "pacePct": 0.9746, "anticipatedDropsRemaining": 43.0, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 917.1, 943.9, 973.7, 985.5, 984.4], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -3.91, -1.2, -3.91, -13.24, -20.77], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 11.09, 26.8, 29.790000000000003, 11.76, -1.0700000000000003]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 962, "current": 906, "target": 1010.1, "projectedEOY": 980.2, "gapToTarget": 29.9, "newMembersNeeded": 151.3, "pacePct": 0.9704, "anticipatedDropsRemaining": 47.2, "rawAnticipatedRemaining": 147, "projectedNMRemaining": 121.4, "anticipatedPath": [null, null, null, null, null, null, 906, 916.7, 943.4, 972.8, 983.3, 980.2], "flow": {"nmActual": [20, 14, 14, 10, 27, 14, 5, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 15.0, 28.0, 33.7, 25.0, 19.7], "dropsActual": [-7, -17, -123, -14, -9, -5, -6, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -4.29, -1.32, -4.29, -14.52, -22.77], "netActual": [13, -3, -109, -4, 18, 9, -1, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 10.71, 26.68, 29.410000000000004, 10.48, -3.0700000000000003]}}}, "rawAnticipatedRestOfYear": 147, "rawAnticipatedCarryToNextJan": 551}, {"key": "newFrontier", "label": "New Frontier Grant Floor", "type": "minimum", "baseline": 283, "current": 306, "target": 300, "growthPct": null, "minTotal": 300, "lastReportedIdx": 6, "lastReportedLabel": "Jul 2026", "actualMonthly": [282, 272, 247, 243, 244, 306, 306, null, null, null, null, null], "priorYearLine": [185, 185, 184, 167, 165, 169, 168, 167, 189, 241, 266, 283], "scenarios": {"bull": {"scenario": "bull", "scenarioLabel": "Bull (best case)", "retentionRate": 0.819, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 374.4, "gapToTarget": -74.4, "newMembersNeeded": 4.3, "pacePct": 1.248, "anticipatedDropsRemaining": 10.3, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 357.3, 374.4], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.72, -9.59], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 8.28, 17.11]}}, "median": {"scenario": "median", "scenarioLabel": "Median", "retentionRate": 0.7589999999999999, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 371.0, "gapToTarget": -71.0, "newMembersNeeded": 7.7, "pacePct": 1.2367, "anticipatedDropsRemaining": 13.7, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 357.0, 370.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -0.96, -12.77], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 8.04, 13.93]}}, "historic": {"scenario": "historic", "scenarioLabel": "Historic (2025)", "retentionRate": 0.699, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 367.6, "gapToTarget": -67.6, "newMembersNeeded": 11.1, "pacePct": 1.2253, "anticipatedDropsRemaining": 17.1, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 356.8, 367.6], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -1.2, -15.95], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 7.8, 10.75]}}, "bear": {"scenario": "bear", "scenarioLabel": "Bear (worst case)", "retentionRate": 0.67, "baseline": 283, "current": 306, "target": 300, "projectedEOY": 365.9, "gapToTarget": -65.9, "newMembersNeeded": 12.8, "pacePct": 1.2197, "anticipatedDropsRemaining": 18.8, "rawAnticipatedRemaining": 57, "projectedNMRemaining": 78.7, "anticipatedPath": [null, null, null, null, null, null, 306, 306.0, 326.7, 349.0, 356.7, 365.9], "flow": {"nmActual": [0, 0, 0, 0, 1, 62, 0, null, null, null, null, null], "nmForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 9.0, 26.7], "dropsActual": [-1, -10, -25, -4, 0, 0, 0, null, null, null, null, null], "dropsAnticipated": [null, null, null, null, null, null, null, -0.0, -0.0, -0.0, -1.32, -17.49], "netActual": [-1, -10, -25, -4, 1, 62, 0, null, null, null, null, null], "netForecast": [null, null, null, null, null, null, null, 0.0, 20.7, 22.3, 7.68, 9.21]}}}, "rawAnticipatedRestOfYear": 57, "rawAnticipatedCarryToNextJan": 168}]};
   /*LBAC_DATA_END*/
   const MO = G_DATA.monthNames;
   const TH = G_DATA.paceThresholds;       // { yellow, green, pulse }
@@ -2948,5 +3062,288 @@ document.addEventListener('click', function(e){
 })();
 
 </script>
+
+<script>
+/*LBAC_DATA_START*/
+const FLOW_HIST = {"months": ["Jan23", "Feb23", "Mar23", "Apr23", "May23", "Jun23", "Jul23", "Aug23", "Sep23", "Oct23", "Nov23", "Dec23"], "totals": {"total": [1225, 1163, 1028, 1055, 1092, 1151, 1162, 1173, 1199, 1239, 1307, 1348], "traditional": [997, 961, 858, 882, 917, 960, 971, 982, 1003, 1042, 1082, 1107], "nontrad": [228, 202, 170, 173, 175, 191, 191, 191, 196, 197, 225, 241], "pack_sr": [103, 86, 88, 91, 93, 93, 93, 93, 98, 99, 100, 107], "pack_nosr": [438, 430, 339, 357, 369, 396, 403, 411, 431, 462, 495, 505], "troop": [498, 470, 472, 479, 500, 514, 516, 518, 518, 524, 531, 535], "ship": [32, 32, 32, 31, 33, 35, 37, 38, 39, 41, 41, 41], "crew": [29, 29, 15, 15, 15, 15, 15, 15, 15, 15, 15, 26], "post": [103, 103, 72, 72, 72, 88, 88, 88, 88, 88, 115, 124]}};
+/*LBAC_DATA_END*/
+</script>
+<script>
+// ============================================================
+// MEMBERSHIP FLOW MODULE (tab 5) — reads DATA / NM_DATA / D_DATA
+// live, plus FLOW_HIST for pre-DATA 2023 totals. Refresh-safe.
+// ============================================================
+(function(){
+  'use strict';
+  var NM_DATA = window.NM_DATA, D_DATA = window.D_DATA;
+  var ABBR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var FULLM=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var GREEN='#2fb457', GREEN_DK='#15803d', RED='#c8102e', RED_DK='#8f0b21', INK='#0f172a';
+  var CATS=[
+    {k:'total',      l:'Total Membership',           d:'All registered youth — every unit type, all districts'},
+    {k:'traditional',l:'Traditional Membership',     d:'Packs, Troops, Crews & Ships, excluding ScoutReach (New Frontier 03) and Learning for Life 04'},
+    {k:'nontrad',    l:'Non-Traditional Membership', d:'Everything outside Traditional Scouting — ScoutReach Packs, Exploring Posts & Clubs'},
+    {k:'pack_sr',    l:'Packs (Only SR)',            d:'Cub Scout Packs in ScoutReach — New Frontier 03'},
+    {k:'pack_nosr',  l:'Packs (No SR)',              d:'Cub Scout Packs outside ScoutReach'},
+    {k:'troop',      l:'Troops',                     d:'Scouts BSA Troops — all districts'},
+    {k:'ship',       l:'Ships',                      d:'Sea Scout Ships — all districts'},
+    {k:'crew',       l:'Crews',                      d:'Venturing Crews — all districts'},
+    {k:'post',       l:'Posts',                      d:'Exploring Posts (Club units not included)'}
+  ];
+  var FMAP={total:'All',traditional:'Traditional Scouting',pack_sr:'Pack (SR)',pack_nosr:'Pack (Trad)',troop:'Troop',crew:'Crew',ship:'Ship',post:'Post'};
+  function pad2(n){ n=String(n); return n.length<2?'0'+n:n; }
+  function tokY(t){ return 2000 + +t.slice(3); }
+  function tokM(t){ return ABBR.indexOf(t.slice(0,3)); }
+  function shortLbl(t){ return t.slice(0,3)+" '"+t.slice(3); }
+  function fullLbl(t){ return FULLM[tokM(t)]+' '+tokY(t); }
+  function fmt(n){ return n==null?'—':n.toLocaleString('en-US'); }
+
+  function axisToks(){
+    var sy = D_DATA.YEARS[0];
+    if (FLOW_HIST.months.length) sy = Math.min(sy, tokY(FLOW_HIST.months[0]));
+    var last = DATA.months[DATA.months.length-1];
+    var toks=[], y=sy, m=0;
+    while (toks.length < 400){
+      var t=ABBR[m]+pad2(y%100); toks.push(t);
+      if (t===last) break;
+      m++; if (m>11){ m=0; y++; }
+    }
+    return toks;
+  }
+  function totalsMap(cat){
+    var out={}, V=DATA.views, aa=V.all__all, tr=V.traditional__all.monthlyTotal;
+    FLOW_HIST.months.forEach(function(t,i){
+      var v=FLOW_HIST.totals[cat][i]; if(v!=null) out[t]=v;
+    });
+    var A;
+    if(cat==='total') A=aa.monthlyTotal;
+    else if(cat==='traditional') A=tr;
+    else if(cat==='nontrad') A=aa.monthlyTotal.map(function(v,i){return v-tr[i];});
+    else if(cat==='pack_nosr') A=V.all__Pack.monthlyTotal;
+    else if(cat==='pack_sr') A=aa.unitTypes.Pack.map(function(v,i){return v-V.all__Pack.monthlyTotal[i];});
+    else if(cat==='troop') A=aa.unitTypes.Troop;
+    else if(cat==='crew') A=aa.unitTypes.Crew;
+    else if(cat==='ship') A=aa.unitTypes.Ship;
+    else A=aa.unitTypes.Post;
+    DATA.months.forEach(function(t,i){ out[t]=A[i]; });
+    return out;
+  }
+  function flowMap(block, cat){
+    var out={};
+    block.YEARS.forEach(function(y){
+      for(var m=0;m<12;m++){
+        var v;
+        if(cat==='nontrad'){
+          var yi=block.YEARS.indexOf(y);
+          var a=block.M['All'][yi][m], b=block.M['Traditional Scouting'][yi][m];
+          v=(a==null||b==null)?null:a-b;
+        } else {
+          v=block.M[FMAP[cat]][block.YEARS.indexOf(y)][m];
+        }
+        if(v!=null) out[ABBR[m]+pad2(y%100)]=v;
+      }
+    });
+    return out;
+  }
+  function series(cat){
+    var toks=axisToks(), T=totalsMap(cat), N=flowMap(NM_DATA,cat), D=flowMap(D_DATA,cat);
+    return { toks:toks,
+      nm:    toks.map(function(t){ return (t in N)?N[t]:null; }),
+      drops: toks.map(function(t){ return (t in D)?D[t]:null; }),
+      total: toks.map(function(t){ return (t in T)?T[t]:null; }) };
+  }
+
+  var flowYearLines = { id:'flowYearLines', beforeDatasetsDraw:function(c){
+    if (c.canvas.id!=='flowChart') return;
+    var xs=c.scales.x, ca=c.chartArea, x=c.ctx, toks=c.$flowToks||[];
+    if(!xs||!ca) return;
+    x.save(); x.setLineDash([5,4]); x.lineWidth=1; x.strokeStyle='rgba(31,58,95,.38)';
+    for(var i=1;i<toks.length;i++){
+      if(toks[i].slice(0,3)!=='Jan') continue;
+      var px=(xs.getPixelForValue(i-1)+xs.getPixelForValue(i))/2;
+      if(px<ca.left||px>ca.right) continue;
+      x.beginPath(); x.moveTo(px,ca.top); x.lineTo(px,ca.bottom); x.stroke();
+    }
+    x.restore();
+  }};
+  Chart.register(flowYearLines);
+
+  var chart=null, cur='total', built=false;
+  var P={0:0,1:1,3:2,2:3};
+
+  function buildChart(){
+    var ctx=document.getElementById('flowChart').getContext('2d');
+    chart=new Chart(ctx,{
+      data:{ labels:[], datasets:[
+        { type:'bar', label:'New members', data:[], yAxisID:'yFlow', stack:'flow', order:3,
+          backgroundColor:GREEN, borderColor:GREEN_DK, borderWidth:1,
+          borderSkipped:false, borderRadius:2, categoryPercentage:.82, barPercentage:1 },
+        { type:'bar', label:'Drops', data:[], yAxisID:'yFlow', stack:'flow', order:4,
+          backgroundColor:RED, borderColor:RED_DK, borderWidth:1,
+          borderSkipped:false, borderRadius:2, categoryPercentage:.82, barPercentage:1 },
+        { type:'line', label:'Total membership', data:[], yAxisID:'yTot', order:1,
+          borderColor:INK, backgroundColor:INK, borderWidth:4,
+          pointRadius:3, pointHoverRadius:6, pointBackgroundColor:INK,
+          pointBorderColor:'#fff', pointBorderWidth:.8, tension:0, spanGaps:false },
+        { type:'line', label:'Net (new − drops)', data:[], yAxisID:'yFlow', order:2,
+          showLine:false, pointStyle:'circle', pointRadius:4.2, pointHoverRadius:6.5,
+          pointBackgroundColor:'#ffffff', pointBorderColor:INK, pointBorderWidth:1.4 }
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false, animation:{duration:300},
+        interaction:{mode:'index',intersect:false},
+        layout:{padding:{top:4,right:2}},
+        scales:{
+          x:{ stacked:true, grid:{display:false}, border:{color:'#cbd5e1'},
+              ticks:{ maxRotation:0, autoSkip:false, font:{size:11}, color:'#000000',
+                callback:function(v,i){ var t=(chart&&chart.$flowToks)?chart.$flowToks[i]:null;
+                  if(!t) return ''; var m3=t.slice(0,3);
+                  return (m3==='Jan'||m3==='Jul')?shortLbl(t):''; } } },
+          yFlow:{ stacked:true, position:'left',
+              title:{display:true,text:'New members / drops per month',font:{size:11},color:'#000000'},
+              grid:{ color:function(c){return c.tick.value===0?'#94a3b8':'#e9eef5';},
+                     lineWidth:function(c){return c.tick.value===0?1.4:1;} },
+              border:{display:false},
+              ticks:{font:{size:11},color:'#000000',callback:function(v){return v.toLocaleString('en-US');}} },
+          yTot:{ position:'right',
+              title:{display:true,text:'Total registered membership',font:{size:11},color:'#000000'},
+              grid:{display:false}, border:{display:false},
+              ticks:{font:{size:11},color:'#000000',callback:function(v){return v.toLocaleString('en-US');}} }
+        },
+        plugins:{
+          legend:{ position:'top', align:'end',
+            labels:{ boxWidth:13, boxHeight:13, font:{size:12},
+              sort:function(a,b){ return P[a.datasetIndex]-P[b.datasetIndex]; } } },
+          tooltip:{
+            filter:function(it){ return it.parsed.y!==null && !Number.isNaN(it.parsed.y); },
+            itemSort:function(a,b){ return P[a.datasetIndex]-P[b.datasetIndex]; },
+            callbacks:{
+              title:function(items){ return items.length?fullLbl(chart.$flowToks[items[0].dataIndex]):''; },
+              label:function(it){
+                if(it.datasetIndex===0) return ' New members: +'+fmt(it.parsed.y);
+                if(it.datasetIndex===1) return ' Drops: −'+fmt(Math.abs(it.parsed.y));
+                if(it.datasetIndex===3){ var v=it.parsed.y; return ' Net: '+(v>=0?'+':'−')+fmt(Math.abs(v)); }
+                return ' Total membership: '+fmt(it.parsed.y);
+              } } }
+        }
+      }
+    });
+  }
+
+  function coverage(s){
+    function rng(a){ var lo=-1,hi=-1; for(var i=0;i<a.length;i++) if(a[i]!=null){ if(lo<0)lo=i; hi=i; } return lo<0?null:[lo,hi]; }
+    var n=rng(s.nm), d=rng(s.drops), t=rng(s.total);
+    function seg(name,r){ return r? name+' '+shortLbl(s.toks[r[0]])+' → '+shortLbl(s.toks[r[1]]) : name+' —'; }
+    return {nm:n, dr:d, tot:t, text:seg('New members',n)+' · '+seg('drops',d)+' · '+seg('totals',t)};
+  }
+
+  function kpiCard(label,value,sub,color){
+    return '<div class="kpi"><div class="accent-bar"></div><div class="label">'+label+'</div>'+
+      '<div class="value"'+(color?' style="color:'+color+'"':'')+'>'+value+'</div>'+
+      '<div class="delta" style="color:var(--ink-mute)">'+sub+'</div></div>';
+  }
+
+  function setCat(key){
+    cur=key;
+    var meta=null; CATS.forEach(function(c){ if(c.k===key) meta=c; });
+    var s=series(key), cov=coverage(s);
+    document.querySelectorAll('#flowCatPills .pill-btn').forEach(function(p){
+      p.classList.toggle('active', p.dataset.cat===key);
+    });
+    document.getElementById('flowCatNote').textContent = meta.l+' — '+meta.d;
+    var idxs=[cov.nm,cov.dr,cov.tot].filter(Boolean);
+    var y0=Math.min.apply(null,idxs.map(function(r){return tokY(s.toks[r[0]]);}));
+    var y1=Math.max.apply(null,idxs.map(function(r){return tokY(s.toks[r[1]]);}));
+    var yrs=(y0===y1)?String(y0):(y0+'–'+y1);
+    document.getElementById('flowYears').textContent = yrs;
+    document.getElementById('flowCoverage').textContent = cov.text;
+    var btn=document.querySelector('#pane-flow .png');
+    if(btn) btn.dataset.title='501 · Monthly Membership Flow '+yrs+' — '+meta.l;
+
+    chart.$flowToks = s.toks;
+    chart.data.labels = s.toks.map(shortLbl);
+    chart.data.datasets[0].data = s.nm.slice();
+    chart.data.datasets[1].data = s.drops.map(function(v){return v==null?null:-v;});
+    chart.data.datasets[2].data = s.total.slice();
+    chart.data.datasets[3].data = s.nm.map(function(v,i){ return (v!=null&&s.drops[i]!=null)?v-s.drops[i]:null; });
+    var tv=s.total.filter(function(v){return v!=null;});
+    if(tv.length){
+      var mn=Math.min.apply(null,tv), mx=Math.max.apply(null,tv);
+      var r=(mx-mn)||Math.max(Math.abs(mx)*.1,10);
+      chart.options.scales.yTot.suggestedMin=mn-.15*r;
+      chart.options.scales.yTot.suggestedMax=mx+.15*r;
+    }
+    chart.update();
+
+    // KPIs: latest total + YTD of latest flow year
+    var lt=cov.tot?cov.tot[1]:-1;
+    var lastFlow=Math.max(cov.nm?cov.nm[1]:-1, cov.dr?cov.dr[1]:-1);
+    var yr=lastFlow>=0?tokY(s.toks[lastFlow]):null;
+    var sn=0,sd=0,hn=false,hd=false;
+    if(yr!=null) s.toks.forEach(function(t,i){
+      if(tokY(t)!==yr) return;
+      if(s.nm[i]!=null){ sn+=s.nm[i]; hn=true; }
+      if(s.drops[i]!=null){ sd+=s.drops[i]; hd=true; }
+    });
+    var net=(hn&&hd)?sn-sd:null;
+    document.getElementById('flowKpis').innerHTML =
+      kpiCard('Total membership', lt>=0?fmt(s.total[lt]):'—', lt>=0?('as of '+fullLbl(s.toks[lt])):'', null)+
+      kpiCard('New members · '+(yr||'')+' YTD', hn?('+'+fmt(sn)):'—','through '+(lastFlow>=0?fullLbl(s.toks[lastFlow]):''), '#15803d')+
+      kpiCard('Drops · '+(yr||'')+' YTD', hd?('−'+fmt(sd)):'—','through '+(lastFlow>=0?fullLbl(s.toks[lastFlow]):''), '#c8102e')+
+      kpiCard('Net · '+(yr||'')+' YTD', net==null?'—':((net>=0?'+':'−')+fmt(Math.abs(net))),'new members minus drops', net==null?null:(net>=0?'#15803d':'#c8102e'));
+
+    // table (latest first)
+    var rows='';
+    for(var i=s.toks.length-1;i>=0;i--){
+      var n=s.nm[i], d=s.drops[i], t=s.total[i];
+      if(n==null&&d==null&&t==null) continue;
+      var nv=(n!=null&&d!=null)?n-d:null;
+      rows+='<tr><td>'+fullLbl(s.toks[i])+'</td><td class="pos">'+(n==null?'—':'+'+fmt(n))+
+        '</td><td class="neg">'+(d==null?'—':'−'+fmt(d))+
+        '</td><td class="'+(nv==null?'':(nv>=0?'pos':'neg'))+'">'+
+        (nv==null?'—':((nv>=0?'+':'−')+fmt(Math.abs(nv))))+
+        '</td><td>'+fmt(t)+'</td></tr>';
+    }
+    document.querySelector('#flowTable tbody').innerHTML=rows;
+  }
+
+  function renderFlowTab(){
+    if(!built){
+      built=true;
+      var wrap=document.getElementById('flowCatPills');
+      CATS.forEach(function(c){
+        var b=document.createElement('button');
+        b.className='pill-btn'; b.dataset.cat=c.k; b.textContent=c.l; b.title=c.d;
+        b.addEventListener('click', function(){ setCat(c.k); });
+        wrap.appendChild(b);
+      });
+      buildChart();
+      setCat(cur);
+    } else {
+      chart.resize();
+      setCat(cur);
+    }
+  }
+  window.__flow_render = renderFlowTab;
+
+  // Top-tab integration (same pattern as the goals module)
+  document.querySelectorAll('#topTabs .top-tab').forEach(function(b){
+    b.addEventListener('click', function(){
+      var tab=b.dataset.tab;
+      var pane=document.getElementById('pane-flow');
+      if(pane) pane.style.display=(tab==='flow')?'':'none';
+      if(tab==='flow'){
+        var sub=document.getElementById('hdrSubtitle')||document.getElementById('headerSubtitle');
+        if(sub){
+          var toks=axisToks();
+          sub.textContent='Monthly membership flow · '+shortLbl(toks[0])+' – '+shortLbl(toks[toks.length-1])+' · new members vs drops with total membership trend';
+        }
+        renderFlowTab();
+      }
+    });
+  });
+})();
+</script>
+
 <!--LBAC_LAST_UPDATED_CHIP--><style>.lbac-last-updated{position:fixed;top:10px;right:14px;background:rgba(15,23,42,.78);color:#e2e8f0;font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.3px;padding:6px 10px;border-radius:999px;z-index:99999;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18);}</style><div class="lbac-last-updated">Last updated &middot; July 2026</div><!--LBAC_LAST_UPDATED_CHIP--></body>
 </html>
