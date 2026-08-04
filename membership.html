@@ -971,13 +971,26 @@ function renderTrendSequential(view) {
 
 function renderTrendYoY(view) {
   document.getElementById('trendTitle').innerHTML = '<span class="cid">101</span>Total Membership — Year-over-Year Overlay';
-  document.getElementById('trendHint').textContent = 'At each x-axis position, the dashed line shows what membership was 12 months earlier. So at "' + getData().monthLabels[getData().currentPeriodStart] + '" the dashed value is the ' + getData().monthLabels[0] + ' number; at "' + getData().currentMonthLabel + '" the dashed value is the ' + getData().priorYearLabel + ' number. Use this for direct YoY comparison.';
   const startIdx = getData().currentPeriodStart;
   const monthly = view.monthlyTotal;
   const currentLabels = getData().monthLabels.slice(startIdx);
   const currentSeries = monthly.slice(startIdx);
-  const priorSeries = monthly.slice(0, currentSeries.length);
-  const priorCalendarLabels = getData().monthLabels.slice(0, currentSeries.length);
+  // Pair each displayed month with the SAME CALENDAR MONTH one year earlier,
+  // resolved by month token (gap-proof and independent of array length).
+  const toks = getData().months;
+  const tokIdx = {};
+  toks.forEach(function(t, i){ tokIdx[t] = i; });
+  const prevYearTok = function(t){
+    var y = (parseInt(t.slice(3), 10) + 99) % 100;
+    return t.slice(0, 3) + String(y < 10 ? '0' + y : y);
+  };
+  const priorSeries = [], priorCalendarLabels = [];
+  for (var pi = startIdx; pi < toks.length; pi++) {
+    var pj = tokIdx[prevYearTok(toks[pi])];
+    priorSeries.push(pj == null ? null : monthly[pj]);
+    priorCalendarLabels.push(pj == null ? 'no data' : getData().monthLabels[pj]);
+  }
+  document.getElementById('trendHint').textContent = 'At each x-axis position, the dashed line shows the same calendar month one year earlier. So at "' + currentLabels[0] + '" the dashed value is the ' + priorCalendarLabels[0] + ' number; at "' + getData().currentMonthLabel + '" the dashed value is the ' + priorCalendarLabels[priorCalendarLabels.length - 1] + ' number. Use this for direct YoY comparison.';
   makeChart('trendChart', {
     type: 'line',
     data: {
