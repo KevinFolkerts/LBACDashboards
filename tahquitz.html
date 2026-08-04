@@ -870,7 +870,7 @@ function renderOverview() {
 function renderPacing() {
   const cfg = buildHeroConfig(state.paceMode);
   const chart = makeChart("paceChart", cfg);
-  if (chart) { chart.$projCut = cfg._cutX; chart.update(); }
+  if (chart) { chart.$projCut = state.showProjection ? cfg._cutX : null; chart.update(); }
 
   document.getElementById("paceLegend").innerHTML = visYears().map(y =>
     `<div class="legend-item"><span class="legend-swatch" style="background:${YC[y]}"></span>${y}${isCurrent(y) ? " ★" : ""}</div>`).join("")
