@@ -217,6 +217,20 @@ body { padding-bottom: 76px; }
       <div class="filter-note" id="filterNote"></div>
     </div>
 
+    <div class="filter-bar" id="cubBar" style="display:none; margin-top:-8px;">
+      <div class="filter-group">
+        <span class="filter-label">Cub Program</span>
+        <div class="pill-group" id="cubPills">
+          <button class="pill-btn active" data-cub="all">All</button>
+          <button class="pill-btn" data-cub="Lion">Lion</button>
+          <button class="pill-btn" data-cub="Tiger">Tiger</button>
+          <button class="pill-btn" data-cub="Wolf/Bear">Wolf/Bear</button>
+          <button class="pill-btn" data-cub="Webelos">Webelos</button>
+          <button class="pill-btn" data-cub="AOL">AOL</button>
+        </div>
+      </div>
+    </div>
+
     <div class="kpis" id="kpis"></div>
     <div class="insight" id="insight"></div>
 
@@ -241,7 +255,7 @@ body { padding-bottom: 76px; }
       <div class="chart-wrap-tall"><canvas id="trendChart"></canvas></div>
     </div>
 
-    <div class="grid grid-2-eq" style="margin-bottom:16px;">
+    <div class="grid grid-2-eq" id="origGridA" style="margin-bottom:16px;">
       <div class="card">
         <div class="card-head">
           <div>
@@ -276,7 +290,7 @@ body { padding-bottom: 76px; }
       </div>
     </div>
 
-    <div class="grid grid-2-eq" style="margin-bottom:16px;">
+    <div class="grid grid-2-eq" id="origGridB" style="margin-bottom:16px;">
       <div class="card">
         <div class="card-head">
           <div>
@@ -308,6 +322,70 @@ body { padding-bottom: 76px; }
           <button class="png" data-chart="activeUnitsChart" data-title="105 · Active Units per Month">⤓ PNG</button></div>
         </div>
         <div class="chart-wrap"><canvas id="activeUnitsChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2-eq" id="cubGridA" style="display:none; margin-bottom:16px;">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2><span class="cid">102C</span>Membership by Program</h2>
+            <div class="hint" id="cub102Hint">Stacked monthly totals of the five Cub programs</div>
+          </div>
+          <div class="card-controls">
+            <span class="y-toggle-label">Y-axis</span>
+            <div class="pill-group mini y-toggle" data-chart="cub102">
+              <button class="pill-btn" data-y="auto">Auto</button>
+              <button class="pill-btn active" data-y="zero">From 0</button>
+            </div>
+          <button class="png" data-chart="cub102Chart" data-title="102C · Membership by Program">⤓ PNG</button></div>
+        </div>
+        <div class="chart-wrap"><canvas id="cub102Chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2><span class="cid">103C</span><span id="cub103Title">District Breakdown</span></h2>
+            <div class="hint" id="cub103Hint">Monthly members in the selected program by district</div>
+          </div>
+          <div class="card-controls">
+            <span class="y-toggle-label">Y-axis</span>
+            <div class="pill-group mini y-toggle" data-chart="cub103">
+              <button class="pill-btn" data-y="auto">Auto</button>
+              <button class="pill-btn active" data-y="zero">From 0</button>
+            </div>
+          <button class="png" data-chart="cub103Chart" data-title="103C · District Breakdown by Program">⤓ PNG</button></div>
+        </div>
+        <div class="chart-wrap"><canvas id="cub103Chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2-eq" id="cubGridB" style="display:none; margin-bottom:16px;">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2><span class="cid">104C</span><span id="cub104Title">Program Trend — YoY</span></h2>
+            <div class="hint" id="cub104Hint">Selected program vs the same months one year earlier</div>
+          </div>
+          <div class="card-controls">
+            <span class="y-toggle-label">Y-axis</span>
+            <div class="pill-group mini y-toggle" data-chart="cub104">
+              <button class="pill-btn active" data-y="auto">Auto</button>
+              <button class="pill-btn" data-y="zero">From 0</button>
+            </div>
+          <button class="png" data-chart="cub104Chart" data-title="104C · Program YoY Trend">⤓ PNG</button></div>
+        </div>
+        <div class="chart-wrap"><canvas id="cub104Chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2><span class="cid">105C</span><span id="cub105Title">Top Packs</span></h2>
+            <div class="hint" id="cub105Hint">Largest packs in the selected program, current vs one year ago</div>
+          </div>
+          <div class="card-controls"><button class="png" data-chart="cub105Chart" data-title="105C · Top Packs by Program">⤓ PNG</button></div>
+        </div>
+        <div class="chart-wrap"><canvas id="cub105Chart"></canvas></div>
       </div>
     </div>
 
@@ -724,9 +802,12 @@ const DATA       = {"months": ["Jan24", "Feb24", "Mar24", "Apr24", "May24", "Jun
 /*LBAC_DATA_START*/
 const ADULT_DATA = {"months": ["May24", "Jun24", "Jul24", "Aug24", "Sep24", "Oct24", "Nov24", "Dec24", "Jan25", "Feb25", "Mar25", "Apr25", "May25", "Jun25", "Jul25", "Aug25", "Sep25", "Oct25", "Nov25", "Dec25", "Jan26", "Feb26", "Mar26", "Apr26", "May26", "Jun26", "Jul26", "Aug26"], "monthLabels": ["May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026"], "currentPeriodStart": 15, "currentMonthLabel": "Aug 2026", "priorYearLabel": "Aug 2025", "currentMonthShort": "Aug '26", "priorYearShort": "Aug '25", "views": {"adults_all__all": {"monthlyTotal": [566, 590, 605, 619, 626, 642, 645, 677, 639, 643, 668, 617, 608, 648, 660, 663, 669, 676, 680, 688, 641, 678, 609, 608, 606, 603, 640, 611], "activeUnits": [58, 58, 58, 57, 57, 57, 57, 59, 60, 60, 63, 63, 62, 62, 62, 62, 62, 63, 63, 64, 64, 59, 57, 57, 58, 58, 62, 62], "districts": {"Council (Non-Unit)": [9, 10, 10, 10, 10, 11, 11, 10, 8, 16, 16, 16, 16, 15, 15, 15, 15, 15, 15, 16, 15, 14, 15, 14, 15, 15, 15, 15], "Iron Star 01": [473, 485, 489, 502, 509, 522, 527, 555, 509, 510, 524, 478, 475, 486, 499, 504, 510, 515, 518, 524, 479, 524, 463, 467, 463, 459, 469, 464], "Learning For Life 04": [31, 31, 31, 31, 31, 33, 33, 33, 38, 39, 40, 34, 34, 33, 33, 33, 33, 34, 35, 37, 36, 37, 30, 30, 31, 31, 38, 38], "Merit Badge Counselors 08": [5, 5, 5, 6, 6, 6, 5, 5, 4, 4, 6, 6, 6, 8, 8, 7, 7, 7, 7, 7, 9, 10, 10, 10, 8, 8, 8, 6], "Neptune 05": [30, 30, 30, 30, 30, 30, 30, 30, 35, 36, 37, 35, 34, 35, 35, 35, 35, 35, 35, 35, 35, 35, 31, 31, 32, 32, 34, 34], "New Frontier 03": [9, 9, 9, 9, 9, 9, 9, 13, 13, 13, 16, 16, 14, 14, 15, 15, 15, 16, 16, 16, 15, 7, 8, 4, 4, 4, 7, 6], "Sea Base 06": [7, 8, 16, 16, 16, 16, 15, 16, 16, 10, 11, 13, 13, 24, 19, 18, 18, 18, 18, 17, 18, 17, 18, 18, 20, 19, 29, 23], "Tahquitz 07": [2, 12, 15, 15, 15, 15, 15, 15, 16, 15, 18, 19, 16, 33, 36, 36, 36, 36, 36, 36, 34, 34, 34, 34, 33, 35, 40, 25]}, "unitTypes": {"Club": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4], "Crew": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27], "NonUnit": [37, 49, 60, 62, 62, 63, 61, 61, 60, 53, 59, 62, 57, 87, 85, 83, 83, 83, 83, 83, 82, 82, 84, 83, 83, 84, 100, 76], "Pack": [130, 130, 130, 137, 142, 149, 149, 157, 149, 150, 159, 148, 149, 153, 159, 165, 167, 171, 173, 173, 158, 163, 148, 145, 147, 145, 147, 143], "Post": [31, 31, 31, 31, 31, 33, 33, 33, 38, 39, 40, 34, 34, 33, 33, 33, 33, 34, 35, 37, 36, 37, 30, 30, 31, 31, 34, 34], "Ship": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32], "Troop": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295]}, "unitChanges": [{"unit": "(non-unit)", "district": "Council (Non-Unit)", "unitType": "NonUnit", "prior": 83, "current": 76, "change": -7}, {"unit": "Club 0550 UNK", "district": "Learning For Life 04", "unitType": "Club", "prior": 0, "current": 4, "change": 4}, {"unit": "Crew 0134 UNK", "district": "Iron Star 01", "unitType": "Crew", "prior": 3, "current": 5, "change": 2}, {"unit": "Crew 0228 NA", "district": "Iron Star 01", "unitType": "Crew", "prior": 27, "current": 22, "change": -5}, {"unit": "Pack 0007 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 7, "current": 7, "change": 0}, {"unit": "Pack 0021 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 14, "current": 11, "change": -3}, {"unit": "Pack 0032 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 4, "change": -1}, {"unit": "Pack 0062 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 12, "change": 3}, {"unit": "Pack 0075 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 21, "current": 17, "change": -4}, {"unit": "Pack 0078 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 8, "current": 10, "change": 2}, {"unit": "Pack 0088 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 24, "current": 18, "change": -6}, {"unit": "Pack 0134 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 19, "current": 15, "change": -4}, {"unit": "Pack 0205 BP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 6, "change": -3}, {"unit": "Pack 0206 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 5, "change": 0}, {"unit": "Pack 0208 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 10, "current": 8, "change": -2}, {"unit": "Pack 0222 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 9, "change": 0}, {"unit": "Pack 0247 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Pack 0371 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 6, "current": 5, "change": -1}, {"unit": "Pack 0613 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 4, "current": 4, "change": 0}, {"unit": "Pack 0626 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Pack 0702 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 2, "change": 2}, {"unit": "Pack 0710 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 8, "current": 1, "change": -7}, {"unit": "Pack 0714 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 1, "current": 0, "change": -1}, {"unit": "Pack 0730 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 1, "current": 0, "change": -1}, {"unit": "Pack 0734 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 1, "current": 0, "change": -1}, {"unit": "Pack 0750 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 2, "current": 0, "change": -2}, {"unit": "Pack 0751 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 2, "current": 0, "change": -2}, {"unit": "Pack 0752 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 1, "change": 1}, {"unit": "Pack 0753 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 1, "change": 1}, {"unit": "Pack 0754 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 1, "change": 1}, {"unit": "Post 0279 EX", "district": "Learning For Life 04", "unitType": "Post", "prior": 24, "current": 26, "change": 2}, {"unit": "Post 2704 UNK", "district": "Learning For Life 04", "unitType": "Post", "prior": 9, "current": 8, "change": -1}, {"unit": "Ship 0522 UNK", "district": "Neptune 05", "unitType": "Ship", "prior": 3, "current": 3, "change": 0}, {"unit": "Ship 0549 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}, {"unit": "Ship 0550 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 10, "current": 12, "change": 2}, {"unit": "Ship 0564 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 9, "current": 9, "change": 0}, {"unit": "Ship 0566 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}, {"unit": "Troop 0014 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 12, "current": 16, "change": 4}, {"unit": "Troop 0021 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 10, "change": 0}, {"unit": "Troop 0021 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 4, "change": 2}, {"unit": "Troop 0032 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 6, "change": 1}, {"unit": "Troop 0065 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 40, "current": 42, "change": 2}, {"unit": "Troop 0067 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0074 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 22, "current": 16, "change": -6}, {"unit": "Troop 0074 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 6, "change": 4}, {"unit": "Troop 0075 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 1, "change": -4}, {"unit": "Troop 0075 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 5, "change": 4}, {"unit": "Troop 0105 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 19, "current": 12, "change": -7}, {"unit": "Troop 0117 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 2, "change": -6}, {"unit": "Troop 0120 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 24, "current": 20, "change": -4}, {"unit": "Troop 0126 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 9, "current": 8, "change": -1}, {"unit": "Troop 0134 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 41, "change": 3}, {"unit": "Troop 0134 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 0, "change": -5}, {"unit": "Troop 0140 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 9, "change": -1}, {"unit": "Troop 0212 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 37, "change": -1}, {"unit": "Troop 0222 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 7, "current": 9, "change": 2}, {"unit": "Troop 0222 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 2, "change": 0}, {"unit": "Troop 0224 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0247 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 13, "change": 3}, {"unit": "Troop 0371 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 7, "change": -1}, {"unit": "Troop 0371 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 1, "change": 0}, {"unit": "Troop 0413 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 4, "current": 3, "change": -1}, {"unit": "Troop 0413 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 3, "current": 0, "change": -3}, {"unit": "Troop 0613 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 3, "change": -2}], "snapshot": [{"district": "Council (Non-Unit)", "totalMembers": 15, "activeUnits": 1, "units": 1, "avgPerUnit": 15.0}, {"district": "Iron Star 01", "totalMembers": 464, "activeUnits": 44, "units": 50, "avgPerUnit": 10.545454545454545}, {"district": "Learning For Life 04", "totalMembers": 38, "activeUnits": 3, "units": 4, "avgPerUnit": 12.666666666666666}, {"district": "Merit Badge Counselors 08", "totalMembers": 6, "activeUnits": 1, "units": 1, "avgPerUnit": 6.0}, {"district": "Neptune 05", "totalMembers": 34, "activeUnits": 6, "units": 6, "avgPerUnit": 5.666666666666667}, {"district": "New Frontier 03", "totalMembers": 6, "activeUnits": 5, "units": 11, "avgPerUnit": 1.2}, {"district": "Sea Base 06", "totalMembers": 23, "activeUnits": 1, "units": 1, "avgPerUnit": 23.0}, {"district": "Tahquitz 07", "totalMembers": 25, "activeUnits": 1, "units": 1, "avgPerUnit": 25.0}]}, "adults_all__Pack": {"monthlyTotal": [130, 130, 130, 137, 142, 149, 149, 157, 149, 150, 159, 148, 149, 153, 159, 165, 167, 171, 173, 173, 158, 163, 148, 145, 147, 145, 147, 143], "activeUnits": [15, 15, 15, 15, 15, 15, 15, 17, 17, 17, 20, 20, 20, 20, 20, 20, 20, 21, 21, 22, 22, 17, 17, 17, 18, 18, 21, 21], "districts": {"Iron Star 01": [129, 129, 129, 136, 141, 148, 148, 152, 144, 139, 145, 134, 135, 139, 144, 150, 152, 155, 157, 157, 143, 156, 140, 141, 143, 141, 140, 137], "New Frontier 03": [1, 1, 1, 1, 1, 1, 1, 5, 5, 11, 14, 14, 14, 14, 15, 15, 15, 16, 16, 16, 15, 7, 8, 4, 4, 4, 7, 6]}, "unitTypes": {"Pack": [130, 130, 130, 137, 142, 149, 149, 157, 149, 150, 159, 148, 149, 153, 159, 165, 167, 171, 173, 173, 158, 163, 148, 145, 147, 145, 147, 143]}, "unitChanges": [{"unit": "Pack 0007 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 7, "current": 7, "change": 0}, {"unit": "Pack 0021 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 14, "current": 11, "change": -3}, {"unit": "Pack 0032 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 4, "change": -1}, {"unit": "Pack 0062 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 12, "change": 3}, {"unit": "Pack 0075 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 21, "current": 17, "change": -4}, {"unit": "Pack 0078 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 8, "current": 10, "change": 2}, {"unit": "Pack 0088 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 24, "current": 18, "change": -6}, {"unit": "Pack 0134 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 19, "current": 15, "change": -4}, {"unit": "Pack 0205 BP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 6, "change": -3}, {"unit": "Pack 0206 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 5, "change": 0}, {"unit": "Pack 0208 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 10, "current": 8, "change": -2}, {"unit": "Pack 0222 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 9, "change": 0}, {"unit": "Pack 0247 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Pack 0371 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 6, "current": 5, "change": -1}, {"unit": "Pack 0613 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 4, "current": 4, "change": 0}, {"unit": "Pack 0626 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Pack 0702 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 2, "change": 2}, {"unit": "Pack 0710 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 8, "current": 1, "change": -7}, {"unit": "Pack 0714 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 1, "current": 0, "change": -1}, {"unit": "Pack 0730 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 1, "current": 0, "change": -1}, {"unit": "Pack 0734 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 1, "current": 0, "change": -1}, {"unit": "Pack 0750 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 2, "current": 0, "change": -2}, {"unit": "Pack 0751 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 2, "current": 0, "change": -2}, {"unit": "Pack 0752 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 1, "change": 1}, {"unit": "Pack 0753 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 1, "change": 1}, {"unit": "Pack 0754 FP", "district": "New Frontier 03", "unitType": "Pack", "prior": 0, "current": 1, "change": 1}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 137, "activeUnits": 16, "units": 18, "avgPerUnit": 8.5625}, {"district": "New Frontier 03", "totalMembers": 6, "activeUnits": 5, "units": 10, "avgPerUnit": 1.2}]}, "adults_all__Troop": {"monthlyTotal": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295], "activeUnits": [27, 27, 27, 26, 26, 26, 26, 26, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 25, 25, 25, 25, 25, 25], "districts": {"Iron Star 01": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295]}, "unitTypes": {"Troop": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295]}, "unitChanges": [{"unit": "Troop 0014 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 12, "current": 16, "change": 4}, {"unit": "Troop 0021 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 10, "change": 0}, {"unit": "Troop 0021 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 4, "change": 2}, {"unit": "Troop 0032 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 6, "change": 1}, {"unit": "Troop 0065 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 40, "current": 42, "change": 2}, {"unit": "Troop 0067 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0074 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 22, "current": 16, "change": -6}, {"unit": "Troop 0074 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 6, "change": 4}, {"unit": "Troop 0075 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 1, "change": -4}, {"unit": "Troop 0075 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 5, "change": 4}, {"unit": "Troop 0105 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 19, "current": 12, "change": -7}, {"unit": "Troop 0117 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 2, "change": -6}, {"unit": "Troop 0120 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 24, "current": 20, "change": -4}, {"unit": "Troop 0126 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 9, "current": 8, "change": -1}, {"unit": "Troop 0134 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 41, "change": 3}, {"unit": "Troop 0134 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 0, "change": -5}, {"unit": "Troop 0140 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 9, "change": -1}, {"unit": "Troop 0212 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 37, "change": -1}, {"unit": "Troop 0222 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 7, "current": 9, "change": 2}, {"unit": "Troop 0222 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 2, "change": 0}, {"unit": "Troop 0224 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0247 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 13, "change": 3}, {"unit": "Troop 0371 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 7, "change": -1}, {"unit": "Troop 0371 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 1, "change": 0}, {"unit": "Troop 0413 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 4, "current": 3, "change": -1}, {"unit": "Troop 0413 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 3, "current": 0, "change": -3}, {"unit": "Troop 0613 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 3, "change": -2}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 295, "activeUnits": 25, "units": 29, "avgPerUnit": 11.8}]}, "adults_all__Crew": {"monthlyTotal": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27], "activeUnits": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], "districts": {"Iron Star 01": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27]}, "unitTypes": {"Crew": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27]}, "unitChanges": [{"unit": "Crew 0134 UNK", "district": "Iron Star 01", "unitType": "Crew", "prior": 3, "current": 5, "change": 2}, {"unit": "Crew 0228 NA", "district": "Iron Star 01", "unitType": "Crew", "prior": 27, "current": 22, "change": -5}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 27, "activeUnits": 2, "units": 2, "avgPerUnit": 13.5}]}, "adults_all__Ship": {"monthlyTotal": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32], "activeUnits": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], "districts": {"Neptune 05": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32]}, "unitTypes": {"Ship": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32]}, "unitChanges": [{"unit": "Ship 0522 UNK", "district": "Neptune 05", "unitType": "Ship", "prior": 3, "current": 3, "change": 0}, {"unit": "Ship 0549 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}, {"unit": "Ship 0550 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 10, "current": 12, "change": 2}, {"unit": "Ship 0564 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 9, "current": 9, "change": 0}, {"unit": "Ship 0566 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}], "snapshot": [{"district": "Neptune 05", "totalMembers": 32, "activeUnits": 5, "units": 5, "avgPerUnit": 6.4}]}, "adults_all__NonUnit": {"monthlyTotal": [37, 49, 60, 62, 62, 63, 61, 61, 60, 53, 59, 62, 57, 87, 85, 83, 83, 83, 83, 83, 82, 82, 84, 83, 83, 84, 100, 76], "activeUnits": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6], "districts": {"Council (Non-Unit)": [9, 10, 10, 10, 10, 11, 11, 10, 8, 16, 16, 16, 16, 15, 15, 15, 15, 15, 15, 16, 15, 14, 15, 14, 15, 15, 15, 15], "Iron Star 01": [3, 3, 3, 4, 4, 4, 4, 4, 6, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 5], "Merit Badge Counselors 08": [5, 5, 5, 6, 6, 6, 5, 5, 4, 4, 6, 6, 6, 8, 8, 7, 7, 7, 7, 7, 9, 10, 10, 10, 8, 8, 8, 6], "Neptune 05": [3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2], "New Frontier 03": [8, 8, 8, 8, 8, 8, 8, 8, 8, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "Sea Base 06": [7, 8, 16, 16, 16, 16, 15, 16, 16, 10, 11, 13, 13, 24, 19, 18, 18, 18, 18, 17, 18, 17, 18, 18, 20, 19, 29, 23], "Tahquitz 07": [2, 12, 15, 15, 15, 15, 15, 15, 16, 15, 18, 19, 16, 33, 36, 36, 36, 36, 36, 36, 34, 34, 34, 34, 33, 35, 40, 25]}, "unitTypes": {"NonUnit": [37, 49, 60, 62, 62, 63, 61, 61, 60, 53, 59, 62, 57, 87, 85, 83, 83, 83, 83, 83, 82, 82, 84, 83, 83, 84, 100, 76]}, "unitChanges": [{"unit": "(non-unit)", "district": "Council (Non-Unit)", "unitType": "NonUnit", "prior": 83, "current": 76, "change": -7}], "snapshot": [{"district": "Council (Non-Unit)", "totalMembers": 15, "activeUnits": 1, "units": 1, "avgPerUnit": 15.0}, {"district": "Iron Star 01", "totalMembers": 5, "activeUnits": 1, "units": 1, "avgPerUnit": 5.0}, {"district": "Merit Badge Counselors 08", "totalMembers": 6, "activeUnits": 1, "units": 1, "avgPerUnit": 6.0}, {"district": "Neptune 05", "totalMembers": 2, "activeUnits": 1, "units": 1, "avgPerUnit": 2.0}, {"district": "New Frontier 03", "totalMembers": 0, "activeUnits": 0, "units": 1, "avgPerUnit": 0}, {"district": "Sea Base 06", "totalMembers": 23, "activeUnits": 1, "units": 1, "avgPerUnit": 23.0}, {"district": "Tahquitz 07", "totalMembers": 25, "activeUnits": 1, "units": 1, "avgPerUnit": 25.0}]}, "adults_traditional__all": {"monthlyTotal": [497, 509, 513, 525, 532, 545, 550, 578, 536, 540, 555, 507, 503, 514, 527, 532, 538, 543, 546, 552, 508, 552, 487, 491, 488, 484, 495, 491], "activeUnits": [48, 48, 48, 47, 47, 47, 47, 47, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 49, 49, 49, 47, 47, 48, 48, 48, 48], "districts": {"Iron Star 01": [470, 482, 486, 498, 505, 518, 523, 551, 503, 505, 519, 473, 470, 480, 493, 498, 504, 509, 512, 518, 474, 518, 457, 461, 457, 453, 463, 459], "Neptune 05": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32]}, "unitTypes": {"Crew": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27], "Pack": [129, 129, 129, 136, 141, 148, 148, 152, 144, 139, 145, 134, 135, 139, 144, 150, 152, 155, 157, 157, 143, 156, 140, 141, 143, 141, 140, 137], "Ship": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32], "Troop": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295]}, "unitChanges": [{"unit": "Crew 0134 UNK", "district": "Iron Star 01", "unitType": "Crew", "prior": 3, "current": 5, "change": 2}, {"unit": "Crew 0228 NA", "district": "Iron Star 01", "unitType": "Crew", "prior": 27, "current": 22, "change": -5}, {"unit": "Pack 0007 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 7, "current": 7, "change": 0}, {"unit": "Pack 0021 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 14, "current": 11, "change": -3}, {"unit": "Pack 0032 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 4, "change": -1}, {"unit": "Pack 0062 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 12, "change": 3}, {"unit": "Pack 0075 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 21, "current": 17, "change": -4}, {"unit": "Pack 0078 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 8, "current": 10, "change": 2}, {"unit": "Pack 0088 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 24, "current": 18, "change": -6}, {"unit": "Pack 0134 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 19, "current": 15, "change": -4}, {"unit": "Pack 0205 BP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 6, "change": -3}, {"unit": "Pack 0206 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 5, "change": 0}, {"unit": "Pack 0208 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 10, "current": 8, "change": -2}, {"unit": "Pack 0222 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 9, "change": 0}, {"unit": "Pack 0247 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Pack 0371 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 6, "current": 5, "change": -1}, {"unit": "Pack 0613 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 4, "current": 4, "change": 0}, {"unit": "Pack 0626 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Ship 0522 UNK", "district": "Neptune 05", "unitType": "Ship", "prior": 3, "current": 3, "change": 0}, {"unit": "Ship 0549 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}, {"unit": "Ship 0550 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 10, "current": 12, "change": 2}, {"unit": "Ship 0564 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 9, "current": 9, "change": 0}, {"unit": "Ship 0566 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}, {"unit": "Troop 0014 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 12, "current": 16, "change": 4}, {"unit": "Troop 0021 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 10, "change": 0}, {"unit": "Troop 0021 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 4, "change": 2}, {"unit": "Troop 0032 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 6, "change": 1}, {"unit": "Troop 0065 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 40, "current": 42, "change": 2}, {"unit": "Troop 0067 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0074 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 22, "current": 16, "change": -6}, {"unit": "Troop 0074 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 6, "change": 4}, {"unit": "Troop 0075 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 1, "change": -4}, {"unit": "Troop 0075 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 5, "change": 4}, {"unit": "Troop 0105 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 19, "current": 12, "change": -7}, {"unit": "Troop 0117 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 2, "change": -6}, {"unit": "Troop 0120 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 24, "current": 20, "change": -4}, {"unit": "Troop 0126 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 9, "current": 8, "change": -1}, {"unit": "Troop 0134 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 41, "change": 3}, {"unit": "Troop 0134 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 0, "change": -5}, {"unit": "Troop 0140 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 9, "change": -1}, {"unit": "Troop 0212 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 37, "change": -1}, {"unit": "Troop 0222 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 7, "current": 9, "change": 2}, {"unit": "Troop 0222 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 2, "change": 0}, {"unit": "Troop 0224 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0247 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 13, "change": 3}, {"unit": "Troop 0371 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 7, "change": -1}, {"unit": "Troop 0371 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 1, "change": 0}, {"unit": "Troop 0413 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 4, "current": 3, "change": -1}, {"unit": "Troop 0413 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 3, "current": 0, "change": -3}, {"unit": "Troop 0613 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 3, "change": -2}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 459, "activeUnits": 43, "units": 49, "avgPerUnit": 10.674418604651162}, {"district": "Neptune 05", "totalMembers": 32, "activeUnits": 5, "units": 5, "avgPerUnit": 6.4}]}, "adults_traditional__Pack": {"monthlyTotal": [129, 129, 129, 136, 141, 148, 148, 152, 144, 139, 145, 134, 135, 139, 144, 150, 152, 155, 157, 157, 143, 156, 140, 141, 143, 141, 140, 137], "activeUnits": [14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 16, 16, 16, 16], "districts": {"Iron Star 01": [129, 129, 129, 136, 141, 148, 148, 152, 144, 139, 145, 134, 135, 139, 144, 150, 152, 155, 157, 157, 143, 156, 140, 141, 143, 141, 140, 137]}, "unitTypes": {"Pack": [129, 129, 129, 136, 141, 148, 148, 152, 144, 139, 145, 134, 135, 139, 144, 150, 152, 155, 157, 157, 143, 156, 140, 141, 143, 141, 140, 137]}, "unitChanges": [{"unit": "Pack 0007 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 7, "current": 7, "change": 0}, {"unit": "Pack 0021 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 14, "current": 11, "change": -3}, {"unit": "Pack 0032 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 4, "change": -1}, {"unit": "Pack 0062 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 12, "change": 3}, {"unit": "Pack 0075 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 21, "current": 17, "change": -4}, {"unit": "Pack 0078 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 8, "current": 10, "change": 2}, {"unit": "Pack 0088 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 24, "current": 18, "change": -6}, {"unit": "Pack 0134 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 19, "current": 15, "change": -4}, {"unit": "Pack 0205 BP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 6, "change": -3}, {"unit": "Pack 0206 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 5, "current": 5, "change": 0}, {"unit": "Pack 0208 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 10, "current": 8, "change": -2}, {"unit": "Pack 0222 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 9, "current": 9, "change": 0}, {"unit": "Pack 0247 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}, {"unit": "Pack 0371 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 6, "current": 5, "change": -1}, {"unit": "Pack 0613 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 4, "current": 4, "change": 0}, {"unit": "Pack 0626 FP", "district": "Iron Star 01", "unitType": "Pack", "prior": 0, "current": 3, "change": 3}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 137, "activeUnits": 16, "units": 18, "avgPerUnit": 8.5625}]}, "adults_traditional__Troop": {"monthlyTotal": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295], "activeUnits": [27, 27, 27, 26, 26, 26, 26, 26, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 25, 25, 25, 25, 25, 25], "districts": {"Iron Star 01": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295]}, "unitTypes": {"Troop": [316, 327, 330, 335, 337, 343, 348, 363, 327, 334, 341, 310, 306, 311, 319, 318, 322, 326, 327, 332, 304, 333, 289, 293, 288, 286, 296, 295]}, "unitChanges": [{"unit": "Troop 0014 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 12, "current": 16, "change": 4}, {"unit": "Troop 0021 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 10, "change": 0}, {"unit": "Troop 0021 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 4, "change": 2}, {"unit": "Troop 0032 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 6, "change": 1}, {"unit": "Troop 0065 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 40, "current": 42, "change": 2}, {"unit": "Troop 0067 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0074 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 22, "current": 16, "change": -6}, {"unit": "Troop 0074 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 6, "change": 4}, {"unit": "Troop 0075 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 1, "change": -4}, {"unit": "Troop 0075 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 5, "change": 4}, {"unit": "Troop 0105 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 19, "current": 12, "change": -7}, {"unit": "Troop 0117 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 2, "change": -6}, {"unit": "Troop 0120 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 24, "current": 20, "change": -4}, {"unit": "Troop 0126 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 9, "current": 8, "change": -1}, {"unit": "Troop 0134 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 41, "change": 3}, {"unit": "Troop 0134 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 0, "change": -5}, {"unit": "Troop 0140 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 9, "change": -1}, {"unit": "Troop 0212 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 38, "current": 37, "change": -1}, {"unit": "Troop 0222 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 7, "current": 9, "change": 2}, {"unit": "Troop 0222 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 2, "current": 2, "change": 0}, {"unit": "Troop 0224 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 14, "current": 11, "change": -3}, {"unit": "Troop 0247 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 10, "current": 13, "change": 3}, {"unit": "Troop 0371 BT", "district": "Iron Star 01", "unitType": "Troop", "prior": 8, "current": 7, "change": -1}, {"unit": "Troop 0371 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 1, "current": 1, "change": 0}, {"unit": "Troop 0413 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 4, "current": 3, "change": -1}, {"unit": "Troop 0413 GT", "district": "Iron Star 01", "unitType": "Troop", "prior": 3, "current": 0, "change": -3}, {"unit": "Troop 0613 FT", "district": "Iron Star 01", "unitType": "Troop", "prior": 5, "current": 3, "change": -2}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 295, "activeUnits": 25, "units": 29, "avgPerUnit": 11.8}]}, "adults_traditional__Crew": {"monthlyTotal": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27], "activeUnits": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], "districts": {"Iron Star 01": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27]}, "unitTypes": {"Crew": [25, 26, 27, 27, 27, 27, 27, 36, 32, 32, 33, 29, 29, 30, 30, 30, 30, 28, 28, 29, 27, 29, 28, 27, 26, 26, 27, 27]}, "unitChanges": [{"unit": "Crew 0134 UNK", "district": "Iron Star 01", "unitType": "Crew", "prior": 3, "current": 5, "change": 2}, {"unit": "Crew 0228 NA", "district": "Iron Star 01", "unitType": "Crew", "prior": 27, "current": 22, "change": -5}], "snapshot": [{"district": "Iron Star 01", "totalMembers": 27, "activeUnits": 2, "units": 2, "avgPerUnit": 13.5}]}, "adults_traditional__Ship": {"monthlyTotal": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32], "activeUnits": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], "districts": {"Neptune 05": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32]}, "unitTypes": {"Ship": [27, 27, 27, 27, 27, 27, 27, 27, 33, 35, 36, 34, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 30, 30, 31, 31, 32, 32]}, "unitChanges": [{"unit": "Ship 0522 UNK", "district": "Neptune 05", "unitType": "Ship", "prior": 3, "current": 3, "change": 0}, {"unit": "Ship 0549 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}, {"unit": "Ship 0550 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 10, "current": 12, "change": 2}, {"unit": "Ship 0564 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 9, "current": 9, "change": 0}, {"unit": "Ship 0566 NA", "district": "Neptune 05", "unitType": "Ship", "prior": 6, "current": 4, "change": -2}], "snapshot": [{"district": "Neptune 05", "totalMembers": 32, "activeUnits": 5, "units": 5, "avgPerUnit": 6.4}]}}};
 /*LBAC_DATA_END*/
+/*LBAC_DATA_START*/
+const CUB_DATA = {"programs": ["Lion", "Tiger", "Wolf/Bear", "Webelos", "AOL"], "months": ["Jan25", "Feb25", "Mar25", "Apr25", "May25", "Jun25", "Jul25", "Aug25", "Sep25", "Oct25", "Nov25", "Dec25", "Jan26", "Feb26", "Mar26", "Apr26", "May26", "Jun26", "Jul26", "Aug26"], "monthLabels": ["Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026"], "region": {"Lion": {"cur": [37, 43, 45, 48, 52, 3, 7, 13, 27, 42, 47, 48, 56, 60, 63, 70, 75, 4, 5, 6], "smly": [40, 45, 52, 53, 53, 2, 2, 4, 19, 25, 30, 34, 37, 43, 45, 48, 52, 3, 7, 13]}, "Tiger": {"cur": [90, 90, 92, 87, 85, 52, 53, 54, 70, 85, 93, 94, 92, 92, 94, 92, 101, 75, 76, 75], "smly": [85, 90, 90, 92, 92, 54, 54, 55, 82, 85, 87, 88, 90, 90, 92, 87, 85, 52, 53, 54]}, "Wolf/Bear": {"cur": [266, 268, 273, 242, 242, 207, 205, 206, 217, 249, 262, 267, 268, 267, 261, 258, 262, 234, 231, 231], "smly": [182, 198, 190, 191, 192, 205, 208, 210, 227, 240, 243, 264, 266, 268, 273, 242, 242, 207, 205, 206]}, "Webelos": {"cur": [279, 272, 255, 183, 182, 196, 195, 193, 192, 212, 221, 241, 241, 229, 192, 184, 187, 242, 243, 242], "smly": [235, 233, 174, 167, 163, 229, 228, 232, 242, 254, 256, 276, 279, 272, 255, 183, 182, 196, 195, 193]}, "AOL": {"cur": [0, 0, 0, 0, 0, 99, 99, 99, 99, 96, 88, 72, 67, 55, 39, 31, 30, 162, 161, 159], "smly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 99, 99, 99]}}, "districts": {"Iron Star 01": {"Lion": {"cur": [37, 43, 45, 48, 52, 3, 7, 13, 27, 42, 47, 48, 56, 60, 63, 70, 75, 4, 5, 6], "smly": [40, 45, 52, 53, 53, 2, 2, 4, 19, 25, 30, 34, 37, 43, 45, 48, 52, 3, 7, 13]}, "Tiger": {"cur": [71, 71, 73, 68, 66, 51, 52, 53, 58, 60, 62, 60, 58, 58, 60, 58, 67, 75, 76, 75], "smly": [83, 85, 85, 87, 87, 54, 54, 55, 69, 71, 73, 71, 71, 71, 73, 68, 66, 51, 52, 53]}, "Wolf/Bear": {"cur": [196, 198, 203, 172, 172, 152, 150, 151, 157, 165, 162, 159, 160, 159, 153, 150, 154, 133, 130, 130], "smly": [159, 165, 165, 166, 166, 180, 183, 185, 187, 194, 197, 194, 196, 198, 203, 172, 172, 152, 150, 151]}, "Webelos": {"cur": [183, 176, 160, 105, 106, 111, 111, 110, 103, 106, 106, 106, 104, 102, 90, 86, 88, 96, 97, 96], "smly": [153, 154, 124, 116, 111, 171, 170, 174, 177, 182, 184, 180, 183, 176, 160, 105, 106, 111, 111, 110]}, "AOL": {"cur": [0, 0, 0, 0, 0, 71, 71, 71, 71, 70, 68, 66, 64, 52, 36, 28, 27, 103, 102, 100], "smly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 71, 71, 71]}}, "New Frontier 03": {"Lion": {"cur": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "smly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "Tiger": {"cur": [19, 19, 19, 19, 19, 1, 1, 1, 12, 25, 31, 34, 34, 34, 34, 34, 34, 0, 0, 0], "smly": [2, 5, 5, 5, 5, 0, 0, 0, 13, 14, 14, 17, 19, 19, 19, 19, 19, 1, 1, 1]}, "Wolf/Bear": {"cur": [70, 70, 70, 70, 70, 55, 55, 55, 60, 84, 100, 108, 108, 108, 108, 108, 108, 101, 101, 101], "smly": [23, 33, 25, 25, 26, 25, 25, 25, 40, 46, 46, 70, 70, 70, 70, 70, 70, 55, 55, 55]}, "Webelos": {"cur": [96, 96, 95, 78, 76, 85, 84, 83, 89, 106, 115, 135, 137, 127, 102, 98, 99, 146, 146, 146], "smly": [82, 79, 50, 51, 52, 58, 58, 58, 65, 72, 72, 96, 96, 96, 95, 78, 76, 85, 84, 83]}, "AOL": {"cur": [0, 0, 0, 0, 0, 28, 28, 28, 28, 26, 20, 6, 3, 3, 3, 3, 3, 59, 59, 59], "smly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 28, 28]}}}, "packDetail": {"month": "Aug26", "monthLabel": "Aug 2026", "packs": [{"unit": "Pack 0007 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 4, "s": 3}, "Wolf/Bear": {"c": 11, "s": 13}, "Webelos": {"c": 3, "s": 7}, "AOL": {"c": 7, "s": 10}}}, {"unit": "Pack 0021 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 1, "s": 1}, "Tiger": {"c": 2, "s": 5}, "Wolf/Bear": {"c": 11, "s": 12}, "Webelos": {"c": 7, "s": 12}, "AOL": {"c": 8, "s": 2}}}, {"unit": "Pack 0032 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 2, "s": 6}, "Wolf/Bear": {"c": 10, "s": 9}, "Webelos": {"c": 7, "s": 9}, "AOL": {"c": 8, "s": 1}}}, {"unit": "Pack 0062 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 5, "s": 5}, "Wolf/Bear": {"c": 7, "s": 8}, "Webelos": {"c": 6, "s": 6}, "AOL": {"c": 8, "s": 6}}}, {"unit": "Pack 0075 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 1, "s": 4}, "Tiger": {"c": 6, "s": 7}, "Wolf/Bear": {"c": 15, "s": 21}, "Webelos": {"c": 9, "s": 10}, "AOL": {"c": 11, "s": 10}}}, {"unit": "Pack 0078 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 14, "s": 7}, "Wolf/Bear": {"c": 11, "s": 6}, "Webelos": {"c": 6, "s": 4}, "AOL": {"c": 6, "s": 3}}}, {"unit": "Pack 0088 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 4, "s": 4}, "Tiger": {"c": 13, "s": 5}, "Wolf/Bear": {"c": 17, "s": 24}, "Webelos": {"c": 12, "s": 8}, "AOL": {"c": 9, "s": 8}}}, {"unit": "Pack 0134 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 2}, "Tiger": {"c": 3, "s": 5}, "Wolf/Bear": {"c": 16, "s": 17}, "Webelos": {"c": 7, "s": 6}, "AOL": {"c": 8, "s": 12}}}, {"unit": "Pack 0205 BP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 6, "s": 4}, "Wolf/Bear": {"c": 5, "s": 10}, "Webelos": {"c": 8, "s": 18}, "AOL": {"c": 9, "s": 2}}}, {"unit": "Pack 0206 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 9, "s": 0}, "Wolf/Bear": {"c": 4, "s": 9}, "Webelos": {"c": 8, "s": 11}, "AOL": {"c": 6, "s": 4}}}, {"unit": "Pack 0208 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 1}, "Tiger": {"c": 2, "s": 2}, "Wolf/Bear": {"c": 1, "s": 8}, "Webelos": {"c": 5, "s": 6}, "AOL": {"c": 5, "s": 1}}}, {"unit": "Pack 0222 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 2, "s": 1}, "Wolf/Bear": {"c": 5, "s": 6}, "Webelos": {"c": 6, "s": 5}, "AOL": {"c": 7, "s": 5}}}, {"unit": "Pack 0247 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 0}, "Tiger": {"c": 2, "s": 0}, "Wolf/Bear": {"c": 3, "s": 0}, "Webelos": {"c": 2, "s": 0}, "AOL": {"c": 2, "s": 0}}}, {"unit": "Pack 0371 FP", "district": "Iron Star 01", "programs": {"Lion": {"c": 0, "s": 1}, "Tiger": {"c": 4, "s": 3}, "Wolf/Bear": {"c": 5, "s": 7}, "Webelos": {"c": 7, "s": 8}, "AOL": {"c": 5, "s": 6}}}, {"unit": "Pack 0613 FP", "district": "Iron Star 01", "programs": {"Wolf/Bear": {"c": 2, "s": 1}, "AOL": {"c": 1, "s": 1}}}, {"unit": "Pack 0626 FP", "district": "Iron Star 01", "programs": {"Tiger": {"c": 1, "s": 0}, "Wolf/Bear": {"c": 7, "s": 0}, "Webelos": {"c": 3, "s": 0}}}, {"unit": "Pack 0702 FP", "district": "New Frontier 03", "programs": {"Tiger": {"c": 0, "s": 1}, "Wolf/Bear": {"c": 28, "s": 16}, "Webelos": {"c": 12, "s": 12}, "AOL": {"c": 14, "s": 3}}}, {"unit": "Pack 0710 FP", "district": "New Frontier 03", "programs": {"Wolf/Bear": {"c": 2, "s": 5}, "Webelos": {"c": 6, "s": 12}, "AOL": {"c": 11, "s": 6}}}, {"unit": "Pack 0713 FP", "district": "New Frontier 03", "programs": {"Tiger": {"c": 0, "s": 0}, "Wolf/Bear": {"c": 5, "s": 5}, "Webelos": {"c": 7, "s": 2}, "AOL": {"c": 1, "s": 3}}}, {"unit": "Pack 0714 FP", "district": "New Frontier 03", "programs": {"Tiger": {"c": 0, "s": 0}, "Wolf/Bear": {"c": 19, "s": 4}, "Webelos": {"c": 25, "s": 19}, "AOL": {"c": 17, "s": 5}}}, {"unit": "Pack 0715 FP", "district": "New Frontier 03", "programs": {"Tiger": {"c": 0, "s": 0}, "Wolf/Bear": {"c": 6, "s": 0}, "Webelos": {"c": 12, "s": 0}, "AOL": {"c": 4, "s": 0}}}, {"unit": "Pack 0730 FP", "district": "New Frontier 03", "programs": {"Tiger": {"c": 0, "s": 0}, "Wolf/Bear": {"c": 4, "s": 2}, "Webelos": {"c": 8, "s": 16}, "AOL": {"c": 4, "s": 0}}}, {"unit": "Pack 0734 FP", "district": "New Frontier 03", "programs": {"Tiger": {"c": 0, "s": 0}, "Wolf/Bear": {"c": 10, "s": 4}, "Webelos": {"c": 14, "s": 11}, "AOL": {"c": 5, "s": 3}}}, {"unit": "Pack 0750 FP", "district": "New Frontier 03", "programs": {"Wolf/Bear": {"c": 3, "s": 12}, "Webelos": {"c": 11, "s": 7}, "AOL": {"c": 3, "s": 2}}}, {"unit": "Pack 0751 FP", "district": "New Frontier 03", "programs": {"Wolf/Bear": {"c": 0, "s": 7}, "Webelos": {"c": 13, "s": 4}, "AOL": {"c": 0, "s": 6}}}, {"unit": "Pack 0752 FP", "district": "New Frontier 03", "programs": {"Webelos": {"c": 10, "s": 0}}}, {"unit": "Pack 0753 FP", "district": "New Frontier 03", "programs": {"Wolf/Bear": {"c": 7, "s": 0}, "Webelos": {"c": 13, "s": 0}}}, {"unit": "Pack 0754 FP", "district": "New Frontier 03", "programs": {"Wolf/Bear": {"c": 17, "s": 0}, "Webelos": {"c": 15, "s": 0}}}]}, "currentPeriodStart": 7, "currentMonthLabel": "Aug 2026", "priorYearLabel": "Aug 2025", "currentMonthShort": "Aug '26", "priorYearShort": "Aug '25"};
+/*LBAC_DATA_END*/
 const state = {
-  scope: 'all', type: 'all', trendMode: 'sequential',
-  yAxis: { trend: 'auto', unitType: 'zero', district: 'zero', snapshot: 'zero', activeUnits: 'auto' }
+  scope: 'all', type: 'all', trendMode: 'sequential', cub: 'all',
+  yAxis: { trend: 'auto', unitType: 'zero', district: 'zero', snapshot: 'zero', activeUnits: 'auto', cub102: 'zero', cub103: 'zero', cub104: 'auto' }
 };
 function yZero(k){ return state.yAxis[k] === 'zero'; }
 function isAdults(){ return state.scope === 'adults'; }
@@ -855,6 +936,7 @@ function updateFilterNote() {
   if (isAdults()) notes.push('Adult registrations · includes Council (Non-Unit), Sea Base, Tahquitz, Merit Badge Counselors');
   else if (state.scope === 'traditional') notes.push('Excluding Learning For Life 04 and New Frontier 03');
   if (!isAdults() && state.type === 'Pack') notes.push('Pack view auto-excludes New Frontier 03');
+  if (cubMode() && state.cub !== 'all') notes.push(state.cub + ' program charts ' + (state.scope === 'traditional' ? 'exclude' : 'include') + ' ScoutReach (New Frontier 03)');
   if (isAdults() && state.type === 'NonUnit') notes.push('Council-level adults not tied to a unit (commissioners, key three, district committee)');
   document.getElementById('filterNote').textContent = notes.join(' · ');
 }
@@ -869,6 +951,7 @@ function updateTypePillVisibility(){
 }
 
 function renderKPIs(view) {
+  if (cubActiveProgram()) return renderCubKPIs(); // cub swap hook: program-scoped KPI cards (see cub module)
   const monthly = view.monthlyTotal;
   const active = view.activeUnits;
   const startIdx = getData().currentPeriodStart;
@@ -928,6 +1011,8 @@ function renderInsight(view) {
 }
 
 function renderTrendChart(view) {
+  if (cubActiveProgram()) return renderCub101(); // cub swap hook: chart 101 -> 101C program trend (see cub module)
+  cubRestoreTrendPngTitle();
   if (state.trendMode === 'yoy') return renderTrendYoY(view);
   return renderTrendSequential(view);
 }
@@ -1188,12 +1273,463 @@ function renderDistrictTable(view) {
   document.querySelector('#districtTable tbody').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="7" class="empty-state">No districts in this view</td></tr>';
 }
 
+
+// ── Cub Scouting program views (CUB_DATA) ───────────────────────────────
+// Shown on the Membership Totals tab when Unit Type = Pack and a specific
+// Cub program pill is selected; charts 102C–105C then replace 102–105,
+// chart 101 swaps to 101C (the program's own trend, keeping 101's
+// Sequential / YoY Overlay modes) and the four KPI cards swap to
+// program-scoped values (renderCubKPIs documents the card mapping).
+// The "All" pill - or leaving Pack - restores 101 and the standard KPIs.
+const CUB_COLORS = { 'Lion': '#f1b434', 'Tiger': '#f97316', 'Wolf/Bear': '#c8102e', 'Webelos': '#1f3a5f', 'AOL': '#0ea5b7' };
+
+function cubAvailable(){
+  return typeof CUB_DATA !== 'undefined' && CUB_DATA.months && CUB_DATA.months.length > 0;
+}
+function cubMode(){ return !isAdults() && state.type === 'Pack' && cubAvailable(); }
+function cubActiveProgram(){ return cubMode() && state.cub !== 'all' ? state.cub : null; }
+function cubShortLabels(){ return CUB_DATA.monthLabels.map(function(l){ return l.replace(' 20', " '"); }); }
+// Districts included under the current scope (Traditional excludes ScoutReach/LFL,
+// mirroring the rest of the dashboard).
+function cubDistricts(){
+  var excl = { 'Learning For Life 04': 1, 'New Frontier 03': 1 };
+  return Object.keys(CUB_DATA.districts).filter(function(d){
+    return state.scope !== 'traditional' || !excl[d];
+  });
+}
+function cubSeries(prog, key){
+  var ds = cubDistricts(), n = CUB_DATA.months.length, out = [], i, j, s, node;
+  for (i = 0; i < n; i++){
+    s = 0;
+    for (j = 0; j < ds.length; j++){
+      node = CUB_DATA.districts[ds[j]][prog];
+      s += (node && node[key][i]) || 0;
+    }
+    out.push(s);
+  }
+  return out;
+}
+function cubScopeWord(){ return state.scope === 'traditional' ? 'Traditional districts only (ScoutReach — New Frontier 03 — excluded)' : 'council-wide (includes ScoutReach — New Frontier 03)'; }
+function cubSetTitle(id, text){ var el = document.getElementById(id); if (el) el.textContent = text; }
+function cubSetHint(id, text){ var el = document.getElementById(id); if (el) el.textContent = text; }
+function cubSetPngTitle(canvasId, title){
+  var b = document.querySelector('.png[data-chart="' + canvasId + '"]');
+  if (b) b.dataset.title = title;
+}
+
+// 102C — composition of the five programs across all months (selected program highlighted)
+function renderCub102(){
+  var sel = cubActiveProgram();
+  makeChart('cub102Chart', {
+    type: 'bar',
+    data: {
+      labels: cubShortLabels(),
+      datasets: CUB_DATA.programs.map(function(p){
+        var base = CUB_COLORS[p] || COLORS.navy;
+        return { label: p, data: cubSeries(p, 'cur'), backgroundColor: (sel && p !== sel) ? base + '38' : base, borderWidth: 0 };
+      })
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+        tooltip: {
+          itemSort: function(a, b){ return b.datasetIndex - a.datasetIndex; },
+          callbacks: {
+            label: function(c){ return ' ' + c.dataset.label + ': ' + fmtInt(c.parsed.y); },
+            footer: function(items){
+              var total = items.reduce(function(s, it){ return s + (it.parsed.y || 0); }, 0);
+              return 'All programs: ' + fmtInt(total);
+            }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 60, minRotation: 60 } },
+        y: { stacked: true, beginAtZero: yZero('cub102'), grid: { color: '#f1f5f9' } }
+      }
+    }
+  });
+  cubSetHint('cub102Hint', 'Registered Cub Scouts by program, ' + CUB_DATA.monthLabels[0] + ' – ' + CUB_DATA.currentMonthLabel + ', ' + cubScopeWord() + (sel ? ' · ' + sel + ' highlighted' : '') + '. Pipeline order: Lion → Tiger → Wolf/Bear → Webelos → AOL.');
+  cubSetPngTitle('cub102Chart', '102C · Membership by Program' + (sel ? ' — ' + sel + ' highlighted' : ''));
+}
+
+// 103C — the selected program's monthly members split by district
+function renderCub103(){
+  var p = cubActiveProgram() || CUB_DATA.programs[0];
+  var ds = cubDistricts();
+  makeChart('cub103Chart', {
+    type: 'line',
+    data: {
+      labels: cubShortLabels(),
+      datasets: ds.map(function(d){
+        var col = DISTRICT_COLORS[d] || COLORS.navy;
+        var node = CUB_DATA.districts[d][p];
+        return { label: d, data: node ? node.cur : [], borderColor: col, backgroundColor: col + '20', tension: 0.3, borderWidth: 2, pointRadius: 2, pointHoverRadius: 5 };
+      })
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+        tooltip: {
+          itemSort: function(a, b){ return (b.parsed.y||0) - (a.parsed.y||0); },
+          callbacks: {
+            label: function(c){ return ' ' + c.dataset.label + ': ' + fmtInt(c.parsed.y); },
+            footer: function(items){
+              var total = items.reduce(function(s, it){ return s + (it.parsed.y || 0); }, 0);
+              return 'Total: ' + fmtInt(total);
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 60, minRotation: 60 } },
+        y: { beginAtZero: yZero('cub103'), grid: { color: '#f1f5f9' } }
+      }
+    }
+  });
+  cubSetTitle('cub103Title', 'District Breakdown — ' + p);
+  cubSetHint('cub103Hint', p + ' members per district each month, ' + cubScopeWord() + '.');
+  cubSetPngTitle('cub103Chart', '103C · District Breakdown by Program — ' + p);
+}
+
+// 104C — rolling 12-month net change for the selected program. Its previous
+// YoY overlay now lives on chart 101C's YoY Overlay mode, so this card shows
+// the derived read instead: each month's members minus the same calendar
+// month one year earlier (token-resolved, with the exports' Same-Month-Last-
+// Year fallback where the earlier month isn't embedded — same rule as before).
+function renderCub104(){
+  var p = cubActiveProgram() || CUB_DATA.programs[0];
+  var start = CUB_DATA.currentPeriodStart || 0;
+  var cur = cubSeries(p, 'cur');
+  var yearEarlier = cubYearEarlier(cur, cubSeries(p, 'smly'));
+  var labels = [], deltas = [], priors = [], smlyUsed = false;
+  for (var i = start; i < CUB_DATA.months.length; i++){
+    labels.push(cubShortOf(CUB_DATA.monthLabels[i]));
+    deltas.push(cur[i] - yearEarlier[i].v);
+    priors.push(yearEarlier[i].v);
+    if (yearEarlier[i].fromSmly) smlyUsed = true;
+  }
+  makeChart('cub104Chart', {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Net change vs one year earlier', data: deltas, backgroundColor: deltas.map(function(v){ return v < 0 ? COLORS.accent : COLORS.green; }), borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(c){ return (c.parsed.y > 0 ? '+' : '') + fmtInt(c.parsed.y) + ' vs one year earlier'; },
+            footer: function(items){
+              if (!items.length) return '';
+              var i = items[0].dataIndex;
+              return fmtInt(priors[i]) + ' → ' + fmtInt(cur[start + i]) + ' ' + p + ' members';
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: yZero('cub104'), grid: { color: '#f1f5f9' } },
+        x: { grid: { display: false }, ticks: { maxRotation: 50, minRotation: 50, font: { size: 10 } } }
+      }
+    }
+  });
+  cubSetTitle('cub104Title', '12-Month Net Change — ' + p);
+  cubSetHint('cub104Hint', 'Each bar: ' + p + ' members gained (green) or lost (red) versus the same calendar month one year earlier, ' + cubScopeWord() + '.' + (smlyUsed ? " Months that predate the embedded window compare against the exports' Same-Month-Last-Year column." : '') + ' The YoY overlay formerly here is chart 101C in YoY Overlay mode.');
+  cubSetPngTitle('cub104Chart', '104C · 12-Month Net Change — ' + p);
+}
+
+// 105C — top packs in the selected program for the latest reported month
+function renderCub105(){
+  var p = cubActiveProgram() || CUB_DATA.programs[0];
+  var pd = CUB_DATA.packDetail || {};
+  var packs = pd.packs || [];
+  var excl = { 'Learning For Life 04': 1, 'New Frontier 03': 1 };
+  var rows = [];
+  packs.forEach(function(e){
+    if (state.scope === 'traditional' && excl[e.district]) return;
+    var slot = (e.programs || {})[p];
+    var c = slot ? slot.c : 0, s = slot ? slot.s : 0;
+    if (c > 0 || s > 0) rows.push({ unit: e.unit, district: e.district, c: c, s: s });
+  });
+  rows.sort(function(a, b){ return (b.c - a.c) || (b.s - a.s) || (a.unit < b.unit ? -1 : 1); });
+  rows = rows.slice(0, 10);
+  cubSetTitle('cub105Title', 'Top Packs — ' + p);
+  cubSetPngTitle('cub105Chart', '105C · Top Packs by Program — ' + p);
+  if (!rows.length){
+    if (charts.cub105Chart){ charts.cub105Chart.destroy(); delete charts.cub105Chart; }
+    cubSetHint('cub105Hint', 'No packs reported ' + p + ' members in ' + (pd.monthLabel || 'the latest month') + ' (or a year earlier) in this scope.');
+    return;
+  }
+  makeChart('cub105Chart', {
+    type: 'bar',
+    data: {
+      labels: rows.map(function(r){ return r.unit; }),
+      datasets: [
+        { label: pd.monthLabel || 'Current', data: rows.map(function(r){ return r.c; }), backgroundColor: CUB_COLORS[p] || COLORS.accent, borderRadius: 2 },
+        { label: 'Same month last year', data: rows.map(function(r){ return r.s; }), backgroundColor: '#cbd5e1', borderRadius: 2 }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+        tooltip: {
+          callbacks: {
+            title: function(items){
+              if (!items.length) return '';
+              var r = rows[items[0].dataIndex];
+              return r.unit + ' · ' + r.district;
+            },
+            label: function(c){ return ' ' + c.dataset.label + ': ' + fmtInt(c.parsed.x); },
+            footer: function(items){
+              if (!items.length) return '';
+              var r = rows[items[0].dataIndex];
+              var diff = r.c - r.s;
+              return (diff > 0 ? '▲ +' : (diff < 0 ? '▼ ' : '– ')) + diff + ' YoY';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+        y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+  cubSetHint('cub105Hint', 'Ten largest packs by ' + p + ' members in ' + (pd.monthLabel || 'the latest month') + ' vs the same month last year, ' + cubScopeWord() + '.');
+}
+
+// ── 101C + program KPI swap ─────────────────────────────────────────────
+// While a specific program is selected, chart 101 re-renders as 101C — that
+// program's regional trend, scope-filtered via cubDistricts() exactly like
+// the other C charts — and the four KPI cards swap to program-scoped values.
+// renderTrendChart / renderKPIs divert here; the "All" pill or leaving Pack
+// re-runs the original renderers, restoring 101 and the standard cards.
+var CUB_TREND_PNG_DEFAULT = (function(){
+  var b = document.querySelector('.png[data-chart="trendChart"]');
+  return (b && b.dataset.title) || '101 · Total Membership Trend';
+})();
+function cubRestoreTrendPngTitle(){ cubSetPngTitle('trendChart', CUB_TREND_PNG_DEFAULT); }
+function cubPrevYearTok(t){ var y = (parseInt(t.slice(3), 10) + 99) % 100; return t.slice(0, 3) + (y < 10 ? '0' + y : '' + y); }
+function cubTokLabel(t){ return t.slice(0, 3) + ' 20' + t.slice(3); }
+function cubShortOf(label){ return label.replace(' 20', " '"); }
+// Same-calendar-month-one-year-earlier series: resolved by month token from
+// the embedded months; months that predate the data window fall back to the
+// exports' Same-Month-Last-Year series (the rule chart 104C introduced).
+function cubYearEarlier(cur, smly){
+  var toks = CUB_DATA.months, tokIdx = {}, out = [];
+  toks.forEach(function(t, i){ tokIdx[t] = i; });
+  toks.forEach(function(t, i){
+    var pj = tokIdx[cubPrevYearTok(t)];
+    out.push(pj != null ? { v: cur[pj], fromSmly: false } : { v: smly[i], fromSmly: true });
+  });
+  return out;
+}
+
+// 101C — the selected program's trend, rendered into chart 101's slot. It
+// honors 101's Sequential / YoY Overlay mode pills and its y-axis toggle.
+function renderCub101(){
+  if (state.trendMode === 'yoy') return renderCub101YoY();
+  return renderCub101Sequential();
+}
+function renderCub101Sequential(){
+  var p = cubActiveProgram() || CUB_DATA.programs[0];
+  var startIdx = CUB_DATA.currentPeriodStart || 0;
+  var monthly = cubSeries(p, 'cur');
+  var col = CUB_COLORS[p] || COLORS.accent;
+  var earlierSeries = monthly.map(function(v, i){ return i <= startIdx ? v : null; });
+  var currentSeries = monthly.map(function(v, i){ return i >= startIdx ? v : null; });
+  document.getElementById('trendTitle').innerHTML = '<span class="cid">101C</span>' + p + ' — ' + CUB_DATA.months.length + '-Month Trend';
+  document.getElementById('trendHint').textContent = 'Continuous timeline of registered ' + p + ' members each month, ' + cubScopeWord() + '. Dashed segment (' + CUB_DATA.monthLabels[0] + ' – ' + CUB_DATA.monthLabels[startIdx] + ') is the earlier period; solid segment (' + CUB_DATA.monthLabels[startIdx] + ' – ' + CUB_DATA.currentMonthLabel + ') is the current reporting period. Both segments share the ' + CUB_DATA.monthLabels[startIdx] + ' data point where they meet.';
+  makeChart('trendChart', {
+    type: 'line',
+    data: {
+      labels: CUB_DATA.monthLabels,
+      datasets: [
+        { label: 'Earlier Period (' + cubShortOf(CUB_DATA.monthLabels[0]) + ' – ' + cubShortOf(CUB_DATA.monthLabels[startIdx]) + ')', data: earlierSeries, borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,.08)', borderDash: [6,4], tension: 0.3, fill: false, borderWidth: 2, pointRadius: 2.5, pointHoverRadius: 5, pointBackgroundColor: '#94a3b8' },
+        { label: 'Current Period (' + cubShortOf(CUB_DATA.monthLabels[startIdx]) + ' – ' + CUB_DATA.currentMonthShort + ')', data: currentSeries, borderColor: col, backgroundColor: col + '14', tension: 0.3, fill: true, borderWidth: 2.5, pointRadius: 3.5, pointHoverRadius: 6, pointBackgroundColor: col }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 14, boxHeight: 12 } },
+        tooltip: {
+          filter: function(t){ return t.parsed.y !== null; },
+          callbacks: {
+            title: function(items){ return items[0] ? items[0].label : ''; },
+            label: function(c){ return c.dataset.label.split(' (')[0] + ': ' + fmtInt(c.parsed.y) + ' ' + p + ' members'; }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: yZero('trend'), grid: { color: '#f1f5f9' } },
+        x: { grid: { display: false }, ticks: { maxRotation: 50, minRotation: 50, font: { size: 10 } } }
+      }
+    }
+  });
+  cubSetPngTitle('trendChart', '101C · Program Trend — ' + p);
+}
+function renderCub101YoY(){
+  var p = cubActiveProgram() || CUB_DATA.programs[0];
+  var startIdx = CUB_DATA.currentPeriodStart || 0;
+  var monthly = cubSeries(p, 'cur');
+  var yearEarlier = cubYearEarlier(monthly, cubSeries(p, 'smly'));
+  var col = CUB_COLORS[p] || COLORS.accent;
+  var currentLabels = CUB_DATA.monthLabels.slice(startIdx);
+  var currentSeries = monthly.slice(startIdx);
+  var priorSeries = [], priorCalendarLabels = [], smlyUsed = false;
+  for (var pi = startIdx; pi < CUB_DATA.months.length; pi++){
+    priorSeries.push(yearEarlier[pi].v);
+    priorCalendarLabels.push(cubTokLabel(cubPrevYearTok(CUB_DATA.months[pi])));
+    if (yearEarlier[pi].fromSmly) smlyUsed = true;
+  }
+  document.getElementById('trendTitle').innerHTML = '<span class="cid">101C</span>' + p + ' — Year-over-Year Overlay';
+  document.getElementById('trendHint').textContent = 'At each x-axis position, the dashed line shows ' + p + ' members in the same calendar month one year earlier, ' + cubScopeWord() + '. So at "' + currentLabels[0] + '" the dashed value is the ' + priorCalendarLabels[0] + ' number; at "' + CUB_DATA.currentMonthLabel + '" the dashed value is the ' + priorCalendarLabels[priorCalendarLabels.length - 1] + ' number.' + (smlyUsed ? " Months that predate the embedded window use the exports' Same-Month-Last-Year column." : '') + ' Use this for direct YoY comparison.';
+  makeChart('trendChart', {
+    type: 'line',
+    data: {
+      labels: currentLabels,
+      datasets: [
+        { label: 'One Year Earlier', data: priorSeries, borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,.08)', borderDash: [6,4], tension: 0.3, fill: false, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: '#94a3b8' },
+        { label: p + ' — Current Period', data: currentSeries, borderColor: col, backgroundColor: col + '14', tension: 0.3, fill: true, borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: col }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 14, boxHeight: 12 } },
+        tooltip: {
+          callbacks: {
+            title: function(items){ return items[0] ? items[0].label : ''; },
+            label: function(c){
+              if (c.datasetIndex === 0) {
+                return 'One year earlier (' + priorCalendarLabels[c.dataIndex] + '): ' + fmtInt(c.parsed.y) + ' ' + p + ' members';
+              }
+              return 'Current: ' + fmtInt(c.parsed.y) + ' ' + p + ' members';
+            },
+            footer: function(items){
+              if (items.length < 2) return '';
+              var cur = null, prv = null;
+              for (var i = 0; i < items.length; i++) {
+                if (items[i].datasetIndex === 1) cur = items[i].parsed.y;
+                if (items[i].datasetIndex === 0) prv = items[i].parsed.y;
+              }
+              if (cur == null || prv == null) return '';
+              var diff = cur - prv;
+              var pct = prv ? (diff / prv * 100).toFixed(1) : '0';
+              var arrow = diff > 0 ? '▲' : (diff < 0 ? '▼' : '–');
+              return arrow + ' ' + (diff > 0 ? '+' : '') + diff + ' (' + pct + '% YoY)';
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: yZero('trend'), grid: { color: '#f1f5f9' } },
+        x: { grid: { display: false }, ticks: { maxRotation: 50, minRotation: 50, font: { size: 10 } } }
+      }
+    }
+  });
+  cubSetPngTitle('trendChart', '101C · Program Trend — ' + p);
+}
+
+// Program-scoped KPI cards (identical markup/classes to renderKPIs). Mapping:
+//   1. "Members — <month>"      -> "<program> — <month>": the program's total,
+//      delta = change vs the same calendar month one year earlier.
+//   2. "2-Year Change"          -> "Month-over-Month": CUB_DATA begins Jan 2025,
+//      so no 2-year horizon exists for programs; the short-horizon change card
+//      (latest month vs the month before) replaces it.
+//   3. "Peak Month"             -> "Peak Month — <program>": same concept on the
+//      program's own series.
+//   4. "Active Units — <month>" -> "Share of Cub Scouts — <month>": CUB_DATA has
+//      no per-program active-units series, so this shows the program's share of
+//      all five Cub programs combined (delta in percentage points vs one year
+//      earlier). Totals follow the cub charts' scope (cubDistricts()), which in
+//      All Youth includes ScoutReach (NF03) — unlike the Pack unit-type view.
+function renderCubKPIs(){
+  var p = cubActiveProgram() || CUB_DATA.programs[0];
+  var cur = cubSeries(p, 'cur');
+  var yearEarlier = cubYearEarlier(cur, cubSeries(p, 'smly'));
+  var lastIdx = cur.length - 1;
+  var latest = cur[lastIdx];
+  var prior = yearEarlier[lastIdx].v;
+  var yoyChange = latest - prior;
+  var yoyPct = prior ? (yoyChange / prior * 100).toFixed(1) : '0';
+  var momPrev = lastIdx > 0 ? cur[lastIdx - 1] : null;
+  var momChange = momPrev == null ? 0 : latest - momPrev;
+  var momPct = momPrev ? (momChange / momPrev * 100).toFixed(1) : '0';
+  var peakIdx = cur.indexOf(Math.max.apply(null, cur));
+  var allCur = 0, allPrior = 0;
+  CUB_DATA.programs.forEach(function(q){
+    var qc = cubSeries(q, 'cur');
+    allCur += qc[lastIdx];
+    allPrior += cubYearEarlier(qc, cubSeries(q, 'smly'))[lastIdx].v;
+  });
+  var share = allCur ? latest / allCur * 100 : 0;
+  var sharePrior = allPrior ? prior / allPrior * 100 : 0;
+  var sharePP = share - sharePrior;
+  var arrow = function(v){ return v > 0 ? '▲' : (v < 0 ? '▼' : '–'); };
+  var cls = function(v){ return v > 0 ? 'up' : (v < 0 ? 'down' : ''); };
+  var curL = CUB_DATA.currentMonthLabel;
+  var prS = cubShortOf(cubTokLabel(cubPrevYearTok(CUB_DATA.months[lastIdx])));
+  var prevMS = momPrev == null ? '' : cubShortOf(CUB_DATA.monthLabels[lastIdx - 1]);
+  var cards = [
+    { label: p + ' — ' + curL, value: fmtInt(latest), delta: arrow(yoyChange) + ' ' + Math.abs(yoyChange) + ' (' + yoyPct + '%) vs ' + prS, deltaClass: cls(yoyChange) },
+    { label: 'Month-over-Month (' + prevMS + ' → ' + CUB_DATA.currentMonthShort + ')', value: (momChange >= 0 ? '+' : '') + fmtInt(momChange), delta: momPrev == null ? 'n/a' : momPct + '% · ' + fmtInt(momPrev) + ' → ' + fmtInt(latest), deltaClass: cls(momChange) },
+    { label: 'Peak Month — ' + p, value: CUB_DATA.monthLabels[peakIdx], delta: fmtInt(cur[peakIdx]) + ' ' + p + ' members', deltaClass: '' },
+    { label: 'Share of Cub Scouts — ' + curL, value: share.toFixed(1) + '%', delta: fmtInt(latest) + ' of ' + fmtInt(allCur) + ' · ' + arrow(sharePP) + ' ' + Math.abs(sharePP).toFixed(1) + ' pp vs ' + prS, deltaClass: cls(sharePP) },
+  ];
+  document.getElementById('kpis').innerHTML = cards.map(function(k){
+    return '<div class="kpi"><div class="accent-bar"></div><div class="label">' + k.label + '</div><div class="value">' + k.value + '</div><div class="delta ' + k.deltaClass + '">' + k.delta + '</div></div>';
+  }).join('');
+}
+
+function updateCubVisibility(){
+  var mode = cubMode();
+  var bar = document.getElementById('cubBar');
+  if (bar) bar.style.display = mode ? '' : 'none';
+  if (!mode && state.cub !== 'all') state.cub = 'all';
+  document.querySelectorAll('#cubPills .pill-btn').forEach(function(x){ x.classList.toggle('active', x.dataset.cub === state.cub); });
+  var showCub = mode && state.cub !== 'all';
+  var ga = document.getElementById('origGridA'), gb = document.getElementById('origGridB');
+  var ca = document.getElementById('cubGridA'), cb = document.getElementById('cubGridB');
+  if (ga) ga.style.display = showCub ? 'none' : '';
+  if (gb) gb.style.display = showCub ? 'none' : '';
+  if (ca) ca.style.display = showCub ? '' : 'none';
+  if (cb) cb.style.display = showCub ? '' : 'none';
+  return showCub;
+}
+function renderCubCharts(){ renderCub102(); renderCub103(); renderCub104(); renderCub105(); }
+function destroyCubCharts(){
+  ['cub102Chart', 'cub103Chart', 'cub104Chart', 'cub105Chart'].forEach(function(k){
+    if (charts[k]){ charts[k].destroy(); delete charts[k]; }
+  });
+}
+// ── end Cub Scouting program views ──────────────────────────────────────
+
 const RERENDER = {
   trend: renderTrendChart,
   unitType: renderUnitTypeChart,
   district: renderDistrictChart,
   snapshot: renderSnapshotChart,
-  activeUnits: renderActiveUnitsChart
+  activeUnits: renderActiveUnitsChart,
+  cub102: function(){ renderCub102(); },
+  cub103: function(){ renderCub103(); },
+  cub104: function(){ renderCub104(); }
 };
 
 
@@ -1217,6 +1753,7 @@ function renderAll() {
   updateLabelPlaceholders();
   updateFilterNote();
   if (!view) {
+    updateCubVisibility();
     document.getElementById('kpis').innerHTML = '<div class="empty-state" style="grid-column:1/-1; padding:40px;">No data for this filter combination.</div>';
     document.getElementById('insight').innerHTML = '';
     Object.keys(charts).forEach(function(k){ if (charts[k]) charts[k].destroy(); });
@@ -1225,10 +1762,15 @@ function renderAll() {
   renderKPIs(view);
   renderInsight(view);
   renderTrendChart(view);
-  renderUnitTypeChart(view);
-  renderDistrictChart(view);
-  renderSnapshotChart(view);
-  renderActiveUnitsChart(view);
+  if (updateCubVisibility()) {
+    renderCubCharts();
+  } else {
+    destroyCubCharts();
+    renderUnitTypeChart(view);
+    renderDistrictChart(view);
+    renderSnapshotChart(view);
+    renderActiveUnitsChart(view);
+  }
   renderTables(view);
   renderDistrictTable(view);
 }
@@ -1254,6 +1796,13 @@ document.querySelectorAll('#typePills .pill-btn').forEach(function(b){
     renderAll();
   });
 });
+document.querySelectorAll('#cubPills .pill-btn').forEach(function(b){
+  b.addEventListener('click', function(){
+    state.cub = b.dataset.cub;
+    document.querySelectorAll('#cubPills .pill-btn').forEach(function(x){ x.classList.toggle('active', x === b); });
+    renderAll();
+  });
+});
 document.querySelectorAll('#trendModePills .pill-btn').forEach(function(b){
   b.addEventListener('click', function(){
     state.trendMode = b.dataset.mode;
@@ -1274,6 +1823,7 @@ document.querySelectorAll('.y-toggle').forEach(function(group){
   });
 });
 
+window.__totals_render = renderAll;
 renderAll();
 
 // PNG export button wiring (handles current and future .png buttons via delegation)
