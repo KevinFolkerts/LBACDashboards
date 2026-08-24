@@ -22,7 +22,7 @@ That's it. Details below.
 | `LBAC_Update.bat` | **One-click pipeline**: sort inbox → refresh dashboards → publish |
 | `run_pipeline.py` | The pipeline behind LBAC_Update.bat |
 | `sort_inbox.py` + `routing_rules.json` | Inbox sorter + editable filename→folder rules |
-| `refresh_<name>.py` | Per-dashboard data refresh (membership, socal, seabase, tahquitz, webelos ×2) |
+| `refresh_<name>.py` | Per-dashboard data refresh (membership, socal, seabase, tahquitz, tahquitz_yearround, webelos ×2) |
 | `lbac_paths.json` | Where each dashboard HTML + data folder lives |
 | `publish.py` / `publish.bat` | Push dashboards + landing page to GitHub Pages |
 | `*.lnk` / `*.target` | Pointers to the dashboard HTML files publish.py collects |
