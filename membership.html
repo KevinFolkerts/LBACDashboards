@@ -1292,6 +1292,14 @@ function cubAvailable(){
 function cubMode(){ return !isAdults() && state.type === 'Pack' && cubAvailable(); }
 function cubActiveProgram(){ return cubMode() && state.cub !== 'all' ? state.cub : null; }
 function cubShortLabels(){ return CUB_DATA.monthLabels.map(function(l){ return l.replace(' 20', " '"); }); }
+// 24-month display window for 101C / 102C / 103C. 104C keeps its own 13-month
+// YoY window; 105C is a latest-month snapshot. Underlying data is untouched.
+var CUB_WIN = 24;
+function cubWinStart(){ return Math.max(0, CUB_DATA.months.length - CUB_WIN); }
+function cubWinCount(){ return CUB_DATA.months.length - cubWinStart(); }
+function cubWinLabels(){ return CUB_DATA.monthLabels.slice(cubWinStart()); }
+function cubWinShortLabels(){ return cubWinLabels().map(function(l){ return l.replace(' 20', " '"); }); }
+function cubWinSeries(prog, key){ return cubSeries(prog, key).slice(cubWinStart()); }
 // Districts included under the current scope (Traditional excludes ScoutReach/LFL,
 // mirroring the rest of the dashboard).
 function cubDistricts(){
@@ -1326,10 +1334,10 @@ function renderCub102(){
   makeChart('cub102Chart', {
     type: 'bar',
     data: {
-      labels: cubShortLabels(),
+      labels: cubWinShortLabels(),
       datasets: CUB_DATA.programs.map(function(p){
         var base = CUB_COLORS[p] || COLORS.navy;
-        return { label: p, data: cubSeries(p, 'cur'), backgroundColor: (sel && p !== sel) ? base + '38' : base, borderWidth: 0 };
+        return { label: p, data: cubWinSeries(p, 'cur'), backgroundColor: (sel && p !== sel) ? base + '38' : base, borderWidth: 0 };
       })
     },
     options: {
@@ -1365,11 +1373,11 @@ function renderCub103(){
   makeChart('cub103Chart', {
     type: 'line',
     data: {
-      labels: cubShortLabels(),
+      labels: cubWinShortLabels(),
       datasets: ds.map(function(d){
         var col = DISTRICT_COLORS[d] || COLORS.navy;
         var node = CUB_DATA.districts[d][p];
-        return { label: d, data: node ? node.cur : [], borderColor: col, backgroundColor: col + '20', tension: 0.3, borderWidth: 2, pointRadius: 2, pointHoverRadius: 5 };
+        return { label: d, data: node ? node.cur.slice(cubWinStart()) : [], borderColor: col, backgroundColor: col + '20', tension: 0.3, borderWidth: 2, pointRadius: 2, pointHoverRadius: 5 };
       })
     },
     options: {
@@ -1549,20 +1557,20 @@ function renderCub101(){
 }
 function renderCub101Sequential(){
   var p = cubActiveProgram() || CUB_DATA.programs[0];
-  var startIdx = CUB_DATA.currentPeriodStart || 0;
-  var monthly = cubSeries(p, 'cur');
+  var startIdx = Math.max(0, (CUB_DATA.currentPeriodStart || 0) - cubWinStart());
+  var monthly = cubWinSeries(p, 'cur');
   var col = CUB_COLORS[p] || COLORS.accent;
   var earlierSeries = monthly.map(function(v, i){ return i <= startIdx ? v : null; });
   var currentSeries = monthly.map(function(v, i){ return i >= startIdx ? v : null; });
-  document.getElementById('trendTitle').innerHTML = '<span class="cid">101C</span>' + p + ' — ' + CUB_DATA.months.length + '-Month Trend';
-  document.getElementById('trendHint').textContent = 'Continuous timeline of registered ' + p + ' members each month, ' + cubScopeWord() + '. Dashed segment (' + CUB_DATA.monthLabels[0] + ' – ' + CUB_DATA.monthLabels[startIdx] + ') is the earlier period; solid segment (' + CUB_DATA.monthLabels[startIdx] + ' – ' + CUB_DATA.currentMonthLabel + ') is the current reporting period. Both segments share the ' + CUB_DATA.monthLabels[startIdx] + ' data point where they meet.';
+  document.getElementById('trendTitle').innerHTML = '<span class="cid">101C</span>' + p + ' — ' + cubWinCount() + '-Month Trend';
+  document.getElementById('trendHint').textContent = 'Continuous timeline of registered ' + p + ' members each month, ' + cubScopeWord() + '. Dashed segment (' + cubWinLabels()[0] + ' – ' + cubWinLabels()[startIdx] + ') is the earlier period; solid segment (' + cubWinLabels()[startIdx] + ' – ' + CUB_DATA.currentMonthLabel + ') is the current reporting period. Both segments share the ' + cubWinLabels()[startIdx] + ' data point where they meet.';
   makeChart('trendChart', {
     type: 'line',
     data: {
-      labels: CUB_DATA.monthLabels,
+      labels: cubWinLabels(),
       datasets: [
-        { label: 'Earlier Period (' + cubShortOf(CUB_DATA.monthLabels[0]) + ' – ' + cubShortOf(CUB_DATA.monthLabels[startIdx]) + ')', data: earlierSeries, borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,.08)', borderDash: [6,4], tension: 0.3, fill: false, borderWidth: 2, pointRadius: 2.5, pointHoverRadius: 5, pointBackgroundColor: '#94a3b8' },
-        { label: 'Current Period (' + cubShortOf(CUB_DATA.monthLabels[startIdx]) + ' – ' + CUB_DATA.currentMonthShort + ')', data: currentSeries, borderColor: col, backgroundColor: col + '14', tension: 0.3, fill: true, borderWidth: 2.5, pointRadius: 3.5, pointHoverRadius: 6, pointBackgroundColor: col }
+        { label: 'Earlier Period (' + cubShortOf(cubWinLabels()[0]) + ' – ' + cubShortOf(cubWinLabels()[startIdx]) + ')', data: earlierSeries, borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,.08)', borderDash: [6,4], tension: 0.3, fill: false, borderWidth: 2, pointRadius: 2.5, pointHoverRadius: 5, pointBackgroundColor: '#94a3b8' },
+        { label: 'Current Period (' + cubShortOf(cubWinLabels()[startIdx]) + ' – ' + CUB_DATA.currentMonthShort + ')', data: currentSeries, borderColor: col, backgroundColor: col + '14', tension: 0.3, fill: true, borderWidth: 2.5, pointRadius: 3.5, pointHoverRadius: 6, pointBackgroundColor: col }
       ]
     },
     options: {
@@ -1588,7 +1596,7 @@ function renderCub101Sequential(){
 }
 function renderCub101YoY(){
   var p = cubActiveProgram() || CUB_DATA.programs[0];
-  var startIdx = CUB_DATA.currentPeriodStart || 0;
+  var startIdx = cubWinStart();
   var monthly = cubSeries(p, 'cur');
   var yearEarlier = cubYearEarlier(monthly, cubSeries(p, 'smly'));
   var col = CUB_COLORS[p] || COLORS.accent;
@@ -1661,15 +1669,15 @@ function renderCub101YoY(){
 // cubRestoreTrendPngTitle, restoring the captured PNG title).
 function cubByProgramActive(){ return cubMode() && state.cub === 'all' && state.trendMode === 'byprog'; }
 function renderCub101ByProgram(){
-  document.getElementById('trendTitle').innerHTML = '<span class="cid">101C</span>Cub Programs — ' + CUB_DATA.months.length + '-Month Trend';
+  document.getElementById('trendTitle').innerHTML = '<span class="cid">101C</span>Cub Programs — ' + cubWinCount() + '-Month Trend';
   document.getElementById('trendHint').textContent = 'Registered members in each Cub program per month, ' + CUB_DATA.monthLabels[0] + ' – ' + CUB_DATA.currentMonthLabel + ', ' + cubScopeWord() + '. One line per program; colors match chart 102C. Pipeline order: Lion → Tiger → Wolf/Bear → Webelos → AOL.';
   makeChart('trendChart', {
     type: 'line',
     data: {
-      labels: CUB_DATA.monthLabels,
+      labels: cubWinLabels(),
       datasets: CUB_DATA.programs.map(function(p){
         var col = CUB_COLORS[p] || COLORS.navy;
-        return { label: p, data: cubSeries(p, 'cur'), borderColor: col, backgroundColor: col + '14', tension: 0.3, fill: false, borderWidth: 2.5, pointRadius: 2.5, pointHoverRadius: 5, pointBackgroundColor: col };
+        return { label: p, data: cubWinSeries(p, 'cur'), borderColor: col, backgroundColor: col + '14', tension: 0.3, fill: false, borderWidth: 2.5, pointRadius: 2.5, pointHoverRadius: 5, pointBackgroundColor: col };
       })
     },
     options: {
