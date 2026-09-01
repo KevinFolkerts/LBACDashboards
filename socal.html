@@ -135,13 +135,19 @@ body { padding-bottom: 76px; }
   #pane-goals .kpis { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* New Members year toggles — neutral grey track + grey active chip (never the
+   accent red); the year's own color rides on the text/border set in JS. */
+#nmYearBar { display: inline-flex; flex-wrap: wrap; gap: 4px; background: #f1f5f9; padding: 3px; border-radius: 8px; }
+#nmYearBar .pill-btn { border: 1px solid transparent; }
+#nmYearBar .pill-btn.active { background: #e2e8f0; color: var(--ink); box-shadow: none; }
+
 .cid { display:inline-block; font:700 10.5px/1 ui-monospace,Menlo,Consolas,monospace; color:#fff; background:#94a3b8; border-radius:5px; padding:2px 5px; margin-right:7px; vertical-align:middle; letter-spacing:.5px; }
 </style>
 </head>
 <body>
 <div class="header">
   <h1>Southern California Region — Membership Dashboard</h1>
-  <div class="subtitle" id="headerSubtitle"><span id="hdrSubtitle">9 councils · 36,160 youth · May 2024 – Jun 2026</span></div>
+  <div class="subtitle" id="headerSubtitle"><span id="hdrSubtitle">Regional youth membership · Southern California councils</span></div>
 </div>
 
 <div class="container">
@@ -166,7 +172,7 @@ body { padding-bottom: 76px; }
 
     <div class="card" style="margin-bottom:16px;">
       <div class="card-head">
-        <div><h2><span class="cid">101</span>Council Size — Jun 2026</h2><div class="hint">Stacked horizontal bar; each council labeled with raw count + % of regional total</div></div>
+        <div><h2><span class="cid">101</span><span id="ovSizeTitle">Council Size</span></h2><div class="hint">Stacked horizontal bar; each council labeled with raw count + % of regional total · Long Beach (LBAC) in Scout blue</div></div>
         <div class="card-controls"><button class="png" data-chart="ovSizeChart" data-title="101 · SoCal — Council Size">⤓ PNG</button></div>
       </div>
       <div class="chart-wrap"><canvas id="ovSizeChart"></canvas></div>
@@ -175,14 +181,14 @@ body { padding-bottom: 76px; }
     <div class="grid grid-2-eq" style="margin-bottom:16px;">
       <div class="card">
         <div class="card-head">
-          <div><h2><span class="cid">102</span>YoY Growth — Jun 25 → Jun 26</h2><div class="hint">Ranked by % change</div></div>
+          <div><h2><span class="cid">102</span><span id="ovYoyTitle">YoY Growth</span></h2><div class="hint">Ranked by % change · green = growth, red = decline · Long Beach (LBAC) always in Scout blue</div></div>
           <div class="card-controls"><button class="png" data-chart="ovYoyChart" data-title="102 · SoCal — YoY %">⤓ PNG</button></div>
         </div>
         <div class="chart-wrap"><canvas id="ovYoyChart"></canvas></div>
       </div>
       <div class="card">
         <div class="card-head">
-          <div><h2><span class="cid">103</span>YTD Change — Dec 25 → Jun 26</h2><div class="hint">Recharter recovery</div></div>
+          <div><h2><span class="cid">103</span><span id="ovYtdTitle">YTD Change</span></h2><div class="hint">Recharter recovery · green = growth, red = decline · Long Beach (LBAC) always in Scout blue</div></div>
           <div class="card-controls"><button class="png" data-chart="ovYtdChart" data-title="103 · SoCal — YTD %">⤓ PNG</button></div>
         </div>
         <div class="chart-wrap"><canvas id="ovYtdChart"></canvas></div>
@@ -193,7 +199,7 @@ body { padding-bottom: 76px; }
       <div class="card-head">
         <div>
           <h2><span class="cid">104</span><span id="ovTrendTitle">Regional Trend — YoY Overlay</span></h2>
-          <div class="hint" id="ovTrendHint">Solid = current period (May 25 – Jul 26). Dashed grey = prior year at the same x-position (May 24 – Jul 25). Per-council lines available via the legend. Switch to Timeline for a sequential 27-month view.</div>
+          <div class="hint" id="ovTrendHint">Solid = current period. Dashed grey = one year earlier plotted at the same x-position. Toggle individual council overlays via the legend.</div>
           <div class="pill-group" id="ovTrendModePills" style="margin-top:8px;">
             <button class="pill-btn active" data-mode="yoy">YoY Overlay</button>
             <button class="pill-btn" data-mode="timeline">Timeline</button>
@@ -206,7 +212,7 @@ body { padding-bottom: 76px; }
 
     <div class="card">
       <div class="card-head">
-        <div><h2><span class="cid">105</span>Contribution Waterfall — Dec 25 to Jun 26</h2><div class="hint">Each council's net contribution to the regional YTD change. Green = added, red = lost.</div></div>
+        <div><h2><span class="cid">105</span><span id="ovWaterfallTitle">Contribution Waterfall</span></h2><div class="hint">Each council's net contribution to the regional YTD change. Green = added, red = lost; Long Beach (LBAC) always in Scout blue.</div></div>
         <div class="card-controls"><button class="png" data-chart="ovWaterfallChart" data-title="105 · SoCal — Contribution Waterfall">⤓ PNG</button></div>
       </div>
       <div class="chart-wrap"><canvas id="ovWaterfallChart"></canvas></div>
@@ -230,7 +236,7 @@ body { padding-bottom: 76px; }
         <span class="filter-label">View</span>
         <div class="pill-group" id="compareModePills">
           <button class="pill-btn active" data-mode="absolute">Absolute</button>
-          <button class="pill-btn" data-mode="indexed">Indexed (Jun 25 = 100)</button>
+          <button class="pill-btn" data-mode="indexed" id="compareIdxBtn">Indexed</button>
         </div>
       </div>
     </div>
@@ -245,7 +251,7 @@ body { padding-bottom: 76px; }
     <div class="grid grid-2-eq" style="margin-top:16px;">
       <div class="card">
         <div class="card-head">
-          <div><h2><span class="cid">302</span>Unit-Type Mix (Jun 26)</h2><div class="hint">% of council total by unit type</div></div>
+          <div><h2><span class="cid">302</span><span id="compareMixTitle">Unit-Type Mix</span></h2><div class="hint">% of council total by unit type</div></div>
           <div class="card-controls"><button class="png" data-chart="compareMixChart" data-title="302 · SoCal — Unit Mix">⤓ PNG</button></div>
         </div>
         <div class="chart-wrap"><canvas id="compareMixChart"></canvas></div>
@@ -285,7 +291,7 @@ body { padding-bottom: 76px; }
 
     <div class="card" style="margin-bottom:16px;">
       <div class="card-head">
-        <div><h2><span class="cid">401</span><span id="detailTrendTitle">Total Membership — 25-Month Trend</span></h2><div class="hint" id="detailTrendHint"></div></div>
+        <div><h2><span class="cid">401</span><span id="detailTrendTitle">Total Membership — Monthly Trend</span></h2><div class="hint" id="detailTrendHint"></div></div>
         <div class="card-controls"><button class="png" data-chart="detailTrendChart" data-title="401 · SoCal — Council Trend">⤓ PNG</button></div>
       </div>
       <div class="chart-wrap-tall"><canvas id="detailTrendChart"></canvas></div>
@@ -335,7 +341,7 @@ body { padding-bottom: 76px; }
       </div>
       <div class="filter-group" style="flex-wrap:wrap;">
         <span class="filter-label">Years</span>
-        <div id="nmYearBar" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+        <div id="nmYearBar"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Unit Type</span>
@@ -355,8 +361,8 @@ body { padding-bottom: 76px; }
       </div>
       <div class="card">
         <div class="card-head">
-          <div><h2><span class="cid">502</span>Jan–May Comparison</h2><div class="hint">Year-to-date through May</div></div>
-          <div class="card-controls"><button class="png" data-chart="nmJanMayChart" data-title="502 · New Members — Jan-May">⤓ PNG</button></div>
+          <div><h2><span class="cid">502</span><span id="nmJanMayTitle">Year-to-Date Comparison</span></h2><div class="hint" id="nmJanMayHint">Year-to-date comparison across years</div></div>
+          <div class="card-controls"><button class="png" data-chart="nmJanMayChart" data-title="502 · New Members — YTD">⤓ PNG</button></div>
         </div>
         <div class="chart-wrap"><canvas id="nmJanMayChart"></canvas></div>
       </div>
@@ -609,6 +615,9 @@ const COUNCIL_COLORS = {
 };
 const REGION_COLOR = '#0f172a';
 const LBAC_HIGHLIGHT = '#c8102e';
+// Scout Blue — LBAC's identity color in the 100-series charts. LBAC bars use it
+// regardless of sign so the home council reads as an identity, not as a verdict.
+const LBAC_BLUE = '#003F87';
 const YEAR_COLORS = { 2021:'#1f3a5f',2022:'#0ea5b7',2023:'#f1b434',2024:'#16a34a',2025:'#c8102e',2026:'#7c3aed' };
 
 const charts = {};
@@ -686,6 +695,56 @@ function getView(council, uf){ return SOCAL_DATA.views[viewKey(council, uf)]; }
 function regionView(uf){ return SOCAL_DATA.views['region__' + uf]; }
 function councilDisplay(cid){ const c = SOCAL_DATA.councils.find(c=>c.id===cid); return c ? c.display : cid; }
 
+// ────────────────────────────────────────────────────────
+// DERIVED DATE LABELS — every month/range shown on the page comes from
+// SOCAL_DATA. Nothing here may be hard-coded: a refresh moves the data
+// forward and the titles follow automatically.
+// ────────────────────────────────────────────────────────
+const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const CUR_IDX   = SOCAL_DATA.months.length - 1;
+const PRIOR_IDX = CUR_IDX - 12;                       // same month, one year earlier
+// YTD baseline = December of the prior year (the "Last Year End" basis the
+// refresh script ranks ytdPct against). Derived by scanning backwards.
+function ytdBaseIdx(){
+  for (let i = CUR_IDX - 1; i >= 0; i--) {
+    if (SOCAL_DATA.months[i].slice(0,3) === 'Dec') return i;
+  }
+  return Math.max(0, PRIOR_IDX);                      // no December on file yet
+}
+const YTD_IDX = ytdBaseIdx();
+// Short form for titles: "Sep 2026" -> "Sep 26". Prefers the short labels the
+// data already carries for the current / prior-year months.
+function shortAt(i){
+  if (i === CUR_IDX   && SOCAL_DATA.currentMonthShort) return String(SOCAL_DATA.currentMonthShort).replace(/'/g, '');
+  if (i === PRIOR_IDX && SOCAL_DATA.priorYearShort)    return String(SOCAL_DATA.priorYearShort).replace(/'/g, '');
+  return String(SOCAL_DATA.monthLabels[i] || '').replace(/\s20(\d{2})$/, ' $1');
+}
+function setText(id, txt){ const el = document.getElementById(id); if (el) el.textContent = txt; }
+function setPngTitle(chartId, title){
+  const b = document.querySelector('.png[data-chart="' + chartId + '"]');
+  if (b) b.dataset.title = title;
+}
+// Titles fixed by the data (not by a toggle) — set once at load, including the
+// PNG export titles so exports carry the same range as the card.
+function applyDataDrivenTitles(){
+  const curLabel = SOCAL_DATA.currentMonthLabel;
+  const yoyRange = shortAt(PRIOR_IDX) + ' → ' + shortAt(CUR_IDX);
+  const ytdRange = shortAt(YTD_IDX)   + ' → ' + shortAt(CUR_IDX);
+  setText('hdrSubtitle', SOCAL_DATA.councils.length + ' councils · '
+    + fmtInt(regionView('all').monthlyTotal[CUR_IDX]) + ' youth · '
+    + SOCAL_DATA.monthLabels[0] + ' – ' + curLabel);
+  setText('ovSizeTitle',      'Council Size — ' + curLabel);
+  setText('ovYoyTitle',       'YoY Growth — ' + yoyRange);
+  setText('ovYtdTitle',       'YTD Change — ' + ytdRange);
+  setText('ovWaterfallTitle', 'Contribution Waterfall — ' + ytdRange);
+  setText('compareMixTitle',  'Unit-Type Mix (' + curLabel + ')');
+  setPngTitle('ovSizeChart',      '101 · SoCal — Council Size (' + curLabel + ')');
+  setPngTitle('ovYoyChart',       '102 · SoCal — YoY % (' + yoyRange + ')');
+  setPngTitle('ovYtdChart',       '103 · SoCal — YTD % (' + ytdRange + ')');
+  setPngTitle('ovWaterfallChart', '105 · SoCal — Contribution Waterfall (' + ytdRange + ')');
+  setPngTitle('compareMixChart',  '302 · SoCal — Unit Mix (' + curLabel + ')');
+}
+
 // ─────────────────────────────────────────────────────────────
 // REGION OVERVIEW TAB
 // ─────────────────────────────────────────────────────────────
@@ -697,9 +756,9 @@ function renderOverviewKpis(){
   const total = rv.monthlyTotal[curIdx];
   const yoyNet = total - rv.monthlyTotal[priorIdx];
   const yoyPct = (yoyNet / rv.monthlyTotal[priorIdx]) * 100;
-  const dec25Idx = m.indexOf('Dec25');
-  const ytdNet = total - rv.monthlyTotal[dec25Idx];
-  const ytdPct = (ytdNet / rv.monthlyTotal[dec25Idx]) * 100;
+  const ytdIdx = YTD_IDX;
+  const ytdNet = total - rv.monthlyTotal[ytdIdx];
+  const ytdPct = (ytdNet / rv.monthlyTotal[ytdIdx]) * 100;
   const yoyRank  = SOCAL_DATA.rankings.yoyPct;
   const lbacYoy  = yoyRank.find(r=>r.councilId==='032');
   const topYoy   = yoyRank[0];
@@ -742,7 +801,7 @@ function renderOvSizeChart(){
       labels: data.map(d => d.council.display + (d.council.id==='032' ? ' 🥇' : '')),
       datasets: [{
         data: data.map(d=>d.value),
-        backgroundColor: data.map(d => d.council.id==='032' ? LBAC_HIGHLIGHT : '#94a3b8'),
+        backgroundColor: data.map(d => d.council.id==='032' ? LBAC_BLUE : '#94a3b8'),
         borderRadius: 4, maxBarThickness: 24,
       }]
     },
@@ -767,7 +826,7 @@ function renderRankedBar(canvasId, ranking, fmtFn, unit){
       labels: ranking.map(r => r.display + (r.councilId==='032' ? ' 🥇' : '')),
       datasets: [{
         data: ranking.map(r => r.value),
-        backgroundColor: ranking.map(r => r.councilId==='032' ? LBAC_HIGHLIGHT : (r.value >= 0 ? '#15803d' : '#c8102e')),
+        backgroundColor: ranking.map(r => r.councilId==='032' ? LBAC_BLUE : (r.value >= 0 ? '#15803d' : '#c8102e')),
         borderRadius: 4, maxBarThickness: 22,
       }]
     },
@@ -784,7 +843,7 @@ function renderRankedBar(canvasId, ranking, fmtFn, unit){
 
 function renderOvTrend(){
   const rv = regionView('all');
-  const months = SOCAL_DATA.months;                // e.g. ['May24',...,'Jul26']
+  const months = SOCAL_DATA.months;                // month tokens, e.g. 'Sep26'
   const labels = SOCAL_DATA.monthLabels;
   const startIdx = SOCAL_DATA.currentPeriodStart;  // start of the current-period window
 
@@ -866,9 +925,9 @@ function renderOvTrend(){
       }
     });
   } else {
-    // Timeline mode: full 27-month sequential view
+    // Timeline mode: full sequential view over every month on file
     if (title) title.textContent = 'Regional Trend — Timeline (' + labels[0] + ' – ' + labels[labels.length-1] + ')';
-    if (hint)  hint.textContent  = 'Region total in black; toggle individual councils via the legend. Reconstructed pre-May 25 segment shown for context.';
+    if (hint)  hint.textContent  = 'Region total in black; toggle individual councils via the legend. Reconstructed pre-' + shortAt(startIdx) + ' segment shown for context.';
     const datasets = [{
       label: 'Region (all councils)',
       data: rv.monthlyTotal,
@@ -913,11 +972,11 @@ function renderOverviewCharts(){
 
   renderOvTrend();
 
-  // Waterfall: each council's Dec25 → Jun26 net contribution
-  const m = SOCAL_DATA.months; const curIdx = m.length - 1; const dec25Idx = m.indexOf('Dec25');
+  // Waterfall: each council's net contribution since the YTD baseline (Dec of the prior year)
+  const m = SOCAL_DATA.months; const curIdx = m.length - 1; const ytdIdx = YTD_IDX;
   const contrib = SOCAL_DATA.councils.map(c => {
     const v = getView(c.id, 'all').monthlyTotal;
-    return { council: c, net: v[curIdx] - v[dec25Idx] };
+    return { council: c, net: v[curIdx] - v[ytdIdx] };
   }).sort((a,b) => b.net - a.net);
   makeChart('ovWaterfallChart', {
     type: 'bar',
@@ -925,7 +984,7 @@ function renderOverviewCharts(){
       labels: contrib.map(x => x.council.display + (x.council.id==='032' ? ' 🥇' : '')),
       datasets: [{
         data: contrib.map(x => x.net),
-        backgroundColor: contrib.map(x => x.council.id==='032' ? LBAC_HIGHLIGHT : (x.net >= 0 ? '#15803d' : '#c8102e')),
+        backgroundColor: contrib.map(x => x.council.id==='032' ? LBAC_BLUE : (x.net >= 0 ? '#15803d' : '#c8102e')),
         borderRadius: 4, maxBarThickness: 22,
       }]
     },
@@ -952,10 +1011,10 @@ function renderOverview(){
 // COUNCIL RANKINGS TAB
 // ─────────────────────────────────────────────────────────────
 const RANK_DEFS = [
-  { key: 'size',          label: 'Total Members (Jun 26)', fmt: v => fmtInt(v) },
+  { key: 'size',          label: 'Total Members — ' + SOCAL_DATA.currentMonthLabel, fmt: v => fmtInt(v) },
   { key: 'yoyPct',        label: 'YoY % Growth',           fmt: v => fmtPct(v, 2) },
   { key: 'yoyRaw',        label: 'YoY Raw Change',         fmt: v => fmtSigned(v) },
-  { key: 'ytdPct',        label: 'YTD % vs Dec 25',        fmt: v => fmtPct(v, 2) },
+  { key: 'ytdPct',        label: 'YTD % vs ' + shortAt(YTD_IDX), fmt: v => fmtPct(v, 2) },
   { key: 'activeUnits',   label: 'Active Units',           fmt: v => fmtInt(v) },
   { key: 'membersPerUnit',label: 'Members per Active Unit',fmt: v => v.toFixed(1) },
   { key: 'packShare',     label: 'Pack Share %',           fmt: v => fmtPct(v, 1) },
@@ -970,9 +1029,9 @@ function renderRankings(){
     const rows = rk.map(r => {
       const lbacRow = r.councilId === '032';
       const medal = r.rank === 1 ? '🥇 ' : r.rank === 2 ? '🥈 ' : r.rank === 3 ? '🥉 ' : '';
-      return '<tr style="' + (lbacRow ? 'background:rgba(200,16,46,.08); font-weight:600;' : '') + '">'
+      return '<tr style="' + (lbacRow ? 'background:rgba(0,63,135,.10); font-weight:600;' : '') + '">'
         + '<td style="padding:6px 10px; text-align:right; color:#64748b; width:32px;">' + r.rank + '</td>'
-        + '<td style="padding:6px 10px;">' + medal + r.display + (lbacRow ? ' <span style="color:#c8102e; font-size:10px;">LBAC</span>' : '') + '</td>'
+        + '<td style="padding:6px 10px;">' + medal + r.display + (lbacRow ? ' <span style="color:#003F87; font-size:10px;">LBAC</span>' : '') + '</td>'
         + '<td style="padding:6px 10px; text-align:right; font-variant-numeric:tabular-nums;">' + def.fmt(r.value) + '</td>'
         + '</tr>';
     }).join('');
@@ -1028,8 +1087,8 @@ function renderCompareTrend(){
     const v = getView(cid, 'all').monthlyTotal;
     let data = v.slice();
     if (state.compareMode === 'indexed') {
-      // Index to Jun25 (priorIdx) = 100
-      const priorIdx = SOCAL_DATA.months.length - 13;  // 12 months before current
+      // Index to the same month one year earlier (PRIOR_IDX) = 100
+      const priorIdx = PRIOR_IDX;                      // 12 months before current
       const base = v[priorIdx] || 1;
       data = v.map(x => x / base * 100);
     }
@@ -1041,11 +1100,14 @@ function renderCompareTrend(){
       pointRadius: 0, pointHoverRadius: 4, tension: 0.25, fill: false,
     };
   });
+  const idxBase = shortAt(PRIOR_IDX);
+  const idxBtn = document.getElementById('compareIdxBtn');
+  if (idxBtn) idxBtn.textContent = 'Indexed (' + idxBase + ' = 100)';
   document.getElementById('compareTrendTitle').textContent = state.compareMode === 'absolute'
-    ? 'Compare — Absolute Members' : 'Compare — Indexed (Jun 25 = 100)';
+    ? 'Compare — Absolute Members' : 'Compare — Indexed (' + idxBase + ' = 100)';
   document.getElementById('compareTrendHint').textContent = state.compareMode === 'absolute'
     ? 'Raw monthly totals; vertical position reflects scale.'
-    : 'Each council scaled so Jun 25 = 100; shape reveals growth trajectory regardless of size.';
+    : 'Each council scaled so ' + idxBase + ' = 100; shape reveals growth trajectory regardless of size.';
   makeChart('compareTrendChart', {
     type: 'line',
     data: { labels, datasets },
@@ -1139,8 +1201,8 @@ function renderDetail(){
   document.getElementById('detailNote').textContent = state.detailType !== 'all' ? state.detailType + 's only' : '';
 
   // KPIs
-  const m = SOCAL_DATA.months; const curIdx = m.length-1; const priorIdx = curIdx - 12; const dec25Idx = m.indexOf('Dec25');
-  const cur = view.monthlyTotal[curIdx]; const prior = view.monthlyTotal[priorIdx]; const dec = view.monthlyTotal[dec25Idx];
+  const m = SOCAL_DATA.months; const curIdx = m.length-1; const priorIdx = curIdx - 12; const ytdIdx = YTD_IDX;
+  const cur = view.monthlyTotal[curIdx]; const prior = view.monthlyTotal[priorIdx]; const dec = view.monthlyTotal[ytdIdx];
   const yoy = cur - prior; const yoyPct = (yoy/prior*100);
   const ytd = cur - dec; const ytdPct = (ytd/dec*100);
   const peak = Math.max(...view.monthlyTotal);
@@ -1148,7 +1210,7 @@ function renderDetail(){
   const cards = [
     { label: 'Members — ' + SOCAL_DATA.currentMonthLabel, value: fmtInt(cur),
       sub: '<span style="color:' + (yoy>=0?'#15803d':'#c8102e') + ';font-weight:600;">' + fmtSigned(yoy) + ' (' + fmtPct(yoyPct,1) + ')</span> YoY' },
-    { label: 'YTD vs Dec 25', value: fmtSigned(ytd), sub: fmtPct(ytdPct, 2) + ' · ' + fmtInt(dec) + ' baseline' },
+    { label: 'YTD vs ' + shortAt(YTD_IDX), value: fmtSigned(ytd), sub: fmtPct(ytdPct, 2) + ' · ' + fmtInt(dec) + ' baseline' },
     { label: 'Peak Month', value: SOCAL_DATA.monthLabels[peakIdx], sub: fmtInt(peak) + ' members' },
     { label: 'Active Units — ' + SOCAL_DATA.currentMonthLabel, value: fmtInt(view.activeUnits[curIdx]),
       sub: fmtSigned(view.activeUnits[curIdx] - view.activeUnits[priorIdx]) + ' vs prior year' },
@@ -1168,12 +1230,12 @@ function renderDetail(){
   const monthly = view.monthlyTotal;
   const earlier = monthly.map((v,i) => i <= startIdx ? v : null);
   const current = monthly.map((v,i) => i >= startIdx ? v : null);
-  document.getElementById('detailTrendTitle').textContent = councilDisplay(state.detailCouncil) + ' — 25-Month Trend';
+  document.getElementById('detailTrendTitle').textContent = councilDisplay(state.detailCouncil) + ' — ' + SOCAL_DATA.months.length + '-Month Trend';
   document.getElementById('detailTrendHint').textContent = 'Dashed segment reconstructed from "Same Month Last Year"; solid is the current reporting period.';
   makeChart('detailTrendChart', {
     type: 'line',
     data: { labels: SOCAL_DATA.monthLabels, datasets: [
-      { label: 'Reconstructed (May 24 – ' + SOCAL_DATA.monthLabels[startIdx] + ')', data: earlier,
+      { label: 'Reconstructed (' + SOCAL_DATA.monthLabels[0] + ' – ' + SOCAL_DATA.monthLabels[startIdx] + ')', data: earlier,
         borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,.08)', borderDash: [6,4],
         tension: 0.3, fill: false, borderWidth: 2, pointRadius: 2, pointHoverRadius: 4 },
       { label: 'Current period', data: current,
@@ -1350,7 +1412,7 @@ function renderNm(){
     { label: 'Total Registered', value: fmtInt(total), sub: 'across selected years' },
     { label: 'Best Year', value: bestYr ? fmtInt(annual[SOCAL_NM.YEARS.indexOf(bestYr)]) : '—', sub: bestYr ? String(bestYr) : '' },
     { label: 'Average', value: fmtInt(avg), sub: 'per full year' },
-    { label: SOCAL_NM.partialYear + ' YTD', value: fmtInt(ytd2026), sub: 'Jan – Jun' },
+    { label: SOCAL_NM.partialYear + ' YTD', value: fmtInt(ytd2026), sub: 'Jan – ' + MONTH_ABBR[SOCAL_NM.partialLastMonthIdx] },
   ];
   document.getElementById('nmKpis').innerHTML = cards.map(c =>
     '<div class="kpi"><div class="accent-bar"></div><div class="label">' + c.label + '</div><div class="value">' + c.value + '</div><div class="delta">' + c.sub + '</div></div>'
@@ -1372,21 +1434,27 @@ function renderNm(){
       scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, beginAtZero: true } } }
   });
 
-  // Jan-May comparison
+  // Year-to-date comparison — the window ends at the partial year's last
+  // reported month, so it stays comparable (and correctly labeled) as data lands.
+  const nmYtdEnd   = (SOCAL_NM.partialLastMonthIdx == null) ? 11 : SOCAL_NM.partialLastMonthIdx;
+  const nmYtdRange = 'Jan – ' + MONTH_ABBR[nmYtdEnd];
+  setText('nmJanMayTitle', 'Jan–' + MONTH_ABBR[nmYtdEnd] + ' Comparison');
+  setText('nmJanMayHint',  'Year-to-date through ' + MONTH_ABBR[nmYtdEnd]);
+  setPngTitle('nmJanMayChart', '502 · New Members — Jan-' + MONTH_ABBR[nmYtdEnd]);
   makeChart('nmJanMayChart', {
     type: 'bar',
     data: { labels: yrs.map(String),
       datasets: [{ data: yrs.map(y => {
         const md = (blk.M[state.nmFilter]||blk.M['All'])[SOCAL_NM.YEARS.indexOf(y)];
-        return md.slice(0,5).reduce((s,v)=>s+(v||0),0);
+        return md.slice(0, nmYtdEnd + 1).reduce((s,v)=>s+(v||0),0);
       }), backgroundColor: yrs.map(y => YEAR_COLORS[y]), borderRadius: 3, maxBarThickness: 36 }] },
     options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + fmtInt(c.parsed.y) + ' new members (Jan – May)' } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + fmtInt(c.parsed.y) + ' new members (' + nmYtdRange + ')' } } },
       scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, beginAtZero: true } } }
   });
 
   // Monthly trend with optional projection
-  const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MO = MONTH_ABBR;
   const monthlyDatasets = yrs.map(y => {
     const md = gM(state.nmFilter, y).slice();
     return {
@@ -1512,6 +1580,7 @@ document.querySelectorAll('#ovTrendModePills .pill-btn').forEach(function(b){
 });
 
 // Initial render
+applyDataDrivenTitles();
 showPane('overview');
 
 </script>
@@ -1736,7 +1805,7 @@ showPane('overview');
       '<th class="num">Year Earlier</th><th class="num">YoY</th><th class="num">YoY %</th>' +
       '<th class="num">Share</th></tr></thead><tbody>' +
       rows.map(function(r, i){
-        var hl = r.id === "032" ? ' style="font-weight:700;color:#c8102e;"' : "";
+        var hl = r.id === "032" ? ' style="font-weight:700;color:#003F87;"' : "";
         return "<tr" + hl + "><td>" + (i + 1) + "</td><td>" + r.n + "</td><td class=\"num\">" + fmt(r.v) +
           "</td><td class=\"num\">" + fmt(r.s) + "</td><td class=\"num\">" + fmtS(r.d) +
           "</td><td class=\"num\">" + r.pct.toFixed(1) + "%</td><td class=\"num\">" + r.share.toFixed(1) + "%</td></tr>";
@@ -1752,10 +1821,10 @@ showPane('overview');
       var trs = rk.map(function(r){
         var lbac = r.councilId === "032";
         var medal = r.rank === 1 ? "🥇 " : r.rank === 2 ? "🥈 " : r.rank === 3 ? "🥉 " : "";
-        return '<tr style="' + (lbac ? 'background:rgba(200,16,46,.08); font-weight:600;' : '') + '">' +
+        return '<tr style="' + (lbac ? 'background:rgba(0,63,135,.10); font-weight:600;' : '') + '">' +
           '<td style="padding:6px 10px; text-align:right; color:#64748b; width:32px;">' + r.rank + '</td>' +
           '<td style="padding:6px 10px;">' + medal + r.display +
-          (lbac ? ' <span style="color:#c8102e; font-size:10px;">LBAC</span>' : '') + '</td>' +
+          (lbac ? ' <span style="color:#003F87; font-size:10px;">LBAC</span>' : '') + '</td>' +
           '<td style="padding:6px 10px; text-align:right; font-variant-numeric:tabular-nums;">' + def.fmt(r.value) + '</td></tr>';
       }).join("");
       grid.insertAdjacentHTML("beforeend",

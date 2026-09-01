@@ -497,7 +497,8 @@ function hexA(hex, a) {                          // "#1f3a5f" + alpha -> rgba()
 /* ── live state ──────────────────────────────────────────────────────────── */
 const state = {
   segment: (typeof DATA !== "undefined" && (DATA.currentSegment || (DATA.segments && DATA.segments[0] && DATA.segments[0].id))) || "all",
-  years:   new Set((typeof DATA !== "undefined" && DATA.seasons) || []),
+  years:   new Set((((typeof DATA !== "undefined" && DATA.seasons) || [])
+             .filter(function(y){ return +y >= 2024; }))),   // default: 2024+ active; older seasons remain toggleable
   tab:     "overview",
   paceMode: "week",   // "week" (shared grid, clean tooltips) | "pct" (normalize by window length)
 };
