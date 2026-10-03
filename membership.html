@@ -13,7 +13,7 @@
 <meta name="robots" content="index,follow">
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjciIGZpbGw9IiNjODEwMmUiLz48L3N2Zz4=">
 <style>
-:root{color-scheme:light;--page:#eef2f7;--card:#ffffff;--raised:#f8fafc;--border:#e2e8f0;--grid:#e9eef5;--axis:#cbd5e1;--text:#0f172a;--text2:#475569;--muted:#64748b;--accent:#c8102e;--onAccent:#ffffff;--accent2:#1f3a5f;--onAccent2:#ffffff;--highlight:#f1b434;--headerBg0:#1f3a5f;--headerBg1:#2a4d7a;--headerText:#ffffff;--headerBar:#c8102e;--good:#15803d;--bad:#b91c1c;--warn:#b45309;--font:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;--logoH:40px;--s1:#c8102e;--s2:#1f5fbf;--s3:#bd8209;--s4:#0e8fa0;--s5:#16a34a;--s6:#7c3aed;--s7:#e2620a;--s8:#b5179e;}
+:root{color-scheme:light;--page:#eef2f7;--card:#ffffff;--raised:#f8fafc;--border:#e2e8f0;--grid:#e9eef5;--axis:#cbd5e1;--text:#0f172a;--text2:#475569;--muted:#64748b;--accent:#c8102e;--onAccent:#ffffff;--accent2:#1f3a5f;--onAccent2:#ffffff;--select:#1f3a5f;--onSelect:#ffffff;--highlight:#f1b434;--headerBg0:#1f3a5f;--headerBg1:#2a4d7a;--headerText:#ffffff;--headerBar:#c8102e;--good:#15803d;--bad:#b91c1c;--warn:#b45309;--font:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;--logoH:40px;--s1:#c8102e;--s2:#1f5fbf;--s3:#bd8209;--s4:#0e8fa0;--s5:#16a34a;--s6:#7c3aed;--s7:#e2620a;--s8:#b5179e;}
 /* Base: tokens are injected by the build as :root custom properties from the theme. */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; }
@@ -85,7 +85,7 @@ main { max-width: 1240px; margin: 0 auto; padding: 14px max(12px, env(safe-area-
   padding: 9px 14px; border-radius: 999px; font-weight: 600; font-size: 14px; white-space: nowrap; min-height: 40px;
 }
 .tabs [role=tab]:hover { background: var(--raised); }
-.tabs [role=tab][aria-selected=true] { background: var(--accent2); color: var(--onAccent2); border-color: var(--accent2); }
+.tabs [role=tab][aria-selected=true] { background: var(--select, var(--accent2)); color: var(--onSelect, var(--onAccent2)); border-color: var(--select, var(--accent2)); }
 .tabs [role=tab] .n { opacity: .7; font-weight: 500; margin-right: 6px; font-variant-numeric: tabular-nums; }
 
 .subtabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin: 10px 0 6px; padding: 3px; background: var(--raised); border-radius: 10px; width: max-content; max-width: 100%; }
@@ -121,7 +121,7 @@ dialog.index li .was { color: var(--muted); font-size: 12px; }
   padding: 5px 11px; font-size: 13px; font-weight: 600; min-height: 32px; line-height: 1.2;
 }
 .pill:hover { border-color: var(--accent2); }
-.pill[aria-pressed=true] { background: var(--accent2); color: var(--onAccent2); border-color: var(--accent2); }
+.pill[aria-pressed=true] { background: var(--select, var(--accent2)); color: var(--onSelect, var(--onAccent2)); border-color: var(--select, var(--accent2)); }
 .pill.mini { padding: 3px 9px; font-size: 12px; min-height: 28px; }
 .btn { border: 1px solid var(--border); background: var(--card); color: var(--text2); border-radius: 8px; padding: 5px 10px; font-size: 12.5px; font-weight: 600; min-height: 32px; }
 .btn:hover { border-color: var(--accent2); color: var(--text); }
@@ -285,7 +285,7 @@ table.dt td.pos { color: var(--good); } table.dt td.neg { color: var(--bad); }
   <div>Long Beach Area Council · Membership · Data changed <span id="fChanged">—</span> · Inbox sorted <span id="fSorted">—</span> · <span id="fPublished">—</span></div>
   <div style="margin-top:6px"><button class="btn" type="button" data-view-export="light">⤓ Export this view (PNG)</button> <button class="btn" type="button" data-view-export="dark">dark</button> <button class="btn" type="button" data-open-index=""># Chart index</button></div>
   <div id="repairNote" class="hidden" style="margin-top:6px;color:var(--warn)"></div>
-  <div style="margin-top:8px"><code>build 2026-10-02-a4a77de2 · core 3eee 5bd2 b5f9 · data a4a7 7de2 7904 · Chart.js 4.4.0</code></div>
+  <div style="margin-top:8px"><code>build 2026-10-02-a4a77de2 · core ea08 6cdd 73fd · data a4a7 7de2 7904 · Chart.js 4.4.0</code></div>
 </footer>
 <script>/*!
  * Chart.js v4.4.0
@@ -343,7 +343,7 @@ window.DASH = window.DASH || {};
   D.fmtNum = (n, dp) => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("en-US", { minimumFractionDigits: dp || 0, maximumFractionDigits: dp == null ? 1 : dp });
   D.fmtPct = (n, dp) => (n == null || isNaN(n)) ? "—" : `${n > 0 ? "+" : ""}${Number(n).toFixed(dp == null ? 1 : dp)}%`;
   D.fmtSigned = n => (n == null || isNaN(n)) ? "—" : (n > 0 ? "+" : "") + Math.round(n).toLocaleString("en-US");
-  D.fmtMoney = n => (n == null || isNaN(n)) ? "—" : "$" + Math.round(n).toLocaleString("en-US");
+  D.fmtMoney = n => (n == null || isNaN(n)) ? "—" : (Math.round(n) < 0 ? "−$" : "$") + Math.abs(Math.round(n)).toLocaleString("en-US");
   D.slugify = function (s) {
     return String(s).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/&/g, " and ")
       .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48).replace(/-+$/, "");
@@ -370,6 +370,14 @@ window.DASH = window.DASH || {};
   D.site = D.readJSON("dash-site") || {};
   D.config = D.readJSON("dash-config") || {};
   const T = D.theme;
+  /* A theme with "paper" puts every chart on light paper over its own page. Charts read T.surface /
+     T.text / T.status, so those become the paper's; the page's own colours stay in T.chrome. */
+  if (T.paper) {
+    T.chrome = { surface: T.surface, text: T.text, status: T.status };
+    T.surface = { ...(T.surface || {}), ...(T.paper.surface || {}) };
+    T.text = { ...(T.text || {}), ...(T.paper.text || {}) };
+    T.status = { ...(T.status || {}), ...(T.paper.status || {}) };
+  }
   const cat = (T.series && T.series.categorical) || ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
   D.slots = cat;
 
@@ -690,6 +698,7 @@ window.DASH = window.DASH || {};
       const fmt = FMT[o.fmt] || FMT.int;
       base.beginAtZero = !!o.zero; base.stacked = !!o.stacked;
       base.ticks.callback = v => fmt(v);
+      if (!o.fmt || o.fmt === "int" || o.fmt === "num0" || o.fmt === "signed") base.ticks.precision = 0;   // counts: no half-steps labelled 1, 1
       if (o.min != null) base.min = o.min; if (o.max != null) base.max = o.max;
       if (o.suggestedMin != null) base.suggestedMin = o.suggestedMin; if (o.suggestedMax != null) base.suggestedMax = o.suggestedMax;
       if (o.zeroLine) {                              // a chart that goes both ways needs its zero drawn
@@ -2650,14 +2659,22 @@ window.DASH = window.DASH || {};
     if (s == null || r == null || d == null) return null;
     const late = Math.min(l || 0, r), open = inProgress(ctx, y) ? Math.max(0, s - r - d) : 0;
     const rate = histRate(ctx), expected = open && rate != null ? Math.round(open * rate) : 0;
-    return { y, s, r, d, late, onTime: r - late, open, expected, rate, live: inProgress(ctx, y) };
+    /* Council-wide, renewals and drops account for everyone on the books on January 1. Inside one
+       view they need not: members move between units during the year (a ScoutReach Pack Scout
+       crossing into a traditional Troop renews in the Troop's view). So a bar is what this view
+       accounted for (`due`), and `moved` is how far that differs from its January 1 count. */
+    const due = r + d + open;
+    return { y, s, r, d, late, onTime: r - late, open, expected, rate, due, moved: due - s, live: inProgress(ctx, y) };
   }
   const statusYears = ctx => sel(ctx).filter(y => complete(ctx, y) || inProgress(ctx, y)).map(y => status(ctx, y)).filter(Boolean);
 
   /* ---------- the four flows, monthly year over year and by year ---------- */
   const FLOWS = { r: "Renewals", l: "Late renewals", t: "Transfers in", x: "Crossovers" };
+  // a view a flow never reaches (crossovers into Non-Traditional units) shows no empty chart
+  const any = (ctx, w) => sel(ctx).some(y => (total(ctx, w, y) || 0) > 0);
   function monthly(w) {
     return {
+      visible: ctx => any(ctx, w),
       title: ctx => `${FLOWS[w]} by month — ${view(ctx)}`,
       render(ctx, h) {
         const b = B(ctx, w), done = lastDone(b);
@@ -2671,6 +2688,7 @@ window.DASH = window.DASH || {};
   }
   function annual(w) {
     return {
+      visible: ctx => any(ctx, w),
       title: ctx => `${FLOWS[w]} by year — ${view(ctx)}`,
       render(ctx, h) {
         const ys = sel(ctx).filter(y => row(ctx, w, y)), b = B(ctx, w);
@@ -2685,11 +2703,17 @@ window.DASH = window.DASH || {};
   const charts = {
     "701": {
       title: ctx => `Renewal status — ${view(ctx)}`,
-      hint: ctx => { const r = histRate(ctx); return r == null ? "Members on the books on January 1, by what they did when their registration came due."
-        : `Members on the books on January 1. Yellow line: renewals expected by year end at the ${p1(r * 100)} historical rate (${histYears(ctx).join(", ")}).`; },
+      hint: ctx => {
+        const live = statusYears(ctx).find(r => r.live && r.open), rate = histRate(ctx);
+        const base = "Members whose registration came due each year, by what they did.";
+        return live && rate != null
+          ? `${base} Yellow line: renewals by year end if the ${D.fmtInt(live.open)} still to decide renew at the ${histYears(ctx).join(", ")} rate of ${p1(rate * 100)}.`
+          : base;
+      },
       render(ctx, h) {
         const rows = statusYears(ctx), st = ctx.theme.status || {}, good = st.goodFill || "#2fb457", bad = st.badFill || "#c8102e";
         const ink = (D._export && D._export.ink) || (ctx.theme.text || {}).primary || "#0f172a";
+        const font = ctx.theme.font || "sans-serif";
         const cfg = h.hbar({ labels: rows.map(r => r.live ? `${r.y} so far` : String(r.y)), stacked: true, y: { zero: true, unit: "members" },
           series: [
             { label: "Renewed on time", data: rows.map(r => r.onTime), color: good, edge: st.goodEdge || "#15803d", radius: 0 },
@@ -2697,23 +2721,42 @@ window.DASH = window.DASH || {};
             { label: "Still to decide", data: rows.map(r => r.open), color: D.mix(D.neutral(), "#ffffff", 0.6), edge: D.neutral(), radius: 0 },
             { label: "Dropped", data: rows.map(r => r.d), color: bad, edge: st.badEdge || "#8f0b21", radius: 0 }
           ],
-          options: { plugins: { tooltip: { itemSort: (a, b) => a.datasetIndex - b.datasetIndex, callbacks: {
-            label: c => { const r = rows[c.dataIndex]; return `${c.dataset.label}: ${D.fmtInt(c.raw)} (${p1(pct(c.raw, r.s))})`; },
-            footer: items => { const r = rows[items[0].dataIndex], out = [`On the books Jan 1: ${D.fmtInt(r.s)}`];
-              if (r.open) out.push(`Expected renewed by year end: ${D.fmtInt(r.r + r.expected)} (${p1(pct(r.r + r.expected, r.s))})`);
+          options: { plugins: { tooltip: { filter: c => c.raw > 0, itemSort: (a, b) => a.datasetIndex - b.datasetIndex, callbacks: {
+            label: c => `${c.dataset.label}: ${D.fmtInt(c.raw)} (${p1(pct(c.raw, rows[c.dataIndex].due))})`,
+            footer: items => { const r = rows[items[0].dataIndex], out = [];
+              if (r.open) out.push(`Expected: ${D.fmtInt(r.r + r.expected)} renewed of ${D.fmtInt(r.due)} — ${p1(pct(r.r + r.expected, r.due))} renewal rate`);
+              else out.push(`Renewal rate ${p1(pct(r.r, r.r + r.d))}`);
+              out.push(`On the books Jan 1: ${D.fmtInt(r.s)}`);
+              if (Math.abs(r.moved) >= Math.max(5, r.s * 0.01))
+                out.push(`${D.fmtInt(Math.abs(r.moved))} ${r.moved > 0 ? "more" : "fewer"} renewed or dropped here than started here: members moved between units`);
               return out; } } } } } });
-        const live = rows.findIndex(r => r.live && r.open);
-        if (live >= 0) cfg.plugins = [{ id: "expectedRenewals", afterDatasetsDraw(ch) {
-          const r = rows[live], bar = ch.getDatasetMeta(0).data[live]; if (!bar) return;
-          const x = ch.scales.x, px = x.getPixelForValue(r.r + r.expected), half = (bar.height || 20) / 2 + 5, g = ch.ctx;
-          g.save(); g.lineCap = "round";
-          g.strokeStyle = ink; g.lineWidth = 6; g.beginPath(); g.moveTo(px, bar.y - half); g.lineTo(px, bar.y + half); g.stroke();
-          g.strokeStyle = (ctx.theme.brand || {}).highlight || "#f1b434"; g.lineWidth = 3.5; g.beginPath(); g.moveTo(px, bar.y - half); g.lineTo(px, bar.y + half); g.stroke();
-          g.fillStyle = ink; g.font = `700 12.5px ${ctx.theme.font || "sans-serif"}`; g.textBaseline = "bottom";
-          const text = `${D.fmtInt(r.r + r.expected)} expected renewed (${p1(pct(r.r + r.expected, r.s))})`;
-          const w = g.measureText(text).width; g.textAlign = "left";
-          g.fillText(text, Math.max(x.left, Math.min(px - w / 2, x.right - w)), bar.y - half - 2);
-          g.restore(); } }];
+        cfg.plugins = [{ id: "renewalMarks", afterDatasetsDraw(ch) {
+          const x = ch.scales.x, g = ch.ctx;
+          rows.forEach((r, i) => {
+            const bar = ch.getDatasetMeta(0).data[i]; if (!bar) return;
+            const half = (bar.height || 20) / 2;
+            g.save();
+            // the January 1 count, where the view's members moved enough to differ from it
+            if (Math.abs(r.moved) >= Math.max(5, r.s * 0.01)) {
+              const px = x.getPixelForValue(r.s);
+              g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.moveTo(px, bar.y + half + 1); g.lineTo(px, bar.y + half + 9); g.stroke();
+              g.fillStyle = ink; g.font = `600 11px ${font}`; g.textAlign = "center"; g.textBaseline = "top";
+              g.fillText(`Jan 1: ${D.fmtInt(r.s)}`, px, bar.y + half + 10);
+            }
+            // where renewals end up if those still to decide renew at the historical rate
+            if (r.live && r.open) {
+              const px = x.getPixelForValue(r.r + r.expected), ext = half + 5;
+              g.lineCap = "round";
+              g.strokeStyle = ink; g.lineWidth = 6; g.beginPath(); g.moveTo(px, bar.y - ext); g.lineTo(px, bar.y + ext); g.stroke();
+              g.strokeStyle = (ctx.theme.brand || {}).highlight || "#f1b434"; g.lineWidth = 3.5; g.beginPath(); g.moveTo(px, bar.y - ext); g.lineTo(px, bar.y + ext); g.stroke();
+              g.fillStyle = ink; g.font = `700 12.5px ${font}`; g.textBaseline = "bottom"; g.textAlign = "left";
+              const text = `${D.fmtInt(r.r + r.expected)} expected renewed · ${p1(pct(r.r + r.expected, r.due))} renewal rate`;
+              const w = g.measureText(text).width;
+              g.fillText(text, Math.max(x.left, Math.min(px - w / 2, x.right - w)), bar.y - ext - 2);
+            }
+            g.restore();
+          });
+        } }];
         return cfg;
       }
     },
