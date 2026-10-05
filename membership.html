@@ -2109,6 +2109,16 @@ window.DASH = window.DASH || {};
        the projection branches from is a real month and already has its solid dot. */
     const projSeries = (ctx, data, anchor) => ({ label: `${B(ctx).partialYear} (projected)`, entity: "year:" + B(ctx).partialYear, data,
       dash: [6, 4], points: data.map((v, i) => v == null || i === anchor ? 0 : 3.5), hollow: true, ringWidth: 1.5, order: -9999, spanGaps: false, _nolegend: false });
+    /* The month in progress as counted so far: a lone solid dot, not joined to the line, so the real
+       figure is on the chart without reading as a finished month that fell off a cliff. */
+    const soFarSeries = ctx => {
+      const b = B(ctx), last = b.partialLastMonthIdx;
+      if (covered(b) >= 1 || last < 0 || last > 11) return null;
+      const v = gM(ctx, b.partialYear)[last]; if (v == null) return null;
+      const data = new Array(12).fill(null); data[last] = v;
+      return { label: `${b.partialYear} (so far, to ${asOfLabel(b)})`, entity: "year:" + b.partialYear, data, line: false, points: 4.5, order: -10000 };
+    };
+    const isSoFar = ds => / \(so far, /.test(ds.label || "");
     const projHint = ctx => { const b = B(ctx), f = covered(b);
       return f < 1 ? ` The current month is projected too: the export was pulled ${asOfLabel(b)}, ${Math.round(f * 100)}% of the way through ${D.MON[b.partialLastMonthIdx]}.` : ""; };
     const projTooltip = (ctx, P) => ({ plugins: { tooltip: { callbacks: { afterLabel: c => {
@@ -2183,12 +2193,19 @@ window.DASH = window.DASH || {};
     };
     charts[ids.monthly] = {
       title: ctx => `Monthly ${word} — ${M.viewName(ctx)}`,
-      hint: ctx => `One line per selected year. The dashed line projects the current year's remaining months from the same months of the selected prior years, scaled by this year's pace.` + projHint(ctx),
+      hint: ctx => `One line per selected year. The dashed line projects the current year's remaining months from the same months of the selected prior years, scaled by this year's pace.` + projHint(ctx) +
+        (covered(B(ctx)) < 1 ? ` The lone solid dot is ${D.MON[B(ctx).partialLastMonthIdx]}'s count so far.` : ""),
       render(ctx, h) {
         const b = B(ctx), series = active(ctx).map(y => yearSeries(y, actualOf(ctx, y, gM(ctx, y).slice()), ctx));
         const P = project(ctx);
         if (P && active(ctx).includes(b.partialYear)) series.push(projSeries(ctx, P.proj, P.done ? P.last : P.last - 1));
-        return h.line({ labels: D.MON, y: { zero: true, unit: word }, series, tooltip: { total: true }, options: projTooltip(ctx, P) });
+        const sf = active(ctx).includes(b.partialYear) ? soFarSeries(ctx) : null;
+        if (sf) series.push(sf);
+        // the so-far count is already inside the projected figure, so the total leaves it out
+        const footer = { plugins: { tooltip: { callbacks: { footer: items => {
+          const n = items.filter(i => !isSoFar(i.dataset)).reduce((s, i) => s + (+i.raw || 0), 0);
+          return `Total: ${D.fmtInt(n)} ${word}`; } } } } };
+        return h.line({ labels: D.MON, y: { zero: true, unit: word }, series, tooltip: { total: true }, options: D.deepMerge(projTooltip(ctx, P), footer) });
       }
     };
     charts[ids.cum] = {
