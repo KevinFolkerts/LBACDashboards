@@ -304,7 +304,7 @@ table.dt td.pos { color: var(--good); } table.dt td.neg { color: var(--bad); }
   <div>Long Beach Area Council · Membership · Data changed <span id="fChanged">—</span> · Inbox sorted <span id="fSorted">—</span> · <span id="fPublished">—</span></div>
   <div style="margin-top:6px"><button class="btn" type="button" data-view-export="light">⤓ Export this view (PNG)</button> <button class="btn" type="button" data-view-export="dark">dark</button> <button class="btn" type="button" data-open-index=""># Chart index</button></div>
   <div id="repairNote" class="hidden" style="margin-top:6px;color:var(--warn)"></div>
-  <div style="margin-top:8px"><code>build 2026-10-06-0a2dccbf · core 0490 5813 a103 · data 0a2d ccbf a0f6 · Chart.js 4.4.0</code></div>
+  <div style="margin-top:8px"><code>build 2026-10-06-0a2dccbf · core 7b73 f741 983d · data 0a2d ccbf a0f6 · Chart.js 4.4.0</code></div>
 </footer>
 <script>/*!
  * Chart.js v4.4.0
@@ -912,6 +912,8 @@ window.DASH = window.DASH || {};
     const box = cardEl.querySelector(".cc"); if (!box) return;
     box.innerHTML = "";
     (card.controls || []).forEach(k => {
+      /* when: {otherControl: value} shows the control only while those controls hold those values. */
+      if (k.when && Object.keys(k.when).some(w => String(D.state.controls[`${card.id}.${w}`]) !== String(k.when[w]))) return;
       const cur = D.state.controls[`${card.id}.${k.id}`];
       if (k.label) box.append(D.el("span", { class: "lbl", text: k.label }));
       if (k.type === "number") {
