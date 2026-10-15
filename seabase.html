@@ -1861,7 +1861,7 @@ window.DASH = window.DASH || {};
 
     /* One row per badge, one column per season: seats taken (or offered, where nothing was counted). */
     charts.yoy = onlyReady({
-      hint: ctx => `Seats taken per badge in each season compared${seasons(ctx).some(y => !hasCounts(block(ctx, y))) ? " (offered seats, in brackets, where no counts were pulled)" : ""}. Badges line up by name across seasons even when their class numbers change.`,
+      hint: ctx => `Seats taken per badge in each season compared${seasons(ctx).some(y => !hasCounts(block(ctx, y))) ? " (a dash where no seat counts were pulled; the offered columns still show the seats)" : ""}. Badges line up by name across seasons even when their class numbers change.`,
       table(ctx) {
         const ys = many(ctx), maps = ys.map(y => byKey(block(ctx, y)));
         const keys = new Set(); maps.forEach(m => Object.keys(m).forEach(k => keys.add(k)));
