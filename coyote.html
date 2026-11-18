@@ -302,7 +302,7 @@ table.dt a.tlink { color: var(--accent, var(--text)); font-weight: 600; text-dec
   <div>Long Beach Area Council · Camp Coyote · Data changed <span id="fChanged">—</span> · Inbox sorted <span id="fSorted">—</span> · <span id="fPublished">—</span></div>
   <div style="margin-top:6px"><button class="btn" type="button" data-view-export="light">⤓ Export this view (PNG)</button> <button class="btn" type="button" data-view-export="dark">dark</button> <button class="btn" type="button" data-open-index=""># Chart index</button></div>
   <div id="repairNote" class="hidden" style="margin-top:6px;color:var(--warn)"></div>
-  <div style="margin-top:8px"><code>build 2026-11-18-b05b55c3 · core e711 57c1 d9dc · data b05b 55c3 1097 · Chart.js 4.4.0</code></div>
+  <div style="margin-top:8px"><code>build 2026-11-18-b05b55c3 · core c42b bceb fbf7 · data b05b 55c3 1097 · Chart.js 4.4.0</code></div>
 </footer>
 <script>/*!
  * Chart.js v4.4.0
@@ -1323,13 +1323,23 @@ window.DASH = window.DASH || {};
   };
 })(window.DASH);
 
-/* PNG export: re-renders the chart's current state at a fixed size with brand chrome, light or dark paper.
-   Filename: <dashboard>_<id>_<slug>_<YYYY-MM-DD>.png. Also whole-view export and CSV download. */
+/* PNG export: re-renders the chart's current state as a 16:9 slide with brand chrome, light or dark paper
+   (DR-20261118-png-export-slides): 2560 x 1440, laid out on a 1280 x 720 grid, so it fills a widescreen
+   PowerPoint slide. Filename: <dashboard>_<id>_<slug>_<YYYY-MM-DD>.png. Also whole-view export and CSV download. */
 (function (D) {
   "use strict";
   const T = D.theme;
   const EX = T.export || {};
   const W = 1200, DPR = 2;
+  /* the slide grid: accent bar, header band (logo + title), body, footer line */
+  const SLIDE = { w: 1280, h: 720, pad: 40, bar: 10, head: 126, foot: 46, logoH: 84, logoW: 340 };
+  const FONT = T.font || "sans-serif";
+  /* the largest size from `size` down to `min` at which `text` fits `maxW`; leaves that font set */
+  function fit(g, text, weight, size, min, maxW) {
+    let fs = size;
+    for (; fs > min; fs--) { g.font = `${weight} ${fs}px ${FONT}`; if (g.measureText(text).width <= maxW) return fs; }
+    g.font = `${weight} ${min}px ${FONT}`; return min;
+  }
 
   function paper(dark) {
     const d = dark ? (EX.dark || {}) : EX;
@@ -1351,27 +1361,37 @@ window.DASH = window.DASH || {};
     return parts.join(" · ");
   }
   function chrome(g, p, opts) {
-    const { title, subtitle, width, height, plotTop, footY } = opts;
+    const { title, subtitle, width, height } = opts, L = SLIDE;
     g.fillStyle = p.bg; g.fillRect(0, 0, width, height);
-    g.fillStyle = p.bar; g.fillRect(0, 0, width, 6);
+    g.fillStyle = p.bar; g.fillRect(0, 0, width, L.bar);
+    const midY = L.bar + (L.head - L.bar) / 2;
     const logo = document.getElementById("dashLogo");
-    let x = 24;
-    if (logo && logo.naturalWidth) { const h = 36, w = logo.naturalWidth * h / logo.naturalHeight; try {
-      if (logo.dataset.plate) {                     // a logo drawn for light paper keeps its plate on a dark export
-        g.fillStyle = logo.dataset.plate; g.beginPath();
-        if (g.roundRect) g.roundRect(16, 14, w + 16, h + 12, 8); else g.rect(16, 14, w + 16, h + 12);
-        g.fill(); }
-      g.drawImage(logo, 24, 20, w, h); x = 24 + w + 24; } catch (e) { /* tainted: skip */ } }
-    g.fillStyle = p.ink; g.font = `700 20px ${T.font || "sans-serif"}`; g.textAlign = "right"; g.textBaseline = "alphabetic";
-    g.fillText(title, width - 24, 42, width - x - 48);
-    if (subtitle) { g.fillStyle = p.muted; g.font = `12.5px ${T.font || "sans-serif"}`; g.fillText(subtitle, width - 24, 62, width - x - 48); }
-    g.fillStyle = p.muted; g.font = `11.5px ${T.font || "sans-serif"}`; g.textAlign = "left";
-    g.fillText(`${D.site.council || ""}${D.site.council ? " · " : ""}${D.manifest.title}`, 24, footY);
-    g.textAlign = "right"; g.fillText(opts.footRight, width - 24, footY);
-    return plotTop;
+    let x = L.pad;
+    if (logo && logo.naturalWidth) {                // as large as fits the logo box, centred in the header band
+      const k = Math.min(L.logoH / logo.naturalHeight, L.logoW / logo.naturalWidth);
+      const w = logo.naturalWidth * k, h = logo.naturalHeight * k, y = midY - h / 2;
+      try {
+        if (logo.dataset.plate) {                   // a logo drawn for light paper keeps its plate on a dark export
+          g.fillStyle = logo.dataset.plate; g.beginPath();
+          if (g.roundRect) g.roundRect(x - 10, y - 8, w + 20, h + 16, 10); else g.rect(x - 10, y - 8, w + 20, h + 16);
+          g.fill(); }
+        g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
+        g.drawImage(logo, x, y, w, h); x += w + 28; } catch (e) { /* tainted: skip */ } }
+    const maxW = width - L.pad - x;
+    g.textAlign = "left"; g.textBaseline = "alphabetic"; g.fillStyle = p.ink;
+    const ts = fit(g, title, 700, 34, 22, maxW);
+    const ty = subtitle ? midY - 3 : midY + ts * 0.36;
+    g.fillText(title, x, ty, maxW);
+    if (subtitle) { g.fillStyle = p.muted; fit(g, subtitle, 400, 16, 12, maxW); g.fillText(subtitle, x, ty + 28, maxW); }
+    g.fillStyle = p.muted; g.font = `13px ${FONT}`;
+    g.fillText(opts.footLeft, L.pad, height - 18);
+    g.textAlign = "right"; g.fillText(opts.footRight, width - L.pad, height - 18);
   }
-  function renderOffscreen(code, dark, w, h) {
-    const b = D.built[code]; const p = paper(dark);
+  const footLeft = code => `${D.site.council || ""}${D.site.council ? " · " : ""}${D.manifest.title}${code ? ` · Chart ${code}` : ""}`;
+  /* `zoom` draws the plot enlarged as a whole - text, lines and points together - by laying it out on a
+     smaller canvas at a higher pixel ratio; the image returned is still w x h at DPR. */
+  function renderOffscreen(code, dark, w, h, zoom) {
+    const b = D.built[code]; const p = paper(dark); const z = zoom || 1;
     D._export = { grid: p.grid, axis: p.axis, ink: p.ink, muted: p.muted, series: p.series, card: p.bg };
     let cfgs;
     try {
@@ -1380,9 +1400,9 @@ window.DASH = window.DASH || {};
       cfgs.forEach((cfg, pi) => {
         const live = (b.charts || [b.chart])[pi];
         cfg.data.datasets.forEach((ds, i) => { if (hidden[ds.label] || (live && !live.isDatasetVisible(i))) ds.hidden = true; });
-        cfg.options.responsive = false; cfg.options.animation = false; cfg.options.devicePixelRatio = DPR; cfg.options.color = p.ink;
+        cfg.options.responsive = false; cfg.options.animation = false; cfg.options.devicePixelRatio = DPR * z; cfg.options.color = p.ink;
         cfg.options.plugins.legend = { display: cfg.data.datasets.filter(d => !d._nolegend).length > 1, position: "top", align: "end",
-          labels: { color: p.ink, usePointStyle: true, boxWidth: 8, font: { size: 12 },
+          labels: { color: p.ink, usePointStyle: true, boxWidth: 8, boxHeight: 8, font: { size: 12 },
                   sort: (a, b) => a.datasetIndex - b.datasetIndex } };   // the page's legend order, not the drawing order
         cfg.options.plugins.tooltip = { enabled: false };
         // plugins draw after this function has put the page palette back, so they get the paper with them
@@ -1395,24 +1415,39 @@ window.DASH = window.DASH || {};
     const ph = Math.floor(h / cfgs.length);
     cfgs.forEach((cfg, pi) => {
       const cv = document.createElement("canvas");
-      cv.width = w; cv.height = ph;                            // CSS pixels: Chart.js applies the ratio
-      cv.style.width = w + "px"; cv.style.height = ph + "px";
+      const cw = Math.round(w / z), chh = Math.round(ph / z);
+      cv.width = cw; cv.height = chh;                          // CSS pixels: Chart.js applies the ratio
+      cv.style.width = cw + "px"; cv.style.height = chh + "px";
       const ch = new window.Chart(cv, cfg);
       img.getContext("2d").drawImage(cv, 0, pi * ph * DPR, w * DPR, ph * DPR);
       ch.destroy();
     });
     return img;
   }
-  function drawTable(g, model, x, y, w, p, maxRows) {
-    const cols = model.columns, rows = model.rows.slice(0, maxRows || 40); const rowH = 22, colW = w / cols.length;
-    g.font = `600 11px ${T.font || "sans-serif"}`; g.textBaseline = "middle";
-    cols.forEach((c, i) => { g.fillStyle = p.muted; g.textAlign = c.num ? "right" : "left"; g.fillText(c.label, x + i * colW + (c.num ? colW - 8 : 8), y + rowH / 2); });
+  /* `opt`: a row limit (the whole-tab export's small tables), or {height} to fill a slide's body: rows
+     grow to fill it, up to 24 of them. Text columns get more room than number columns. */
+  function drawTable(g, model, x, y, w, p, opt) {
+    const o = typeof opt === "number" ? { maxRows: opt } : (opt || {});
+    const cols = model.columns, rows = model.rows.slice(0, o.maxRows || (o.height ? 24 : 40));
+    const rowH = o.height ? Math.max(18, Math.min(36, Math.floor(o.height / (rows.length + 2.5)))) : 22;
+    const fs = o.height ? Math.max(11, Math.min(18, Math.round(rowH * 0.5))) : 12;
+    const cell = (c, r) => { const v = r[c.key]; return c.fmt ? D.fmt(c.fmt, v) : (typeof v === "number" ? D.fmtNum(v, Number.isInteger(v) ? 0 : 1) : String(v == null ? "" : v)); };
+    const head = `600 ${Math.max(10, fs - 1)}px ${FONT}`, body = `${fs}px ${FONT}`;
+    // on a slide each column is as wide as its widest cell needs, and what is left over is shared out
+    let wt = cols.map(() => 1);
+    if (o.height) wt = cols.map(c => { g.font = head; let m = g.measureText(c.label).width; g.font = body;
+      rows.forEach(r => { m = Math.max(m, g.measureText(cell(c, r)).width); }); return m + 28; });
+    const tot = wt.reduce((a, b) => a + b, 0);
+    const cw = wt.map(v => w * v / tot), cx = cw.map((_, i) => x + cw.slice(0, i).reduce((a, b) => a + b, 0));
+    const at = (c, i) => cx[i] + (c.num ? cw[i] - 8 : 8);
+    g.font = head; g.textBaseline = "middle";
+    cols.forEach((c, i) => { g.fillStyle = p.muted; g.textAlign = c.num ? "right" : "left"; g.fillText(c.label, at(c, i), y + rowH / 2, cw[i] - 12); });
     g.fillStyle = p.axis; g.fillRect(x, y + rowH, w, 1);
-    g.font = `12px ${T.font || "sans-serif"}`;
+    g.font = body;
     rows.forEach((r, j) => { const yy = y + rowH * (j + 1.5) + 4;
-      cols.forEach((c, i) => { const v = r[c.key]; const txt = c.fmt ? D.fmt(c.fmt, v) : (typeof v === "number" ? D.fmtNum(v, Number.isInteger(v) ? 0 : 1) : String(v == null ? "" : v));
-        g.fillStyle = p.ink; g.textAlign = c.num ? "right" : "left"; g.fillText(txt, x + i * colW + (c.num ? colW - 8 : 8), yy, colW - 12); }); });
-    if (model.rows.length > rows.length) { g.fillStyle = p.muted; g.font = `11px ${T.font || "sans-serif"}`; g.textAlign = "left"; g.fillText(`+${model.rows.length - rows.length} more — see CSV`, x + 8, y + rowH * (rows.length + 1.5) + 6); }
+      cols.forEach((c, i) => { const txt = cell(c, r);
+        g.fillStyle = p.ink; g.textAlign = c.num ? "right" : "left"; g.fillText(txt, at(c, i), yy, cw[i] - 12); }); });
+    if (model.rows.length > rows.length) { g.fillStyle = p.muted; g.font = `${Math.max(11, fs - 1)}px ${FONT}`; g.textAlign = "left"; g.fillText(`+${model.rows.length - rows.length} more — see CSV`, x + 8, y + rowH * (rows.length + 1.5) + 6); }
     return rowH * (rows.length + 2);
   }
   function save(canvas, name) {
@@ -1429,21 +1464,19 @@ window.DASH = window.DASH || {};
   function compose(code, dark) {
     const card = D.cardById(code); const b = D.built[code];
     if (!card || !b) return null;
-    const p = paper(dark); const tall = card.size === "tall" || card.size === "xtall";
-    const plotH = card.kind === "chart" ? (tall ? 720 : 600) : 0;
-    const head = 84, foot = 34, pad = 24;
-    const cardEl = document.getElementById("c" + code); const title = `${code} · ${cardEl ? cardEl.querySelector("h2").textContent : card.title}`;
+    const p = paper(dark), L = SLIDE;
+    const bodyW = L.w - L.pad * 2, bodyH = L.h - L.head - L.foot;
+    const zoom = card.size === "xtall" ? 1.15 : card.size === "tall" ? 1.3 : 1.5;   // long lists keep more room
+    const cardEl = document.getElementById("c" + code); const title = cardEl ? cardEl.querySelector("h2").textContent : card.title;
     const changed = cardEl && cardEl.dataset.changed ? `Data changed ${D.fmtDate(cardEl.dataset.changed)} · ` : "";
     let plot = null, tableModel = null;
-    if (card.kind === "chart") plot = renderOffscreen(code, dark, W - pad * 2, plotH);
+    if (card.kind === "chart") plot = renderOffscreen(code, dark, bodyW, bodyH, zoom);
     else tableModel = card.kind === "table" ? b.model : D.chartModel(code);
-    const bodyH = plot ? plotH : (Math.min((tableModel && tableModel.rows.length || 0), 40) + 2) * 22 + 20;
-    const height = head + bodyH + foot + pad;
-    const out = document.createElement("canvas"); out.width = W * DPR; out.height = height * DPR;
+    const out = document.createElement("canvas"); out.width = L.w * DPR; out.height = L.h * DPR;
     const g = out.getContext("2d"); g.scale(DPR, DPR);
-    chrome(g, p, { title, subtitle: activeFilters(code), width: W, height, plotTop: head, footY: height - 14, footRight: `${changed}Exported ${D.fmtDate(D.today())}` });
-    if (plot) g.drawImage(plot, pad, head, W - pad * 2, plotH);
-    else if (tableModel) drawTable(g, tableModel, pad, head, W - pad * 2, p);
+    chrome(g, p, { title, subtitle: activeFilters(code), width: L.w, height: L.h, footLeft: footLeft(code), footRight: `${changed}Exported ${D.fmtDate(D.today())}` });
+    if (plot) g.drawImage(plot, L.pad, L.head, bodyW, bodyH);
+    else if (tableModel) drawTable(g, tableModel, L.pad, L.head, bodyW, p, { height: bodyH });
     return out;
   }
 
@@ -1457,7 +1490,7 @@ window.DASH = window.DASH || {};
     const dark = !!(opts && opts.dark); const p = paper(dark);
     const cards = D.visibleCards().filter(c => D.built[c.id] && !document.getElementById("c" + c.id).classList.contains("hidden"));
     if (!cards.length) return;
-    const colW = (W - 24 * 3) / 2, plotH = 300, cardH = plotH + 44, head = 84, foot = 34;
+    const colW = (W - 24 * 3) / 2, plotH = 300, cardH = plotH + 44, head = SLIDE.head, foot = SLIDE.foot;
     const rows = Math.ceil(cards.length / 2);
     const kpis = D.$$(`.pane[data-tab="${D.state.tab}"] .kpi`).map(k => ({ v: k.querySelector(".v").textContent, l: k.querySelector(".l").textContent }));
     const kpiH = kpis.length ? 70 : 0;
@@ -1466,7 +1499,7 @@ window.DASH = window.DASH || {};
     const out = document.createElement("canvas"); out.width = W * scale; out.height = height * scale;
     const g = out.getContext("2d"); g.scale(scale, scale);
     const tab = D.tabByKey(D.state.tab); const sub = D.state.subtab && tab.subtabs ? tab.subtabs.find(s => s.key === D.state.subtab) : null;
-    chrome(g, p, { title: `${tab.label}${sub ? " › " + sub.label : ""}`, subtitle: activeFilters(null), width: W, height, plotTop: head, footY: height - 14, footRight: `Exported ${D.fmtDate(D.today())}` });
+    chrome(g, p, { title: `${tab.label}${sub ? " › " + sub.label : ""}`, subtitle: activeFilters(null), width: W, height, footLeft: footLeft(null), footRight: `Exported ${D.fmtDate(D.today())}` });
     let y = head;
     if (kpis.length) { const kw = (W - 48) / Math.min(kpis.length, 6); kpis.slice(0, 6).forEach((k, i) => { g.fillStyle = p.ink; g.font = `700 22px ${T.font}`; g.textAlign = "left"; g.fillText(k.v, 24 + i * kw, y + 26); g.fillStyle = p.muted; g.font = `11px ${T.font}`; g.fillText(k.l.toUpperCase(), 24 + i * kw, y + 46); }); y += kpiH; }
     cards.forEach((c, i) => {
